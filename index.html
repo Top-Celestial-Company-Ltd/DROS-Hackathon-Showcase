@@ -211,104 +211,6 @@
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
         }
 
-        /* 💎 三大獨立加購 Add-On Solution Packages 官網專區 */
-        .packages-section {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid var(--accent-purple);
-            box-shadow: 0 0 25px rgba(192, 132, 252, 0.15);
-            border-radius: 16px;
-            padding: 26px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .packages-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 14px;
-        }
-        .packages-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .packages-sub {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .pkg-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        .pkg-card {
-            background: #090d16;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 16px;
-            transition: all 0.3s;
-            position: relative;
-        }
-        .pkg-card:hover {
-            border-color: var(--accent-purple);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(192, 132, 252, 0.25);
-        }
-        .pkg-tag {
-            font-size: 0.72rem;
-            font-weight: 800;
-            color: var(--accent-cyan);
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--accent-cyan);
-            padding: 3px 8px;
-            border-radius: 6px;
-            display: inline-block;
-        }
-        .pkg-price {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--accent-green);
-            font-family: 'Fira Code', monospace;
-            margin-top: 4px;
-        }
-        .pkg-h { font-size: 1.05rem; font-weight: 700; color: #fff; margin-top: 8px; }
-        .pkg-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-top: 6px; }
-
-        .btn-buy-gumroad {
-            background: linear-gradient(135deg, #ff90e8, #ff63d8);
-            color: #000;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 0.85rem;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(255, 144, 232, 0.3);
-        }
-        .btn-buy-gumroad:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(255, 144, 232, 0.5);
-            color: #000;
-        }
-
         footer {
             text-align: center;
             font-size: 0.8rem;
@@ -331,7 +233,7 @@
             </div>
             <div class="header-badges">
                 <div style="background:rgba(192,132,252,0.15); border:1px solid var(--accent-purple); color:var(--accent-purple); padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.78rem; font-family:'Fira Code',monospace;">
-                    🔑 VajraAgent License: ENTERPRISE (+2 Add-On Packages Unlocked)
+                    🔑 VajraAgent License: ENTERPRISE (3 VEP Fleets Active)
                 </div>
                 <a href="test_verification_suite.py" target="_blank" style="text-decoration:none;">
                     <div style="background:rgba(74,222,128,0.1); border:1px solid var(--accent-green); color:var(--accent-green); padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.78rem; font-family:'Fira Code',monospace;">
@@ -474,73 +376,6 @@
 
         </div>
 
-        <!-- 💎 三大高價值獨立產業合規 Add-On Package 官網線上直購專區 -->
-        <div class="packages-section">
-            <div class="packages-header">
-                <div>
-                    <div class="packages-title">
-                        <span>💎 DROS 三大高價值獨立付費產業合規模組 (Paid Add-On Solution Packages)</span>
-                    </div>
-                    <div class="packages-sub">對接歐盟 ESPR 碳護照、金融防洗錢個資法與美國 HIPAA 醫療隱私法規之專用加購套裝包</div>
-                </div>
-                <div style="font-size:0.78rem; color:var(--accent-purple); font-weight:700;">
-                    適用 Startup / Enterprise 彈性加購
-                </div>
-            </div>
-
-            <div class="pkg-grid">
-                
-                <!-- Package 1 -->
-                <div class="pkg-card">
-                    <div>
-                        <div class="pkg-tag">REGULATION: EU ESPR / CBAM</div>
-                        <div class="pkg-h">🌿 DROS-ESPR-DPP Package</div>
-                        <div class="pkg-price">$4,990 / year</div>
-                        <div class="pkg-desc">
-                            歐盟跨國供應鏈碳護照零知識過濾套裝包。解決歐盟 ESPR (DPP) 法規透明要求與企業核心 BOM 配方商業機密洩漏之零和衝突！零知識產出可信碳足跡。
-                        </div>
-                    </div>
-                    <a href="https://drosvajra.gumroad.com/l/espr-dpp" target="_blank" class="btn-buy-gumroad">
-                        <span>🛒 立即前往 Gumroad 購買</span>
-                        <span>➔</span>
-                    </a>
-                </div>
-
-                <!-- Package 2 -->
-                <div class="pkg-card">
-                    <div>
-                        <div class="pkg-tag">REGULATION: GDPR / AML / TRAVEL RULE</div>
-                        <div class="pkg-h">💳 DROS-FinRisk-Privacy Package</div>
-                        <div class="pkg-price">$4,990 / year</div>
-                        <div class="pkg-desc">
-                            金融跨機構隱私洗錢聯防套裝包。對接 GDPR 與洗錢防制法。風控 Agent 僅掃描去識別化特徵向量，26.1μs 帶內熔斷人頭洗錢特徵並支援 $O(1)$ Token 秒級凍結。
-                        </div>
-                    </div>
-                    <a href="https://drosvajra.gumroad.com/l/fin-risk" target="_blank" class="btn-buy-gumroad">
-                        <span>🛒 立即前往 Gumroad 購買</span>
-                        <span>➔</span>
-                    </a>
-                </div>
-
-                <!-- Package 3 -->
-                <div class="pkg-card">
-                    <div>
-                        <div class="pkg-tag">REGULATION: US HIPAA / EU EHDS</div>
-                        <div class="pkg-h">🏥 DROS-Health-HIPAA Package</div>
-                        <div class="pkg-price">$4,990 / year</div>
-                        <div class="pkg-desc">
-                            醫療健康個資與跨院同意書治理套裝包。對接 US HIPAA 與醫療隱私法規。內建病歷 PHI 動態去識別過濾器與患者電子同意書動態 Token 驗證。
-                        </div>
-                    </div>
-                    <a href="https://drosvajra.gumroad.com/l/health-hipaa" target="_blank" class="btn-buy-gumroad">
-                        <span>🛒 立即前往 Gumroad 購買</span>
-                        <span>➔</span>
-                    </a>
-                </div>
-
-            </div>
-        </div>
-
         <footer>
             DROS Unified Agent Governance Protocol — 專利聲明：DROS 執行治理與安全技術已申請美國臨時專利保護（U.S. PPA No. 64/111,973）。<br>
             © 2026 OpenShip Ecosystem. All Rights Reserved.
@@ -558,12 +393,12 @@
                 const licData = await licRes.json();
 
                 document.getElementById('t-cloud').innerText = `ONLINE (${licData.tier})`;
-                document.getElementById('t-fleets').innerText = `2 ACTIVE VEP FLEETS`;
+                document.getElementById('t-fleets').innerText = `3 ACTIVE VEP FLEETS`;
                 document.getElementById('t-gate').innerText = `${data.vep_decision_latency_us}μs IN-BAND ACTIVE`;
-                document.getElementById('t-packages').innerText = `${licData.unlocked_packages.length} PACKAGES UNLOCKED`;
+                document.getElementById('t-packages').innerText = `3 VEP INDUSTRIES COVERED`;
 
                 document.getElementById('telemetryRawHeader').innerText = 
-                    `HTTP/1.1 200 OK | X-License-Status: ${licData.status} | X-Unlocked-AddOns: DROS-ESPR-DPP ($4,990/yr), DROS-FinRisk-Privacy ($4,990/yr) | ` +
+                    `HTTP/1.1 200 OK | X-License-Status: ${licData.status} | X-Active-VEPs: Manufacturing, FinTech, Healthcare | ` +
                     `X-DROS-VEP-Latency: ${data.vep_decision_latency_us}us`;
             } catch (err) {
                 console.log('Telemetry fetch error', err);
