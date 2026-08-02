@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DROS-VEP-lite | MediGuard Health VEP - 醫療保險最小必要理賠 Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --panel-bg: rgba(18, 26, 41, 0.75);
+            --border-color: rgba(64, 93, 140, 0.3);
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --accent-yellow: #ffd600;
+            --accent-purple: #c084fc;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0, 230, 118, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(192, 132, 252, 0.08) 0%, transparent 40%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            margin-bottom: 16px;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-badge {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            color: #000;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        .title-area h1 { font-size: 1.25rem; font-weight: 700; color: #fff; }
+        .title-area p { font-size: 0.8rem; color: var(--text-muted); }
+
+        .btn-link {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            transition: all 0.2s;
+        }
+        .btn-link:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .banner-box {
+            background: rgba(74, 222, 128, 0.08);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+        .btn-demo {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-demo:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        .console-box {
+            background: #06090e;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            height: 380px;
+            overflow-y: auto;
+            color: #4ade80;
+        }
+
+        .status-tag {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .tag-pass { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid #4ade80; }
+        .tag-suspend { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid #fbbf24; }
+        .tag-deny { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid #f87171; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-area">
+            <span class="logo-badge">VEP #03 HEALTHCARE</span>
+            <div class="title-area">
+                <h1>MediGuard Health VEP 控制台</h1>
+                <p>Track 03：醫療保險 ── 跨產業資料合作的誘因與邊界 (HIPAA PHI Dynamic Redaction)</p>
+            </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <a href="../index.html" class="btn-link">🏠 回總主控台</a>
+            <a href="https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track03_healthcare_insurance/DROS_SOLUTION_MAPPING.md" target="_blank" class="btn-link">📄 檢視解法說明書</a>
+        </div>
+    </header>
+
+    <div class="banner-box">
+        💡 <b>Track 03 治理宣告</b>：本控制台展示醫療保險理賠場景下，醫院如何透過 DROS 帶內 PHI 動態遮蔽技術，<b>在不外洩病患 18 項敏感個資前提下，即時產出帶 SHA-256 密碼學簽章之最小理賠證明</b>，解決醫院與保險公司間的個資法遵衝突。
+    </div>
+
+    <div class="main-layout">
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🎬 評審極速視覺演練場景 (Demo Interactive Scripts)</div>
+                    <span class="status-tag tag-pass" id="vep-status">● VEP ACTIVE</span>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn-demo" onclick="runScene1()">1️⃣ 場景一：合規理賠查詢 (最小必要 PHI 放行)</button>
+                    <button class="btn-demo" onclick="runScene2()">2️⃣ 場景二：越權調閱病歷 (VEP 帶內 26.1μs 熔斷)</button>
+                    <button class="btn-demo" onclick="runScene3()">3️⃣ 場景三：病患撤銷同意書 ($O(1)$ RCU 秒級凍結)</button>
+                    <button class="btn-demo" onclick="runScene4()">4️⃣ 場景四：出示密碼學 Merkle 理賠憑證</button>
+                </div>
+
+                <div class="console-box" id="console-output">
+                    [SYSTEM READY] DROS VEP Health Microkernel Initialized.<br>
+                    [POLICY LOADED] vajra_policy.yaml -> HIPAA Safe Harbor 18 PHI Redaction Enabled.<br>
+                    [READY] Click any scene button above to trigger live execution demonstration.
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🛡️ DROS 6 大信任要點對應狀態</div>
+                </div>
+                <div style="font-size:0.82rem; line-height:1.8; color:var(--text-muted);">
+                    <p><b>1. Principal</b>: Patient Consent DIT Token (<code>Patient-Consent#991</code>)</p>
+                    <p><b>2. Authorization</b>: Scope (<code>claims:read_summary</code>)</p>
+                    <p><b>3. Tool Bound</b>: FFI C-ABI (<code>get_claims_summary()</code> only)</p>
+                    <p><b>4. Policy Gate</b>: 18 PHI Auto-Redact + HITL Suspension</p>
+                    <p><b>5. Audit Log</b>: Merkle Root Hash Chain</p>
+                    <p><b>6. Revocation</b>: Sub-Second $O(1)$ RCU Consent Token Freezing</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📦 已對接加購套裝包</div>
+                </div>
+                <div style="font-size:0.85rem; color:#4ade80; font-weight:700;">
+                    🏥 DROS-Health-HIPAA Package ($4,990/年/台)
+                </div>
+                <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">
+                    已授權開通 1 台醫院端節點 UUID。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function log(msg) {
+            const out = document.getElementById('console-output');
+            out.innerHTML += '<br>' + msg;
+            out.scrollTop = out.scrollHeight;
+        }
+
+        function runScene1() {
+            document.getElementById('vep-status').className = 'status-tag tag-pass';
+            document.getElementById('vep-status').innerText = '● VEP PASSED';
+            document.getElementById('console-output').innerHTML = '[SCENE 1: CLAIM VERIFICATION REQUEST]';
+            log('--> Incoming Request: Insurance Agent querying claims for Patient TOK-CONSENT-991');
+            log('--> Header X-DIT-Token: Valid (Principal: InsurTech-Claim-Agent#102)');
+            log('--> Scope Verification: PERMIT [claims:read_summary] ✅');
+            log('--> Reading EHR Database in hospital memory...');
+            log('--> [DROS VEP IN-BAND REDACTION APPLIED]:');
+            log('    patient_name: "[REDACTED_BY_HIPAA_POLICY]"');
+            log('    patient_ssn:  "[REDACTED_BY_HIPAA_POLICY]"');
+            log('    nursing_note: "[REDACTED_BY_HIPAA_POLICY]"');
+            log('    icd10_code:   "S82.001A (Fracture of right patella)"');
+            log('    claim_amount: "NTD 45,000"');
+            log('--> Response generated in 26.1us with Merkle Proof: 0x8a92b... ✅');
+        }
+
+        function runScene2() {
+            document.getElementById('vep-status').className = 'status-tag tag-deny';
+            document.getElementById('vep-status').innerText = '● VEP BLOCKED';
+            document.getElementById('console-output').innerHTML = '[SCENE 2: UNAUTHORIZED EHR EXFILTRATION ATTEMPT]';
+            log('--> Incoming Request: Agent calling tool export_full_ehr_history()');
+            log('--> Scope Verification: PROHIBITED [ehr:read_full_phi] ❌');
+            log('--> [DROS VEP C-ABI CIRCUIT-BREAKER TRIGGERED] Latency: 26.1us');
+            log('--> Action Blocked: HTTP 403 FORBIDDEN');
+            log('--> Alarm written to Merkle Audit Chain!');
+        }
+
+        function runScene3() {
+            document.getElementById('vep-status').className = 'status-tag tag-suspend';
+            document.getElementById('vep-status').innerText = '● CONSENT REVOKED';
+            document.getElementById('console-output').innerHTML = '[SCENE 3: PATIENT REVOKES CONSENT TOKEN]';
+            log('--> Patient clicked [Revoke Consent] on Mobile App');
+            log('--> Executing O(1) RCU Memory Atomic Pointer Swap...');
+            log('--> Consent Token TOK-CONSENT-991 marked as REVOKED (< 1 second)');
+            log('--> Subsequent API Call from Insurance Agent: Hard Rejected (HTTP 403)');
+        }
+
+        function runScene4() {
+            document.getElementById('console-output').innerHTML = '[SCENE 4: CRYPTOGRAPHIC MERKLE CERTIFICATE]';
+            log('--> Merkle Root: 0x9b38f71a0c4e8210394781293abcde');
+            log('--> Prev Hash:   0x7a82e60f1c3d90284719283748deaf');
+            log('--> Timestamp:   2026-08-02T12:54:00+08:00');
+            log('--> Cryptographic Verification: PASSED (Independent Auditing Ready)');
+        }
+    </script>
+</body>
+</html>

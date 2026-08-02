@@ -359,7 +359,7 @@
                 </div>
                 <div class="tele-box">
                     <div class="tele-label">2. 託管 VEP 企業數</div>
-                    <div class="tele-val" id="t-fleets">2 ACTIVE VEP FLEETS</div>
+                    <div class="tele-val" id="t-fleets">3 ACTIVE VEP FLEETS</div>
                 </div>
                 <div class="tele-box">
                     <div class="tele-label">3. 全域 VEP 帶內防線</div>
@@ -367,12 +367,12 @@
                 </div>
                 <div class="tele-box">
                     <div class="tele-label">4. 解鎖加購 Add-On 模組</div>
-                    <div class="tele-val" id="t-packages" style="color:var(--accent-purple)">2 PACKAGES UNLOCKED</div>
+                    <div class="tele-val" id="t-packages" style="color:var(--accent-purple)">3 PACKAGES UNLOCKED</div>
                 </div>
             </div>
             
             <div style="background:rgba(0,0,0,0.5); border:1px dashed rgba(255,255,255,0.1); border-radius:8px; padding:10px; font-family:'Fira Code',monospace; font-size:0.72rem; color:var(--accent-cyan);" id="telemetryRawHeader">
-                HTTP/1.1 200 OK | X-License-Status: VALID_ACTIVE | X-Unlocked-AddOns: DROS-ESPR-DPP, DROS-FinRisk-Privacy | X-DROS-VEP-Latency: 26.1us
+                HTTP/1.1 200 OK | X-License-Status: VALID_ACTIVE | X-Unlocked-AddOns: DROS-ESPR-DPP, DROS-FinRisk-Privacy, DROS-Health-HIPAA | X-DROS-VEP-Latency: 26.1us
             </div>
         </div>
 
@@ -411,19 +411,20 @@
                 </a>
             </div>
 
-            <!-- TRACK 03 -->
-            <div class="track-card disabled">
+            <!-- TRACK 03 (MediGuard Healthcare VEP) -->
+            <div class="track-card">
                 <div>
                     <div class="track-header">
-                        <span class="track-id">VEP #03 - STANDBY</span>
-                        <span class="status-badge coming">● PENDING RELEASE</span>
+                        <span class="track-id">VEP #03 - HEALTHCARE</span>
+                        <span class="status-badge live">● VEP DEPLOYED</span>
                     </div>
-                    <div class="track-title" style="margin-top:10px;">待大會 8/1+ 續公布主題 03 VEP</div>
-                    <div class="track-desc" style="margin-top:8px;">DROS 底層 VEP-lite 治理內核已全面 Ready，待大會解鎖後極速一鍵發射部署新虛擬企業。</div>
+                    <div class="track-title" style="margin-top:10px;">MediGuard Healthcare & Insurance VEP</div>
+                    <div class="track-desc" style="margin-top:8px;">包含醫院 EHR 系統、保險理賠 Agent、HIPAA 18 項 PHI 帶內動態遮蔽與【病患電子同意書】動態驗證。已對接 🏥 <b>DROS-Health-HIPAA Package</b>。</div>
                 </div>
-                <div class="btn-launch" style="opacity:0.6; cursor:not-allowed;">
-                    <span>等待大會公布題目</span>
-                </div>
+                <a href="track03_healthcare_insurance/index.html" class="btn-launch">
+                    <span>進入 MediGuard 醫療 VEP 獨立控制台</span>
+                    <span>➔</span>
+                </a>
             </div>
 
             <!-- TRACK 04 -->
