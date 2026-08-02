@@ -16,12 +16,12 @@
 
 | 題目 Track | 主題情境 | 專屬解法對應說明書連結 | 專屬獨立 VEP 控制台 |
 | :--- | :--- | :--- | :--- |
-| **Track 01** | **製造貿易**：碳足跡與 DPP 數位產品護照資料流控制 | 📄 [Track 01 DROS 解法對應說明](file:///e:/vscode/AI知識庫/DROS-Hackathon-Showcase/track01_carbon_dpp/DROS_SOLUTION_MAPPING.md) | 🌐 [Alpha 製造 VEP](http://localhost:8888/track01_carbon_dpp/index.html) |
-| **Track 02** | **電商與第三方支付**：隱私保護下的可疑行為偵測 | 📄 [Track 02 DROS 解法對應說明](file:///e:/vscode/AI知識庫/DROS-Hackathon-Showcase/track02_fintech_privacy/DROS_SOLUTION_MAPPING.md) | 🌐 [PayFlow 金融 VEP](http://localhost:8888/track02_fintech_privacy/index.html) |
-| **Track 03** | *待大會 8/1+ 續公布主題 03* | 📄 *(大會公布後 5 分鐘極速自動產出套殼)* | 🌐 VEP #03 (Standby) |
-| **Track 04** | *待大會 8/1+ 續公布主題 04 (醫療/個資)* | 📄 *(大會公布後 5 分鐘極速自動產出套殼)* | 🌐 VEP #04 (Healthcare) |
-| **Track 05** | *待大會 8/1+ 續公布主題 05 (公部門憑證)* | 📄 *(大會公布後 5 分鐘極速自動產出套殼)* | 🌐 VEP #05 (Gov Civic) |
-| **Track 06** | *待大會 8/1+ 續公布主題 06 (供應鏈融資)* | 📄 *(大會公布後 5 分鐘極速自動產出套殼)* | 🌐 VEP #06 (ESG Finance) |
+| **Track 01** | **製造貿易**：碳足跡與 DPP 數位產品護照資料流控制 | 📄 [Track 01 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track01_carbon_dpp/DROS_SOLUTION_MAPPING.md) | 🌐 [Alpha 製造 VEP](http://localhost:8888/track01_carbon_dpp/index.html) |
+| **Track 02** | **電商與第三方支付**：隱私保護下的可疑行為偵測 | 📄 [Track 02 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track02_fintech_privacy/DROS_SOLUTION_MAPPING.md) | 🌐 [PayFlow 金融 VEP](http://localhost:8888/track02_fintech_privacy/index.html) |
+| **Track 03** | **醫療保險**：跨產業資料合作的誘因與邊界 | 📄 [Track 03 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track03_healthcare_insurance/DROS_SOLUTION_MAPPING.md) | 🌐 VEP #03 (Healthcare & Insurance) |
+| **Track 04** | *待大會 8/22 續公布細項主題 04* | 📄 *(大會公布後 5 分鐘極速自動對應)* | 🌐 VEP #04 (Standby) |
+| **Track 05** | *待大會 8/22 續公布細項主題 05* | 📄 *(大會公布後 5 分鐘極速自動對應)* | 🌐 VEP #05 (Standby) |
+| **Track 06** | *待大會 8/22 續公布細項主題 06* | 📄 *(大會公布後 5 分鐘極速自動對應)* | 🌐 VEP #06 (Standby) |
 
 ---
 
