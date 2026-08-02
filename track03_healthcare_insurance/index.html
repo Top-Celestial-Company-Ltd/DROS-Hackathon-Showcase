@@ -569,11 +569,8 @@ phi_redaction_rules:
             </div>
 
             <div>
-                <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:6px;">Merkle Audit Log Chain (不可竄改):</label>
-                <div class="console" id="audit-console" style="height:170px;">
-[LOG #101] Root: 0x9b38f7... | Action: DIT_VALIDATED<br>
-[LOG #102] Root: 0x4a12e8... | Action: 18_PHI_REDACTED<br>
-[LOG #103] Root: 0x7c99a2... | Action: PROOF_ISSUED
+                <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:6px;">Merkle Audit Log Chain (點擊任一條目出示密碼學憑證):</label>
+                <div class="console" id="audit-console" style="height:170px; cursor:pointer;">
                 </div>
             </div>
         </div>
@@ -599,7 +596,76 @@ phi_redaction_rules:
         </div>
     </div>
 
+    <!-- Cryptographic Audit Certificate Modal (Track 01/02 同款) -->
+    <div class="modal-overlay" id="certModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:999;">
+        <div style="background:#0f172a; border:1px solid var(--accent-green); border-radius:14px; width:560px; padding:26px; box-shadow:0 0 30px rgba(0,230,118,0.3); display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:1.1rem; font-weight:800; color:#fff;">🛡️ DROS Cryptographic Audit Certificate & Telemetry Proof</span>
+                <button onclick="closeCertModal()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">✕</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px; font-size:0.84rem;">
+                <div>
+                    <div style="color:var(--text-muted); margin-bottom:4px;">Event Timestamp & Raw Payload:</div>
+                    <div id="modalRawPayload" style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--text-main);">...</div>
+                </div>
+                <div>
+                    <div style="color:var(--text-muted); margin-bottom:4px;">Enterprise Microservice Telemetry Header:</div>
+                    <div id="modalTelemetryHeader" style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--accent-cyan);">HTTP/1.1 200 OK | X-DROS-VEP-Latency: 26.1us</div>
+                </div>
+                <div>
+                    <div style="color:var(--text-muted); margin-bottom:4px;">SHA-256 Event Hash:</div>
+                    <div id="modalHash" style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--accent-green);">...</div>
+                </div>
+                <div>
+                    <div style="color:var(--text-muted); margin-bottom:4px;">Merkle Chain Link (Prev Hash):</div>
+                    <div id="modalPrevHash" style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--accent-purple);">...</div>
+                </div>
+                <div>
+                    <div style="color:var(--text-muted); margin-bottom:4px;">Policy Latency & Execution Metric:</div>
+                    <div style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--accent-green);">Decision Latency: 26.1 μs | In-Band Intercept: PASS | HIPAA Safe Harbor 18 PHI: ZERO-EXFIL</div>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:flex-end;">
+                <button onclick="closeCertModal()" style="background:var(--accent-green); color:#000; font-weight:800; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">關閉憑證頁面</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        function openCertModal(logText, teleInfo='PaloAlto-PANOS:InBand | eBPF:Hooked | Hospital-EHR:8083') {
+            const now = new Date().toISOString();
+            document.getElementById('modalRawPayload').innerText = `${now} | ${logText}`;
+            document.getElementById('modalTelemetryHeader').innerText = `HTTP/1.1 200 OK | X-DROS-VEP-Latency: 26.1us | X-WAF: PaloAlto-PANOS-InBand | Telemetry: [${teleInfo}]`;
+            document.getElementById('modalHash').innerText = '0x' + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
+            document.getElementById('modalPrevHash').innerText = '0x' + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
+            document.getElementById('certModal').style.display = 'flex';
+        }
+
+        function closeCertModal() {
+            document.getElementById('certModal').style.display = 'none';
+        }
+
+        function logAudit(msg, teleInfo='PaloAlto-PANOS:InBand | eBPF:Hooked | Hospital-EHR:8083') {
+            const stream = document.getElementById('audit-console');
+            const now = new Date().toISOString().split('T')[1].slice(0, 12);
+            const div = document.createElement('div');
+            div.style.cssText = 'padding:2px 0; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; color:#4ade80;';
+            div.innerText = `[${now}] ${msg}`;
+            div.title = '點擊出示密碼學 Merkle 憑證';
+            div.onmouseenter = function() { this.style.background = 'rgba(74,222,128,0.1)'; };
+            div.onmouseleave = function() { this.style.background = 'transparent'; };
+            div.onclick = function() { openCertModal(`[${now}] ${msg}`, teleInfo); };
+            stream.appendChild(div);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        // Initialize with seed logs on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            logAudit('[INIT] DROS VEP Health Microkernel Active. HIPAA 18 PHI Redaction Policy Loaded.', 'Hospital-EHR:8083:Init');
+            logAudit('[POLICY READY] vajra_policy.yaml -> Safe Harbor 18 fields PROHIBITED.', 'PaloAlto-PANOS:PolicyLoaded');
+            logAudit('[READY] Awaiting incoming Insurance Agent API calls...', 'eBPF:Hooked');
+        });
+
         function logConsole(msg) {
             const el = document.getElementById('main-console');
             el.innerHTML += '<br>' + msg;
@@ -627,6 +693,7 @@ phi_redaction_rules:
                 logConsole('--> Request: InsurTech Claim Agent GET /api/v1/claims/verify');
                 logConsole('--> Header X-DIT-Token: Patient-Consent#991 (Valid)');
                 logConsole('--> Scope: PERMIT [claims:read_summary] ✅');
+                logAudit('[STEP 1] Patient-Consent#991 DIT validated. Scope: claims:read_summary. PERMIT.', 'PaloAlto-PANOS:Pass');
             } else if (step === 2) {
                 badge.className = 'status-badge badge-deny';
                 badge.innerText = '26.1μs CIRCUIT-BREAK';
@@ -635,6 +702,7 @@ phi_redaction_rules:
                 logConsole('--> Scope Check: PROHIBITED [ehr:read_full_phi] ❌');
                 logConsole('--> [DROS VEP C-ABI HARD CIRCUIT-BREAK] HTTP 403 FORBIDDEN');
                 resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PROHIBITED_SCOPE_VIOLATION: ehr:read_full_phi",\n  "decision_latency": "26.1us"\n}';
+                logAudit('[TOOL_DENIED] export_full_ehr_history() -> C-ABI Circuit-Break -> HTTP 403 FORBIDDEN.', 'PaloAlto-PANOS:Blocked | eBPF:DROPPED_403');
             } else if (step === 3) {
                 badge.className = 'status-badge badge-permit';
                 badge.innerText = '26.1μs REDACTED';
@@ -643,12 +711,15 @@ phi_redaction_rules:
                 logConsole('--> Applying vajra_policy.yaml field redaction rules...');
                 logConsole('--> patient_name, ssn, nursing_notes overwritten in memory ✅');
                 resp.innerHTML = '{\n  "hospital_id": "NTUH-TAIPEI-MAIN",\n  "verification_status": "PASSED_MINIMUM_NECESSARY",\n  "claims_data": {\n    "icd10_code": "S82.001A (Right patella fracture)",\n    "claim_amount_nwd": "45,000",\n    "hospital_cert_id": "NTUH-2026-CLAIM-881"\n  },\n  "protected_phi_fields": {\n    "patient_name": "[REDACTED_BY_HIPAA_POLICY]",\n    "patient_ssn": "[REDACTED_BY_HIPAA_POLICY]",\n    "nursing_notes": "[REDACTED_BY_HIPAA_POLICY]"\n  }\n}';
+                logAudit('[PHI_REDACTED] 18 HIPAA Safe Harbor fields overwritten in-memory before TCP assembly.', 'Hospital-EHR:8083:Redacted | PaloAlto-PANOS:ZeroExfil');
+                logAudit('[PROOF_ISSUED] Minimum Necessary Claims Proof issued with Merkle signature.', 'SHA256:Signed');
             } else if (step === 4) {
                 badge.className = 'status-badge badge-suspend';
                 badge.innerText = 'HITL SUSPENDED';
                 logConsole('[STEP 4: HITL DUAL-SIGNATURE SUSPENSION]');
                 logConsole('--> High-amount claim (> NTD 500,000) detected!');
                 logConsole('--> VEP Policy Gate suspended transaction. Awaiting Chief Medical Officer signature...');
+                logAudit('[HITL_SUSPEND] High-risk claim suspended. Awaiting CMO dual-signature approval.', 'PaloAlto-PANOS:HITL_Pending');
             } else if (step === 5) {
                 badge.className = 'status-badge badge-deny';
                 badge.innerText = 'CONSENT REVOKED';
@@ -658,6 +729,7 @@ phi_redaction_rules:
                 logConsole('--> Token TOK-CONSENT-991 marked as REVOKED (< 1 second)');
                 logConsole('--> Subsequent API Call from Insurance Agent: Hard Rejected (HTTP 403)');
                 resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PATIENT_CONSENT_REVOKED",\n  "token_status": "REVOKED_VIA_RCU"\n}';
+                logAudit('[REVOKE_SIGNAL] Patient TOK-CONSENT-991 revoked via O(1) RCU atomic swap. All subsequent calls: 403.', 'eBPF:DROPPED_ALL');
             }
         }
 
@@ -670,24 +742,26 @@ phi_redaction_rules:
                 setTimeout(() => {
                     stream.innerHTML += '<div class="fuzz-line blocked">[VEP DEFENSE 26.1us] Zero-Knowledge Redaction Gate active. All 18 PHI fields physically overwritten. Attack neutralized!</div>';
                     stream.scrollTop = stream.scrollHeight;
+                    logAudit('[REDTEAM] Prompt Injection attempt -> 18 PHI Redaction Gate blocked. Score: 0.97.', 'PaloAlto-PANOS:Blocked | eBPF:DROPPED');
                 }, 300);
             } else if (attackType === 'attack2') {
                 stream.innerHTML += '<div class="fuzz-line attack">[ATTACK] Invoking illegal tool call: export_full_ehr_history()</div>';
                 setTimeout(() => {
                     stream.innerHTML += '<div class="fuzz-line blocked">[VEP DEFENSE 26.1us] C-ABI FFI Circuit-breaker triggered. Tool Call Denied (HTTP 403)!</div>';
                     stream.scrollTop = stream.scrollHeight;
+                    logAudit('[REDTEAM] Unauthorized tool call export_full_ehr_history() -> C-ABI physical circuit-break. HTTP 403.', 'PaloAlto-PANOS:Blocked | Hospital-EHR:Shielded');
                 }, 300);
             } else if (attackType === 'attack3') {
                 stream.innerHTML += '<div class="fuzz-line attack">[ATTACK] Replaying expired Patient Consent Token TOK-CONSENT-991</div>';
                 setTimeout(() => {
                     stream.innerHTML += '<div class="fuzz-line blocked">[VEP DEFENSE 26.1us] RCU Token Table: Status = REVOKED. Hard rejected instantly!</div>';
                     stream.scrollTop = stream.scrollHeight;
+                    logAudit('[REDTEAM] Expired token replay TOK-CONSENT-991 -> RCU table lookup: REVOKED. HTTP 403.', 'eBPF:DROPPED_403');
                 }, 300);
             }
         }
 
-        function showCertModal() { document.getElementById('cert-modal').style.display = 'flex'; }
-        function closeCertModal() { document.getElementById('cert-modal').style.display = 'none'; }
+        function showCertModal() { openCertModal('[MANUAL] Cryptographic Certificate Inspector triggered.', 'PaloAlto-PANOS:InBand | Hospital-EHR:8083 | SHA256:Active'); }
     </script>
 </body>
 </html>
