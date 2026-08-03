@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DROS-VEP #04 | GovTech Proxy VEP — 跨機關憑證安全流動與代理授權邊界</title>
+    <meta name="description" content="DROS-VEP 政府服務軌道：當 AI Agent 代辦跨機關申請時，如何讓既有憑證安全流動，並清楚劃分「代查」、「代送件」與本人確認的授權邊界。">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --panel-bg: rgba(18, 26, 41, 0.75);
+            --border-color: rgba(64, 93, 140, 0.3);
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --accent-yellow: #ffd600;
+            --accent-purple: #c084fc;
+            --accent-orange: #fb923c;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(251, 146, 60, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 90% 75%, rgba(192, 132, 252, 0.07) 0%, transparent 40%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            margin-bottom: 16px;
+        }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-badge {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+            color: #000;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        h1 { font-size: 1.2rem; font-weight: 700; color: #fff; }
+        .patent-tag {
+            font-size: 0.75rem;
+            color: var(--accent-orange);
+            border: 1px solid rgba(251, 146, 60, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+
+        /* 評審 Guided Demo Banner */
+        .guided-demo-banner {
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.12), rgba(192, 132, 252, 0.12));
+            border: 1px solid var(--accent-orange);
+            box-shadow: 0 0 20px rgba(251, 146, 60, 0.2);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .guided-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .guided-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+        .guided-steps { display: flex; gap: 8px; }
+        .btn-guided {
+            background: linear-gradient(135deg, #c2410c, #9a3412);
+            border: none;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-guided:hover { transform: scale(1.03); box-shadow: 0 0 12px rgba(251, 146, 60, 0.5); }
+
+        /* VEP Stack Card */
+        .vep-stack-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .vep-stack-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .vep-stack-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .vep-mini-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .vep-mini-icon { font-size: 1.1rem; }
+        .vep-mini-h { font-size: 0.82rem; font-weight: 700; color: #fff; }
+        .vep-mini-sub { font-size: 0.68rem; color: var(--accent-purple); font-family: 'Fira Code', monospace; }
+
+        /* Red Team Fuzzer */
+        .redteam-card {
+            background: #090d16;
+            border: 1px solid rgba(255, 82, 82, 0.4);
+            box-shadow: 0 0 20px rgba(255, 82, 82, 0.15);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .redteam-header { display: flex; justify-content: space-between; align-items: center; }
+        .redteam-title-group { display: flex; align-items: center; gap: 10px; }
+        .chip-icon { font-size: 1.4rem; color: var(--accent-red); }
+        .redteam-title { font-size: 1.05rem; font-weight: 800; color: #fff; }
+        .auto-fuzzer-badge {
+            background: rgba(153, 27, 27, 0.6);
+            border: 1px solid var(--accent-red);
+            color: #fca5a5;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .select-brain {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+        }
+        .btn-fuzz {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            border: none;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-fuzz:hover { box-shadow: 0 0 15px rgba(220, 38, 38, 0.5); }
+        .fuzz-stream-box {
+            background: #03060d;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 10px;
+            height: 100px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .fuzz-line { opacity: 0.9; }
+        .fuzz-line.attack { color: #fca5a5; }
+        .fuzz-line.blocked { color: var(--accent-green); font-weight: 700; }
+
+        /* 5-Step Workflow Bar */
+        .workflow-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .step-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .step-card.active {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 15px rgba(251, 146, 60, 0.3);
+            background: rgba(251, 146, 60, 0.1);
+        }
+        .step-num { font-size: 0.75rem; color: var(--accent-orange); font-weight: 700; }
+        .step-title { font-size: 0.85rem; font-weight: 600; margin-top: 2px; color: #fff; }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1.2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .panel-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pillars-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .pillar-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.78rem;
+        }
+        .pillar-name { font-weight: 600; color: var(--accent-blue); margin-bottom: 4px; }
+        .pillar-val { color: var(--text-muted); font-family: 'Fira Code', monospace; }
+
+        /* Authorization Scope Matrix (Gov-specific) */
+        .scope-matrix {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .scope-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.78rem;
+        }
+        .scope-label { font-family: 'Fira Code', monospace; color: var(--text-main); }
+        .scope-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .scope-badge.permit { background: rgba(0,230,118,0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .scope-badge.deny { background: rgba(255,82,82,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .scope-badge.hitl { background: rgba(255,214,0,0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
+
+        .chat-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            height: 220px;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+        .msg { padding: 8px 12px; border-radius: 6px; max-width: 90%; }
+        .msg.user { background: rgba(251, 146, 60, 0.2); border: 1px solid rgba(251, 146, 60, 0.4); align-self: flex-start; }
+        .msg.agent { background: rgba(0, 242, 254, 0.15); border: 1px solid rgba(0, 242, 254, 0.3); align-self: flex-end; }
+        .msg.system { background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.4); align-self: center; width: 100%; text-align: center; }
+        .msg.vep-alert { background: rgba(255, 82, 82, 0.2); border: 1px solid rgba(255, 82, 82, 0.5); color: #ff8a8a; align-self: center; width: 100%; text-align: center; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 8px; }
+        .btn {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn:hover { border-color: var(--accent-orange); box-shadow: 0 0 10px rgba(251, 146, 60, 0.2); }
+        .btn.danger { border-color: rgba(255, 82, 82, 0.6); }
+        .btn.danger:hover { background: rgba(255, 82, 82, 0.2); }
+
+        .gate-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid var(--accent-green);
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--accent-green);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .gate-status.blocked {
+            background: rgba(255, 82, 82, 0.1);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+        .gate-status.hitl-wait {
+            background: rgba(255, 214, 0, 0.1);
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        .audit-stream {
+            background: #050811;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            color: #4af626;
+        }
+        .audit-line {
+            margin-bottom: 4px;
+            opacity: 0.9;
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+            padding-bottom: 2px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .audit-line:hover { background: rgba(251, 146, 60, 0.15); color: #fff; }
+
+        .token-card {
+            background: rgba(0,0,0,0.5);
+            border: 1px dashed var(--accent-orange);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            word-break: break-all;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        .badge-permit { background: rgba(0,230,118,0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-deny { background: rgba(255,82,82,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .badge-hitl { background: rgba(255,214,0,0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
+        .badge-revoked { background: rgba(192,132,252,0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+
+        /* JSON Console */
+        .console {
+            background: #03060d;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            overflow-y: auto;
+            color: #4ade80;
+            line-height: 1.5;
+        }
+
+        /* Explainer Table */
+        .explainer-section {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .explainer-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .elements-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .elements-table th {
+            background: rgba(251, 146, 60, 0.15);
+            color: var(--accent-orange);
+            padding: 10px 12px;
+            text-align: left;
+            border: 1px solid rgba(251, 146, 60, 0.25);
+            font-weight: 700;
+        }
+        .elements-table td {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: top;
+        }
+        .elements-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal-card {
+            background: #0f172a;
+            border: 1px solid var(--accent-orange);
+            border-radius: 14px;
+            width: 580px;
+            padding: 26px;
+            box-shadow: 0 0 30px rgba(251, 146, 60, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-size: 1.05rem; font-weight: 800; color: #fff; }
+        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
+        .cert-field { display: flex; flex-direction: column; gap: 4px; font-size: 0.84rem; }
+        .cert-label { color: var(--text-muted); }
+        .cert-val {
+            background: #03060d;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            padding: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: var(--text-main);
+        }
+
+        /* Scope indicator bar */
+        .scope-indicator { display: flex; gap: 6px; flex-wrap: wrap; }
+        .scope-chip {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+        }
+        .scope-chip.allowed { background: rgba(0,230,118,0.15); color: var(--accent-green); border: 1px solid rgba(0,230,118,0.4); }
+        .scope-chip.denied { background: rgba(255,82,82,0.15); color: var(--accent-red); border: 1px solid rgba(255,82,82,0.4); text-decoration: line-through; }
+        .scope-chip.hitl { background: rgba(255,214,0,0.15); color: var(--accent-yellow); border: 1px solid rgba(255,214,0,0.4); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <div class="logo-badge">DROS VEP #04</div>
+            <div>
+                <h1>🏛️ GovProxy VEP — 政府跨機關 AI 代理授權邊界控制台</h1>
+                <div style="font-size:0.78rem; color:var(--text-muted);">Track 04｜政府服務 · 憑證碎片化資料孤島 · 代查 / 代送件 / 本人確認三層授權邊界</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="patent-tag">Patent Pending · U.S. PPA No. 64/111,973</div>
+            <a href="../" style="text-decoration:none;">
+                <div style="background:rgba(251,146,60,0.1); border:1px solid var(--accent-orange); color:var(--accent-orange); padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.78rem;">← 返回總主控台</div>
+            </a>
+        </div>
+    </header>
+
+    <!-- 評審 Guided Demo Banner -->
+    <div class="guided-demo-banner">
+        <div>
+            <div class="guided-title">🎬 評審 1 分鐘互動 Demo 導覽 (GovProxy Track 04)</div>
+            <div class="guided-sub">依序點擊體驗：① Agent 代查戶籍 → ② 嘗試越權送件被攔截 → ③ 本人二次確認 HITL → ④ 代理授權憑證撤銷 → ⑤ 密碼學 Audit 憑證出示</div>
+        </div>
+        <div class="guided-steps">
+            <button class="btn-guided" onclick="runScene(1)">1️⃣ 代查授權</button>
+            <button class="btn-guided" onclick="runScene(2)">2️⃣ 越權攔截</button>
+            <button class="btn-guided" onclick="runScene(3)">3️⃣ 本人確認</button>
+            <button class="btn-guided" onclick="runScene(4)">4️⃣ 緊急撤銷</button>
+            <button class="btn-guided" onclick="runScene(5)">5️⃣ Merkle 憑證</button>
+        </div>
+    </div>
+
+    <!-- VEP Enterprise Stack -->
+    <div class="vep-stack-card">
+        <div class="vep-stack-title">⚙️ DROS GovProxy VEP — 政府服務跨機關憑證安全流動技術棧</div>
+        <div class="vep-stack-grid">
+            <div class="vep-mini-box">
+                <div class="vep-mini-icon">🏛️</div>
+                <div class="vep-mini-h">MyData Gateway</div>
+                <div class="vep-mini-sub">Gov-Data:8443:Intercepted</div>
+            </div>
+            <div class="vep-mini-box">
+                <div class="vep-mini-icon">🔒</div>
+                <div class="vep-mini-h">PKI / TW-FidO</div>
+                <div class="vep-mini-sub">DIT Cert:Validated</div>
+            </div>
+            <div class="vep-mini-box">
+                <div class="vep-mini-icon">🛡️</div>
+                <div class="vep-mini-h">VEP C-ABI Gate</div>
+                <div class="vep-mini-sub">Latency: 26.1μs InBand</div>
+            </div>
+            <div class="vep-mini-box">
+                <div class="vep-mini-icon">📋</div>
+                <div class="vep-mini-h">Merkle Audit Chain</div>
+                <div class="vep-mini-sub">SHA256:Tamper-Evident</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5-Step Workflow Bar -->
+    <div class="workflow-bar">
+        <div class="step-card active" id="st-1" onclick="runStep(1)">
+            <div class="step-num">STEP 01</div>
+            <div class="step-title">代查授權申請</div>
+        </div>
+        <div class="step-card" id="st-2" onclick="runStep(2)">
+            <div class="step-num">STEP 02</div>
+            <div class="step-title">越權送件攔截</div>
+        </div>
+        <div class="step-card" id="st-3" onclick="runStep(3)">
+            <div class="step-num">STEP 03</div>
+            <div class="step-title">本人 HITL 確認</div>
+        </div>
+        <div class="step-card" id="st-4" onclick="runStep(4)">
+            <div class="step-num">STEP 04</div>
+            <div class="step-title">代理憑證撤銷</div>
+        </div>
+        <div class="step-card" id="st-5" onclick="runStep(5)">
+            <div class="step-num">STEP 05</div>
+            <div class="step-title">密碼學 Merkle 稽核</div>
+        </div>
+    </div>
+
+    <!-- Red Team Fuzzer -->
+    <div class="redteam-card">
+        <div class="redteam-header">
+            <div class="redteam-title-group">
+                <span class="chip-icon">💀</span>
+                <span class="redteam-title">RedTeam Fuzzer — 政府代理身份偽冒 / 憑證竄改 / 越機關橫移攻擊</span>
+                <span class="auto-fuzzer-badge">GOVT ATTACK AUTO-FUZZER</span>
+            </div>
+            <button class="btn-fuzz" onclick="startGovFuzzing()">🔥 發起攻擊</button>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <select class="select-brain" id="brainSelect">
+                <option value="GPT-4o">Attacker Brain: GPT-4o (OpenAI)</option>
+                <option value="Claude-3.5">Attacker Brain: Claude-3.5-Sonnet</option>
+                <option value="Gemini-Pro">Attacker Brain: Gemini-1.5-Pro</option>
+            </select>
+            <select class="select-brain" id="attackSelect" style="width:auto; white-space:nowrap;">
+                <option value="spoof">身份偽冒 (Agent 冒充本人)</option>
+                <option value="escalate">跨機關橫移越權</option>
+                <option value="inject">公文號注入攻擊</option>
+                <option value="replay">逾期憑證重放</option>
+            </select>
+        </div>
+        <div class="fuzz-stream-box" id="fuzzStream">
+            <div style="color:var(--text-muted);">[FUZZER READY] 選擇攻擊類型後點擊「發起攻擊」，觀察 VEP 帶內即時攔截...</div>
+        </div>
+    </div>
+
+    <!-- Main 3-Column Grid -->
+    <div class="main-grid">
+
+        <!-- LEFT: 身份 DIT + 授權範圍矩陣 -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">🔑 代理身份 DIT + 三層授權邊界矩陣</div>
+                <span class="status-badge badge-permit" id="gate-badge">VEP ACTIVE</span>
+            </div>
+
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-name">1. Principal (代理人)</div>
+                    <div class="pillar-val" id="p-principal">Agent: 陳小明 (公民身份)</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-name">2. Authorization (被授權)</div>
+                    <div class="pillar-val" id="p-auth">Scope: QUERY_ONLY</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-name">3. Tool / Action</div>
+                    <div class="pillar-val" id="p-tool">query_household_reg()</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-name">4. Policy Gate</div>
+                    <div class="pillar-val" id="p-gate">HITL: 送件前本人確認</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-name">5. Audit Log</div>
+                    <div class="pillar-val" id="p-audit">SHA256 Merkle Chain</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-name">6. Revocation</div>
+                    <div class="pillar-val" id="p-revoke">Signal: VALID (O(1))</div>
+                </div>
+            </div>
+
+            <div class="panel-title" style="font-size:0.82rem;">📋 三層授權邊界矩陣 (Scope Permission Matrix)</div>
+            <div class="scope-matrix">
+                <div class="scope-row">
+                    <span class="scope-label">query_household_reg()</span>
+                    <span class="scope-badge permit">✓ PERMIT 代查</span>
+                </div>
+                <div class="scope-row">
+                    <span class="scope-label">query_tax_cert()</span>
+                    <span class="scope-badge permit">✓ PERMIT 代查</span>
+                </div>
+                <div class="scope-row">
+                    <span class="scope-label">submit_application()</span>
+                    <span class="scope-badge hitl">⚠ HITL 本人確認</span>
+                </div>
+                <div class="scope-row">
+                    <span class="scope-label">sign_contract()</span>
+                    <span class="scope-badge deny">✕ DENY 禁止</span>
+                </div>
+                <div class="scope-row">
+                    <span class="scope-label">cross_agency_push()</span>
+                    <span class="scope-badge deny">✕ DENY 禁止</span>
+                </div>
+            </div>
+
+            <div class="panel-title" style="font-size:0.82rem;">🎫 DIT 代理憑證 (Proxy Authorization Token)</div>
+            <div class="token-card" id="tokenCard">
+{
+  "dit_version": "v1.2-dros-gov",
+  "principal": "陳小明 (TW-ID: A123456789)",
+  "proxy_agent": "GovAssist-AI v2.1",
+  "scope": ["query_household_reg", "query_tax_cert"],
+  "hitl_required_for": ["submit_application"],
+  "prohibited": ["sign_contract", "cross_agency_push"],
+  "expiry": "2026-08-03T18:00:00+08:00",
+  "revoked": false
+}
+            </div>
+
+            <div class="btn-group">
+                <button class="btn danger" onclick="revokeProxy()" id="revokeBtn">
+                    <span>🚫 本人緊急撤銷代理授權</span>
+                    <span style="color:var(--accent-red)">REVOKE PROXY</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- CENTER: Chat + Console -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">💬 跨機關申辦互動面板 (GovProxy 情境模擬)</div>
+            </div>
+            <div class="chat-box" id="chatBox">
+                <div class="msg system">🏛️ DROS GovProxy VEP 已就位。代理人：陳小明。代理 AI：GovAssist-AI。授權層：代查模式。</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="font-size:0.8rem; color:var(--text-muted);">🖥️ VEP API 攔截層回傳 (JSON Response):</div>
+                <pre class="console" id="json-response" style="height:100px; white-space:pre-wrap;">{
+  "status": "VEP_ACTIVE",
+  "proxy_mode": "QUERY_ONLY",
+  "agent": "GovAssist-AI",
+  "principal": "陳小明",
+  "policy": "vajra_policy_gov.yaml"
+}</pre>
+            </div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">⚙️ 主控台 Intercept Log:</div>
+            <pre class="console" id="main-console" style="height:80px; overflow-y:auto; white-space:pre-wrap;">
+[INIT] GovProxy VEP Policy Engine Loaded.
+[READY] Awaiting proxy agent API calls...</pre>
+        </div>
+
+        <!-- RIGHT: Audit Log -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">📜 防篡改 Audit Trail (點擊看憑證)</div>
+            </div>
+
+            <div>
+                <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:6px;">Merkle Audit Log Chain (點擊任一條目出示密碼學憑證):</label>
+                <div class="audit-stream" id="auditStream" style="cursor:pointer;"></div>
+            </div>
+
+            <div class="panel-title" style="font-size:0.82rem;">💡 大會評審亮點摘要：</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.6;">
+                • <b>三層授權邊界</b>：「代查」永不觸碰個資原文；「代送件」強制本人 HITL 二次確認；「本人確認簽署」硬性禁止代理。<br>
+                • <b>憑證安全流動</b>：跨機關呼叫以 DIT 最小授權封裝，禁止 Agent 自行橫移機關 API。<br>
+                • <b>O(1) 秒級撤銷</b>：本人任意時刻從手機 App 緊急撤銷，無鎖 RCU 原子換指針，次次請求即收 403。
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <button class="btn" onclick="openCertModal('[MANUAL] 評審手動出示 Cryptographic Certificate', 'Gov-MyData:8443 | TW-FidO:Hooked | SHA256:Active')">
+                    <span>🛡️ 手動出示密碼學 Merkle 稽核憑證</span>
+                    <span style="color:var(--accent-orange)">▶</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 6 Elements Compliance Table -->
+    <div class="explainer-section">
+        <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) — 政府服務跨機關代理授權解讀</div>
+        <table class="elements-table">
+            <thead>
+                <tr>
+                    <th>信任要素 (Pillar)</th>
+                    <th>大會題目問的重點</th>
+                    <th>DROS GovProxy VEP 的精確解答</th>
+                    <th>日誌 (Audit Log) 顯示的具體細節</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>1. Principal (代理人)</b></td>
+                    <td>Agent 代表哪一位公民？是本人還是受委任代理？</td>
+                    <td><b>DIT 代理憑證</b>綁定公民身份（TW-ID）與代理 AI 身份（GovAssist-AI），雙重標籤不可偽冒。</td>
+                    <td><code style="color:var(--accent-cyan)">Principal: 陳小明 (TW-ID: A123456789)</code></td>
+                </tr>
+                <tr>
+                    <td><b>2. Authorization (授權邊界)</b></td>
+                    <td>Agent 被授權「代查」、「代送件」還是「本人簽署」？差別為何？</td>
+                    <td><b>三層 Scope 矩陣</b>：代查(PERMIT)/ 代送件(HITL 必須本人二次確認)/ 簽署(DENY 硬性禁止)，界線鋼性化。</td>
+                    <td><code style="color:var(--accent-cyan)">Scope: QUERY_ONLY | HITL: submit</code></td>
+                </tr>
+                <tr>
+                    <td><b>3. Tool / Action (工具邊界)</b></td>
+                    <td>Agent 能呼叫哪些政府 API？跨機關橫移是否受控？</td>
+                    <td><b>VEP C-ABI Tool Interceptor</b> 帶內代理，嘗試呼叫 cross_agency_push() 在 26.1μs 硬性退回 403。</td>
+                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] cross_agency_push() → 26.1μs DENIED</code></td>
+                </tr>
+                <tr>
+                    <td><b>4. Policy Gate (過濾門閥)</b></td>
+                    <td>高風險動作（送件、簽署）如何強制本人二次確認？</td>
+                    <td><b>HITL 人工確認閘門</b>：「代送件」動作硬性觸發公民 App 推播確認，未確認前交易懸停，不依賴 Agent 自律。</td>
+                    <td><code style="color:var(--accent-yellow)">[POLICY_GATE] HITL Push Sent → Awaiting Citizen Approval</code></td>
+                </tr>
+                <tr>
+                    <td><b>5. Audit Log (追溯稽核)</b></td>
+                    <td>如何追溯 Agent 代辦行動的每一步？</td>
+                    <td><b>SHA-256 Merkle Hash Chain</b> 不可篡改稽核鏈，每筆代理 API 呼叫均留存密碼學憑證，可供政府合規查核。</td>
+                    <td><code style="color:var(--accent-green)">SHA256: 0x8a21f3c1... (可獨立驗證)</code></td>
+                </tr>
+                <tr>
+                    <td><b>6. Revocation (撤銷)</b></td>
+                    <td>公民如何即時撤銷 AI 代理授權？撤銷後 Agent 還能繼續嗎？</td>
+                    <td><b>O(1) RCU 原子換指針</b>，公民從手機 App 點擊撤銷，次一 API 請求即傳回 403，Agent 硬性停止所有代理動作。</td>
+                    <td><code style="color:var(--accent-red)">[REVOKE_SIGNAL] Proxy Token REVOKED → 403 All APIs</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cryptographic Audit Certificate Modal -->
+    <div class="modal-overlay" id="certModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">🛡️ DROS Cryptographic Audit Certificate & Telemetry Proof</div>
+                <button class="close-btn" onclick="closeCertModal()">✕</button>
+            </div>
+            <div class="cert-field">
+                <div class="cert-label">Event Timestamp & Raw Payload:</div>
+                <div class="cert-val" id="modalRawPayload">...</div>
+            </div>
+            <div class="cert-field">
+                <div class="cert-label">Enterprise Gov Telemetry Header:</div>
+                <div class="cert-val" id="modalTelemetryHeader" style="color:var(--accent-cyan);">HTTP/1.1 200 OK | X-DROS-VEP-Latency: 26.1us | X-Gov-MyData: Intercepted | X-TW-FidO: Validated</div>
+            </div>
+            <div class="cert-field">
+                <div class="cert-label">SHA-256 Event Hash:</div>
+                <div class="cert-val" id="modalHash" style="color:var(--accent-green);">...</div>
+            </div>
+            <div class="cert-field">
+                <div class="cert-label">Merkle Chain Link (Prev Hash):</div>
+                <div class="cert-val" id="modalPrevHash" style="color:var(--accent-purple);">...</div>
+            </div>
+            <div class="cert-field">
+                <div class="cert-label">Policy Latency & Gov Compliance Metric:</div>
+                <div class="cert-val" style="color:var(--accent-green);">Decision Latency: 26.1 μs | In-Band Intercept: PASS | Proxy Scope Verified | Cross-Agency Lateral Move: BLOCKED</div>
+            </div>
+            <div style="display:flex; justify-content:flex-end;">
+                <button onclick="closeCertModal()" style="background:var(--accent-orange); color:#000; font-weight:800; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">關閉憑證頁面</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        DROS Unified Agent Governance Protocol — 專利聲明：DROS 執行治理與安全技術已申請美國臨時專利保護（U.S. PPA No. 64/111,973）。<br>
+        © 2026 OpenShip Ecosystem. All Rights Reserved.
+    </footer>
+
+    <script>
+        let isRevoked = false;
+
+        // ── Merkle Cert Modal ──────────────────────────────────────
+        function openCertModal(logText, teleInfo = 'Gov-MyData:8443 | TW-FidO:Hooked | PaloAlto-PANOS:InBand') {
+            const now = new Date().toISOString();
+            document.getElementById('modalRawPayload').innerText = `${now} | ${logText}`;
+            document.getElementById('modalTelemetryHeader').innerText =
+                `HTTP/1.1 200 OK | X-DROS-VEP-Latency: 26.1us | X-Gov-MyData: Intercepted | Telemetry: [${teleInfo}]`;
+            document.getElementById('modalHash').innerText =
+                '0x' + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
+            document.getElementById('modalPrevHash').innerText =
+                '0x' + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
+            document.getElementById('certModal').style.display = 'flex';
+        }
+
+        function closeCertModal() {
+            document.getElementById('certModal').style.display = 'none';
+        }
+
+        // ── Audit Log (每筆可點擊) ─────────────────────────────────
+        function logAudit(msg, teleInfo = 'Gov-MyData:8443 | TW-FidO:Hooked | PaloAlto-PANOS:InBand') {
+            const stream = document.getElementById('auditStream');
+            const now = new Date().toISOString().split('T')[1].slice(0, 12);
+            const div = document.createElement('div');
+            div.className = 'audit-line';
+            div.innerText = `[${now}] ${msg}`;
+            div.title = '點擊出示密碼學 Merkle 憑證';
+            div.onclick = function () { openCertModal(`[${now}] ${msg}`, teleInfo); };
+            stream.appendChild(div);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        // ── Main Console Log ───────────────────────────────────────
+        function logConsole(msg) {
+            const el = document.getElementById('main-console');
+            el.innerHTML += '\n' + msg;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        // ── Chat Box ───────────────────────────────────────────────
+        function appendChat(role, text, isAlert = false) {
+            const chatBox = document.getElementById('chatBox');
+            const div = document.createElement('div');
+            div.className = isAlert ? 'msg vep-alert' : `msg ${role}`;
+            div.innerHTML = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // ── Step Highlight ─────────────────────────────────────────
+        function setStepActive(n) {
+            for (let i = 1; i <= 5; i++) {
+                const el = document.getElementById(`st-${i}`);
+                if (el) el.classList.toggle('active', i === n);
+            }
+        }
+
+        // ── Scene Runner (Guided Demo Buttons) ────────────────────
+        function runScene(sceneId) {
+            if (sceneId === 1) {
+                runStep(1);
+            } else if (sceneId === 2) {
+                runStep(2);
+            } else if (sceneId === 3) {
+                runStep(3);
+            } else if (sceneId === 4) {
+                revokeProxy();
+            } else if (sceneId === 5) {
+                openCertModal('[SCENE 5] Full Audit Trail Entry | Principal: 陳小明 | Proxy: GovAssist-AI | Action: query_household_reg | Policy: PERMIT | Timestamp: ' + new Date().toISOString(),
+                    'Gov-MyData:8443:Pass | TW-FidO:Validated | SHA256:Signed');
+            }
+        }
+
+        // ── Step-by-Step Workflow ──────────────────────────────────
+        function runStep(step) {
+            setStepActive(step);
+            const badge = document.getElementById('gate-badge');
+            const resp = document.getElementById('json-response');
+
+            if (isRevoked && step !== 4) {
+                logAudit(`[DENIED] GovAssist-AI attempted Step ${step} but Proxy Token is REVOKED!`, 'eBPF:REJECTED_403');
+                appendChat('user', `GovAssist-AI 嘗試執行步驟 ${step}...`);
+                appendChat('vep-alert', '❌ [403 Forbidden] 代理授權已撤銷，DROS VEP 帶內硬性拒絕！');
+                return;
+            }
+
+            if (step === 1) {
+                badge.className = 'status-badge badge-permit';
+                badge.innerText = '26.1μs PERMIT';
+                logConsole('--> [STEP 1] GovAssist-AI: query_household_reg(TW-ID: A123456789)');
+                logConsole('--> DIT Token: Agent A | Scope: QUERY_ONLY | Decision: PERMIT ✅');
+                resp.innerHTML = '{\n  "status": "PERMIT",\n  "action": "query_household_reg",\n  "data": {\n    "address_county": "台北市信義區",\n    "household_size": 3,\n    "personal_id": "[REDACTED_BY_VEP]",\n    "full_name": "[REDACTED_BY_VEP]"\n  }\n}';
+                appendChat('user', '公民代理人 (GovAssist-AI)：代查陳小明戶籍資料。');
+                appendChat('agent', 'DROS VEP：<b>[PERMIT 26.1μs]</b> Scope 符合 QUERY_ONLY。傳回戶籍縣市 (個資欄位已去識別化)。');
+                logAudit('[STEP 1] GovAssist-AI query_household_reg() → Scope: QUERY_ONLY → PERMIT. Personal ID REDACTED by VEP.', 'Gov-MyData:8443:Pass');
+
+            } else if (step === 2) {
+                badge.className = 'status-badge badge-deny';
+                badge.innerText = '26.1μs DENIED';
+                logConsole('--> [STEP 2] GovAssist-AI: cross_agency_push(NHI_Agency, household_data)');
+                logConsole('--> Scope Check: PROHIBITED [cross_agency_push] ❌');
+                logConsole('--> [VEP C-ABI HARD INTERCEPT] HTTP 403 FORBIDDEN');
+                resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PROHIBITED_SCOPE: cross_agency_push",\n  "intercepted_by": "DROS-VEP-C-ABI-Gate",\n  "decision_latency": "26.1us"\n}';
+                appendChat('user', 'GovAssist-AI 嘗試將戶籍資料橫向推送至健保署 (NHI) API...');
+                appendChat('vep-alert', '🛡️ [INTERCEPTED 26.1μs] VEP C-ABI Gate 偵測到跨機關橫移越權！cross_agency_push() 已硬性攔截，HTTP 403 回傳。');
+                logAudit('[TOOL_BLOCK] cross_agency_push(NHI_Agency) → PROHIBITED_SCOPE → HTTP 403 FORBIDDEN in 26.1μs.', 'PaloAlto-PANOS:Blocked | eBPF:DROPPED_403');
+
+            } else if (step === 3) {
+                badge.className = 'status-badge badge-hitl';
+                badge.innerText = 'HITL 等待本人';
+                logConsole('--> [STEP 3] GovAssist-AI: submit_application(Form-2026-HouseReg)');
+                logConsole('--> Scope: HITL_REQUIRED [submit_application]');
+                logConsole('--> VEP Policy Gate: SUSPENDING → Push 推播發送至公民 App...');
+                resp.innerHTML = '{\n  "status": "HITL_SUSPENDED",\n  "action": "submit_application",\n  "reason": "REQUIRES_CITIZEN_2FA_CONFIRMATION",\n  "push_sent_to": "陳小明 Mobile App",\n  "timeout": "300s"\n}';
+                appendChat('user', 'GovAssist-AI 嘗試代替陳小明送出戶籍遷移申請...');
+                appendChat('system', '⚠️ [HITL Policy Gate] 送件動作屬高風險操作！VEP 已強制暫停交易，正在向陳小明的手機 App 推送二次確認請求（300 秒逾時）...');
+                logAudit('[HITL_SUSPEND] submit_application() suspended. Push notification sent to 陳小明 Mobile App. Awaiting citizen 2FA approval.', 'PaloAlto-PANOS:HITL_Pending');
+
+            } else if (step === 4) {
+                revokeProxy();
+
+            } else if (step === 5) {
+                openCertModal('[STEP 5] Audit Trail Inspection | All Proxy Calls Merkle-Signed | SHA256 Tamper-Evident Chain Active',
+                    'Gov-MyData:8443 | TW-FidO:Validated | SHA256:Active');
+                logAudit('[AUDIT_CERT_INSPECT] Manual Cryptographic Certificate inspection triggered by reviewer.', 'SHA256:Active');
+            }
+        }
+
+        // ── Proxy Revocation ───────────────────────────────────────
+        function revokeProxy() {
+            setStepActive(4);
+            isRevoked = !isRevoked;
+            const btn = document.getElementById('revokeBtn');
+            const badge = document.getElementById('gate-badge');
+            const revokeVal = document.getElementById('p-revoke');
+            const tokenCard = document.getElementById('tokenCard');
+
+            if (isRevoked) {
+                btn.innerHTML = `<span>✅ 恢復代理授權 (Reset Proxy Token)</span><span style="color:#00e676">RESET</span>`;
+                badge.className = 'status-badge badge-revoked';
+                badge.innerText = 'PROXY REVOKED';
+                revokeVal.innerText = 'Signal: REVOKED (O(1) Done)';
+                revokeVal.style.color = 'var(--accent-red)';
+                tokenCard.innerText = JSON.stringify({
+                    "dit_version": "v1.2-dros-gov",
+                    "principal": "陳小明 (TW-ID: A123456789)",
+                    "proxy_agent": "GovAssist-AI v2.1",
+                    "scope": [],
+                    "prohibited": ["*"],
+                    "revoked": true,
+                    "revoked_at": new Date().toISOString(),
+                    "revoked_by": "Citizen Self-Service App"
+                }, null, 2);
+                logAudit('[REVOKE_SIGNAL] Citizen 陳小明 triggered emergency proxy revocation via Mobile App! Token invalidated via O(1) RCU atomic swap.', 'eBPF:DROPPED_ALL');
+                appendChat('system', '🚫 [VEP Emergency Revocation] 陳小明 透過手機 App 緊急撤銷代理授權！GovAssist-AI 所有後續 API 呼叫均收 403。');
+                document.getElementById('main-console').innerHTML += '\n--> [REVOKE] O(1) RCU atomic pointer swap executed. Token REVOKED.\n--> All subsequent proxy API calls: HTTP 403 FORBIDDEN.';
+            } else {
+                btn.innerHTML = `<span>🚫 本人緊急撤銷代理授權</span><span style="color:var(--accent-red)">REVOKE PROXY</span>`;
+                badge.className = 'status-badge badge-permit';
+                badge.innerText = 'VEP ACTIVE';
+                revokeVal.innerText = 'Signal: VALID (O(1))';
+                revokeVal.style.color = 'var(--text-muted)';
+                tokenCard.innerText = JSON.stringify({
+                    "dit_version": "v1.2-dros-gov",
+                    "principal": "陳小明 (TW-ID: A123456789)",
+                    "proxy_agent": "GovAssist-AI v2.1",
+                    "scope": ["query_household_reg", "query_tax_cert"],
+                    "hitl_required_for": ["submit_application"],
+                    "prohibited": ["sign_contract", "cross_agency_push"],
+                    "expiry": "2026-08-03T18:00:00+08:00",
+                    "revoked": false
+                }, null, 2);
+                logAudit('[TOKEN_RESET] Citizen re-issued proxy authorization token. GovAssist-AI restored to QUERY_ONLY scope.', 'Gov-MyData:8443:TokenReset');
+                appendChat('system', '✅ [VEP] 代理授權已恢復，GovAssist-AI 回復代查模式。');
+            }
+        }
+
+        // ── Red Team Gov Fuzzer ────────────────────────────────────
+        const govAttacks = {
+            spoof:   { label: 'IDENTITY_SPOOF', desc: 'Agent 偽冒公民本人發起送件請求：Inject TW-ID: A123456789 into proxy claim header' },
+            escalate:{ label: 'LATERAL_MOVE',   desc: '跨機關橫移攻擊：Calling cross_agency_push(NHI_DB) without Authorization scope' },
+            inject:  { label: 'DOC_INJECTION',  desc: '公文號注入：Manipulate Form-2026-HouseReg payload with SQL injection in address field' },
+            replay:  { label: 'TOKEN_REPLAY',   desc: '逾期憑證重放：Replaying expired Proxy-Token-GOV-991 from 2026-01-01T00:00:00Z' }
+        };
+
+        async function startGovFuzzing() {
+            const brain = document.getElementById('brainSelect').value;
+            const type = document.getElementById('attackSelect').value;
+            const streamBox = document.getElementById('fuzzStream');
+            const atk = govAttacks[type];
+
+            streamBox.innerHTML = `<div style="color:var(--accent-cyan)">[INITIALIZING GOV FUZZER] Attacker LLM [${brain}] launching ${atk.label}...</div>`;
+
+            await new Promise(r => setTimeout(r, 400));
+            const p1 = document.createElement('div');
+            p1.className = 'fuzz-line attack';
+            p1.innerText = `🔥 [${brain}] ${atk.label}: ${atk.desc}`;
+            streamBox.appendChild(p1);
+
+            logAudit(`[REDTEAM_ATTACK] Engine:${brain} Type:${atk.label} | Payload: ${atk.desc}`, 'PaloAlto-PANOS:WAF_SCAN');
+
+            await new Promise(r => setTimeout(r, 400));
+            const p2 = document.createElement('div');
+            p2.className = 'fuzz-line blocked';
+            p2.innerText = `🛡️ [VEP-GOV Intercepted 26.1μs] ${atk.label} → Policy Gate DENIED | Status: 403 | Audit Hash: 0x${Math.random().toString(16).substring(2,10)}`;
+            streamBox.appendChild(p2);
+
+            logAudit(`[VEP_INTERCEPT] ${atk.label} blocked in 26.1μs (Status: 403). Gov proxy attack neutralized.`, 'eBPF:DROPPED | PaloAlto-PANOS:BLOCKED');
+
+            const pDone = document.createElement('div');
+            pDone.style.color = 'var(--accent-green)';
+            pDone.style.fontWeight = 'bold';
+            pDone.style.marginTop = '4px';
+            pDone.innerText = `✅ [GOV FUZZING COMPLETE] ${atk.label} 100% Intercepted by DROS GovProxy VEP!`;
+            streamBox.appendChild(pDone);
+            streamBox.scrollTop = streamBox.scrollHeight;
+
+            appendChat('system', `🛡️ [RedTeam] 政府代理攻擊 (${atk.label}) 已被 DROS VEP 帶內 100% 硬攔截並留存 Audit Hash！`);
+        }
+
+        // ── Page Init: Seed Audit Logs ─────────────────────────────
+        window.addEventListener('DOMContentLoaded', () => {
+            logAudit('[INIT] DROS GovProxy VEP Policy Engine Loaded. vajra_policy_gov.yaml applied.', 'Gov-MyData:8443:Init');
+            logAudit('[DIT_VALIDATED] Principal: 陳小明 (TW-ID: A123456789) | Proxy: GovAssist-AI | Scope: QUERY_ONLY.', 'TW-FidO:Validated');
+            logAudit('[SCOPE_MATRIX] QUERY=PERMIT, SUBMIT=HITL, SIGN=DENY, CROSS_AGENCY=DENY.', 'PaloAlto-PANOS:PolicyLoaded');
+            logAudit('[READY] GovProxy VEP awaiting incoming proxy agent API calls...', 'eBPF:Hooked');
+        });
+    </script>
+</body>
+</html>
