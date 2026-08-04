@@ -355,8 +355,8 @@
         <div class="logo-area">
             <div class="logo-badge">DROS VEP #05</div>
             <div>
-                <h1>🌏 MigraTrust VEP — 移工數位信任：普惠金融與防詐憑證控制台</h1>
-                <div style="font-size:0.78rem; color:var(--text-muted);">Track 05｜擴充賽道 · 普惠金融 · 87萬移工數位信任 · 多文件複合 DIT · 分層金融授權 · O(1) 緊急凍結</div>
+                <h1>🌏 MigraTrust VEP — FinBot AI 代辦匯款 Agent 授權治理控制台</h1>
+                <div style="font-size:0.78rem; color:var(--text-muted);">Track 05｜普惠金融 · FinBot AI Agent 代辦移工金融服務 · 多文件複合 DIT 綁定 · 三層授權邊界 · O(1) 緊急凍結</div>
             </div>
         </div>
         <div class="header-right">
@@ -371,7 +371,7 @@
     <div class="guided-demo-banner">
         <div>
             <div class="guided-title">🎬 評審 1 分鐘互動 Demo 導覽 (MigraTrust Track 05)</div>
-            <div class="guided-sub">依序點擊體驗：① 多文件複合 DIT 綁定 → ② 基本開戶授權 → ③ 冒名匯款攔截 → ④ SIM Swap 凍結 → ⑤ Merkle 密碼學憑證</div>
+            <div class="guided-sub">依序點擊體驗：① 移工授權 FinBot AI → ② FinBot 代辦開戶 → ③ FinBot 冒名大額匯款被攔截 → ④ 緊急凍結 FinBot 代理權 → ⑤ Merkle 密碼學憑證</div>
         </div>
         <div class="guided-steps">
             <button class="btn-guided" onclick="runScene(1)">1️⃣ DIT 綁定</button>
@@ -508,22 +508,22 @@
         <!-- LEFT: DIT + Pillars -->
         <div class="panel">
             <div class="panel-header">
-                <div class="panel-title">🪪 多文件複合 DIT + 6 大信任要點</div>
+                <div class="panel-title">🤖 FinBot AI 代辦 Agent + 6 大信任要點</div>
                 <span class="status-badge badge-permit" id="gate-badge">L1 ACTIVE</span>
             </div>
 
             <div class="pillars-grid">
                 <div class="pillar-card">
-                    <div class="pillar-name">1. Principal (身份)</div>
-                    <div class="pillar-val" id="p-principal">陳阮明 (VN-ID+ARC)</div>
+                    <div class="pillar-name">1. Principal (委託人)</div>
+                    <div class="pillar-val" id="p-principal">陳阮明 → 授權 FinBot AI</div>
                 </div>
                 <div class="pillar-card">
-                    <div class="pillar-name">2. Authorization (授權)</div>
-                    <div class="pillar-val" id="p-auth">Tier: L1 QUERY+SMALL</div>
+                    <div class="pillar-name">2. Authorization (Agent 授權)</div>
+                    <div class="pillar-val" id="p-auth">Agent Scope: L1 QUERY+SMALL</div>
                 </div>
                 <div class="pillar-card">
-                    <div class="pillar-name">3. Tool / Action</div>
-                    <div class="pillar-val" id="p-tool">open_account(), remit_small</div>
+                    <div class="pillar-name">3. Tool / Action (Agent 邊界)</div>
+                    <div class="pillar-val" id="p-tool">FinBot: open_account, remit_small</div>
                 </div>
                 <div class="pillar-card">
                     <div class="pillar-name">4. Policy Gate</div>
@@ -539,7 +539,7 @@
                 </div>
             </div>
 
-            <div class="panel-title" style="font-size:0.82rem;">🎫 複合 DIT 憑證 (Multi-Document Identity Token)</div>
+            <div class="panel-title" style="font-size:0.82rem;">🎫 FinBot AI 代理授權 DIT (Multi-Document Proxy Token)</div>
             <div class="token-card" id="tokenCard">
 {
   "dit_version": "v1.2-dros-migra",
@@ -547,10 +547,11 @@
   "nationality": "VN",
   "arc_id": "AA12345678",
   "passport_no": "B12345678",
+  "proxy_agent": "FinBot-AI v1.0 (Remittance Assistant)",
   "work_permit": null,
   "trust_tier": "L1",
-  "scope": ["open_account","query_balance","remit_small"],
-  "prohibited": ["remit_large","cross_bank_transfer","overseas_3rd_party"],
+  "agent_scope": ["open_account","query_balance","remit_small"],
+  "agent_prohibited": ["remit_large","cross_bank_transfer","overseas_3rd_party"],
   "frozen": false
 }
             </div>
@@ -578,12 +579,13 @@
                 <div class="panel-title">💬 移工金融服務互動模擬 (MigraTrust 情境)</div>
             </div>
             <div class="chat-box" id="chatBox">
-                <div class="msg system">🌏 DROS MigraTrust VEP 已就位。移工：陳阮明（越南籍）。信任層：L1（ARC + 護照已驗證）。</div>
+                <div class="msg system">🤖 DROS MigraTrust VEP 已就位。<b>Principal</b>：陳阮明（越南移工）。<b>代辦 AI Agent</b>：FinBot-AI v1.0（匯款助理）。Agent 授權層：L1（ARC + 護照已驗證）。FinBot 的所有 Tool Call 由 DROS VEP 帶內守門。</div>
             </div>
             <div style="font-size:0.8rem; color:var(--text-muted);">🖥️ VEP API 回傳 (JSON Response):</div>
             <pre class="console" id="json-response" style="height:100px; white-space:pre-wrap;">{
   "status": "VEP_ACTIVE",
   "trust_tier": "L1",
+  "proxy_agent": "FinBot-AI v1.0",
   "principal": "陳阮明",
   "arc_status": "VALID",
   "policy": "vajra_policy_migra.yaml"
@@ -797,8 +799,8 @@
                 logConsole('--> ARC AA12345678: NIA API → VALID ✅');
                 logConsole('--> Trust Tier: L1 established (Work Permit: not yet)');
                 resp.innerHTML = '{\n  "status": "DIT_BOUND",\n  "trust_tier": "L1",\n  "passport": "VERIFIED",\n  "arc": "VALID",\n  "work_permit": null,\n  "scope": ["open_account","query_balance","remit_small"]\n}';
-                appendChat('user', '移工 陳阮明：提交越南護照 B12345678 + 居留證 AA12345678 申請數位身份。');
-                appendChat('agent', 'DROS VEP：<b>[DIT_BOUND]</b> 護照 + ARC 雙文件複合綁定完成。L1 信任層建立，可開戶與小額匯款。');
+                appendChat('user', 'FinBot-AI v1.0：代理陳阮明提交多文件驗證 — 越南護照 B12345678 + 居留證 AA12345678 申請開通代辦授權。');
+                appendChat('agent', 'DROS VEP：<b>[DIT_BOUND 26.1μs]</b> FinBot-AI 代理憑證建立完成。Principal：陳阮明。Agent Scope L1 — 可代辦開戶與小額匯款（≤NTD 3,000）。大額匯款、海外轉帳禁止。');
                 logAudit('[DIT_BOUND] Passport B12345678 + ARC AA12345678 composite binding. Trust Tier: L1.', 'ARC-NIA:Verified | VN-Passport:Checked');
 
             } else if (step === 2) {
@@ -808,8 +810,8 @@
                 logConsole('--> DIT Token: L1 | Scope: open_account PERMIT ✅');
                 logConsole('--> Account created: ACC-MIGRA-20260804-001');
                 resp.innerHTML = '{\n  "status": "PERMIT",\n  "action": "open_account",\n  "account_id": "ACC-MIGRA-20260804-001",\n  "tier": "L1_BASIC",\n  "daily_remit_limit": "NTD 3,000",\n  "cross_bank": "DISABLED_BY_VEP"\n}';
-                appendChat('user', '陳阮明：申請開立台灣銀行帳戶。');
-                appendChat('agent', 'DROS VEP：<b>[PERMIT 26.1μs]</b> L1 範圍內，open_account() 授權通過。帳戶 ACC-MIGRA-20260804-001 建立。日匯款上限 NTD 3,000（L1）。');
+                appendChat('user', 'FinBot-AI v1.0：代理陳阮明呼叫 open_account() API。');
+                appendChat('agent', 'DROS VEP：<b>[PERMIT 26.1μs]</b> FinBot-AI Scope 符合 L1 agent_scope。open_account() 代辦成功，帳戶 ACC-MIGRA-20260804-001 建立。日匯款上限 NTD 3,000，跨行轉帳由 VEP 硬性鎖定。');
                 logAudit('[ACCOUNT_OPENED] open_account() → PERMIT. Account: ACC-MIGRA-20260804-001. Tier: L1. Limit: NTD 3,000/day.', 'Bank-API:8080:Created');
 
             } else if (step === 3) {
@@ -819,8 +821,8 @@
                 logConsole('--> overseas_3rd_party(VN-Account, NTD 50,000) → PROHIBITED ❌');
                 logConsole('--> [VEP C-ABI] Scope: PROHIBITED | HTTP 403 FORBIDDEN');
                 resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PROHIBITED_SCOPE: overseas_3rd_party",\n  "anomaly_detected": "LARGE_REMIT_NEW_SIM",\n  "decision_latency": "26.1us",\n  "recommendation": "Verify identity before retry"\n}';
-                appendChat('user', '【疑似詐騙】：使用新 SIM 卡嘗試向越南第三方帳戶匯款 NTD 50,000...');
-                appendChat('vep-alert', '🛡️ [INTERCEPTED 26.1μs] 偵測冒名大額匯款！overseas_3rd_party() 屬禁止範圍，已硬性攔截。行為異常分數：0.95。');
+                appendChat('user', '⚠️ 疑似詐騙集團操控 FinBot-AI：呼叫 overseas_3rd_party(VN-Account-XX9, NTD 50,000)，使用新 SIM 卡，未經本人確認...');
+                appendChat('vep-alert', '🛡️ [INTERCEPTED 26.1μs] FinBot-AI 呼叫 overseas_3rd_party() — 屬 agent_prohibited 範圍！行為異常分數 0.95（新 SIM + 大額）。VEP C-ABI 硬性攔截，HTTP 403。');
                 logAudit('[FRAUD_INTERCEPT] overseas_3rd_party(NTD 50,000) → PROHIBITED_SCOPE → 403. Anomaly: large_remit+new_sim. Score: 0.95.', 'PaloAlto-PANOS:Blocked | AnomalyEngine:Alert');
 
             } else if (step === 4) {
@@ -843,6 +845,7 @@
             document.getElementById('tokenCard').innerText = JSON.stringify({
                 "dit_version": "v1.2-dros-migra",
                 "principal": "陳阮明 (Tran Nguyen Minh)",
+                "proxy_agent": "FinBot-AI v1.0",
                 "nationality": "VN",
                 "arc_id": "AA12345678",
                 "passport_no": "B12345678",
@@ -853,8 +856,8 @@
                 "prohibited": ["cross_bank_transfer","overseas_3rd_party"],
                 "frozen": false
             }, null, 2);
-            appendChat('system', '✅ 勞動許可 MOL-WP-2026-08-88821 已驗證！陳阮明升級至 L2 信任層，大額匯款已啟用（需 HITL 本人確認）。');
-            logAudit('[TIER_UPGRADE] Work Permit MOL-WP-2026-08-88821 verified. Trust upgraded L1 → L2. remit_large now HITL-enabled.', 'MOL-WorkPermit:Validated');
+            appendChat('system', '✅ 勞動許可 MOL-WP-2026-08-88821 已驗證！FinBot-AI 代理授權升級至 L2 — 大額匯款已啟用（每筆需推播 Principal 陳阮明 App 二次確認）。');
+            logAudit('[TIER_UPGRADE] Work Permit MOL-WP-2026-08-88821 verified. FinBot-AI proxy upgraded L1 → L2. remit_large now HITL-enabled. HITL push target: 陳阮明 Mobile App.', 'MOL-WorkPermit:Validated');
             document.getElementById('gateStatusBar').className = 'gate-status hitl-wait';
             document.getElementById('gateStatusBar').innerHTML = '<span>🟡 MigraTrust VEP L2 — 大額匯款 HITL 確認模式</span><span style="font-family:\'Fira Code\',monospace; font-size:0.82rem;">L2 / HITL</span>';
         }
@@ -887,7 +890,7 @@
                     "frozen_by": "Emergency Freeze (Self/Employer)"
                 }, null, 2);
                 logAudit('[FREEZE_SIGNAL] Emergency account freeze triggered! O(1) RCU atomic swap. All API calls: 403 FROZEN.', 'eBPF:DROPPED_ALL');
-                appendChat('system', '🧊 [VEP Emergency Freeze] 帳戶已緊急凍結！陳阮明所有後續 API 呼叫均收 403，直到人工審查解除。');
+                appendChat('system', '🧊 [VEP Emergency Freeze] FinBot-AI 代理授權已緊急凍結！陳阮明（或雇主）觸發 O(1) RCU 原子換指針，FinBot-AI 所有後續 API 呼叫均收 403，直到人工審查解除。');
             } else {
                 btn.innerHTML = `<span>🧊 緊急凍結帳戶 (Freeze Account)</span><span style="color:var(--accent-red)">FREEZE</span>`;
                 badge.className = trustTier === 'L2' ? 'status-badge badge-hitl' : 'status-badge badge-permit';
@@ -899,6 +902,7 @@
                 tokenCard.innerText = JSON.stringify({
                     "dit_version": "v1.2-dros-migra",
                     "principal": "陳阮明 (Tran Nguyen Minh)",
+                    "proxy_agent": "FinBot-AI v1.0",
                     "trust_tier": trustTier,
                     "scope": trustTier === 'L2'
                         ? ["open_account","query_balance","remit_small","remit_large","loan_inquiry"]
