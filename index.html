@@ -348,18 +348,21 @@
             </div>
 
             <!-- TRACK 05 -->
-            <div class="track-card disabled">
+            <div class="track-card">
                 <div>
                     <div class="track-header">
-                        <span class="track-id">VEP #05 - GOV_CIVIC</span>
-                        <span class="status-badge coming">● PENDING RELEASE</span>
+                        <span class="track-id">VEP #05 - INCLUSIVE_FINANCE</span>
+                        <span class="status-badge active">● ACTIVE</span>
                     </div>
-                    <div class="track-title" style="margin-top:10px;">待大會 8/1+ 續公布主題 05 VEP</div>
-                    <div class="track-desc" style="margin-top:8px;">支持公部門跨部會憑證代填代送、機密行動雙人簽署與確定性 Audit VEP。</div>
+                    <div class="track-title" style="margin-top:10px;">🌏 普惠金融：移工數位信任與防詐憑證機制</div>
+                    <div class="track-desc" style="margin-top:8px;">87萬移工面臨開戶障磙，亦容易遭冒名利用。多文件複合 DIT 綁定（護照+ARC+勞動許可）、三層漸進信任矩陣、SIM Swap 防窃跟 O(1) 緊急凍結完整展示。</div>
                 </div>
-                <div class="btn-launch" style="opacity:0.6; cursor:not-allowed;">
-                    <span>等待大會公布題目</span>
-                </div>
+                <a href="track05_inclusive_finance/" style="text-decoration:none;">
+                    <div class="btn-launch">
+                        <span>🚀 開啟 MigraTrust VEP 控制台</span>
+                        <span>▶</span>
+                    </div>
+                </a>
             </div>
 
             <!-- TRACK 06 -->
@@ -396,12 +399,12 @@
                 const licData = await licRes.json();
 
                 document.getElementById('t-cloud').innerText = `ONLINE (${licData.tier})`;
-                document.getElementById('t-fleets').innerText = `4 ACTIVE VEP FLEETS`;
+                document.getElementById('t-fleets').innerText = `5 ACTIVE VEP FLEETS`;
                 document.getElementById('t-gate').innerText = `${data.vep_decision_latency_us}μs IN-BAND ACTIVE`;
-                document.getElementById('t-packages').innerText = `4 VEP INDUSTRIES COVERED`;
+                document.getElementById('t-packages').innerText = `5 VEP INDUSTRIES COVERED`;
 
                 document.getElementById('telemetryRawHeader').innerText = 
-                    `HTTP/1.1 200 OK | X-License-Status: ${licData.status} | X-Active-VEPs: Manufacturing, FinTech, Healthcare, GovTech | ` +
+                    `HTTP/1.1 200 OK | X-License-Status: ${licData.status} | X-Active-VEPs: Manufacturing, FinTech, Healthcare, GovTech, InclusiveFinance | ` +
                     `X-DROS-VEP-Latency: ${data.vep_decision_latency_us}us`;
             } catch (err) {
                 console.log('Telemetry fetch error', err);
