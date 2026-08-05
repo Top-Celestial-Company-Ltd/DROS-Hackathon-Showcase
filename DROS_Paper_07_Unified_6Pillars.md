@@ -199,8 +199,9 @@ Partial security frameworks are inadequate for the Autonomous Agentic Era. DROS-
 
 ## References
 
-1. Chun-Cheng (Jimmy) Chen, Top-Celestial Company Ltd., OpenShip DROS Core Architecture Group, "DROS: Deterministic Runtime Operating System for Agentic Governance," *U.S. Provisional Patent Application No. 64/111,973*, Aug. 2026.
-2. OpenShip Ecosystem, "DROS-VEP Lite Hackathon Showcase Repository," *GitHub*: `Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase`, 2026.
-3. Zenodo Record 20823163, "C-ABI In-Band Interceptor for Zero-Heap LLM Tool Bound Execution," 2026.
-4. Zenodo Record 21755654, "Deterministic Merkle Audit Trails and O(1) RCU Revocation in Agent Runtime Security," 2026.
-5. W3C Community Group, "Verifiable Credentials Data Model v2.0," *W3C Recommendation*, 2026.
+1. C.-C. (Jimmy) Chen, "DROS: Deterministic Runtime Operating System for Agentic Governance," *U.S. Provisional Patent Application No. 64/111,973*, filed Aug. 2026.
+2. C.-C. (Jimmy) Chen, "Runtime Attribution Framework: An External C-ABI and PKI-Based Zero-Trust Infrastructure for Non-Repudiable Execution Governance in Multi-Agent Systems," *Zenodo*, DOI: `10.5281/zenodo.20823163`, 2026.
+3. C.-C. (Jimmy) Chen, "DROS 4-Layer Defense-in-Depth Architecture for Autonomous AI Workloads," *Zenodo*, DOI: `10.5281/zenodo.21755654`, 2026.
+4. J. Groth, "On the Size of Pairing-Based Non-interactive Arguments," in *Advances in Cryptology – EUROCRYPT 2016*, LNCS vol. 9665, Springer, pp. 305–326, 2016. DOI: `10.1007/978-3-662-49896-5_11`.
+5. W3C Verifiable Credentials Working Group, "Verifiable Credentials Data Model v2.0," *W3C Recommendation*, 2026.
+6. OpenShip Ecosystem & Top-Celestial Company Ltd., "DROS-VEP Lite Multi-VEP Hackathon Showcase & Automated Verification Suite," *GitHub*: `https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase`, 2026.

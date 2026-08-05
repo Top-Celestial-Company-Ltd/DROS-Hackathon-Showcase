@@ -199,8 +199,9 @@ DROS-6P 依據國際專利公約建立了明確的 Prior Art（先前技術）�
 
 ## 參考文獻 (References)
 
-1. Chun-Cheng (Jimmy) Chen, Top-Celestial Company Ltd., OpenShip DROS Core Architecture Group, "DROS: Deterministic Runtime Operating System for Agentic Governance," *U.S. Provisional Patent Application No. 64/111,973*, Aug. 2026.
-2. OpenShip Ecosystem, "DROS-VEP Lite Hackathon Showcase Repository," *GitHub*: `Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase`, 2026.
-3. Zenodo Record 20823163, "C-ABI In-Band Interceptor for Zero-Heap LLM Tool Bound Execution," 2026.
-4. Zenodo Record 21755654, "Deterministic Merkle Audit Trails and O(1) RCU Revocation in Agent Runtime Security," 2026.
-5. W3C Community Group, "Verifiable Credentials Data Model v2.0," *W3C Recommendation*, 2026.
+1. 陳濬程 (Chun-Cheng (Jimmy) Chen), 康宸園有限公司 (Top-Celestial Company Ltd.), "DROS: Deterministic Runtime Operating System for Agentic Governance," *美國臨時發明專利 (U.S. Provisional Patent Application No. 64/111,973)*, 2026 年 8 月申請.
+2. 陳濬程 (Chun-Cheng (Jimmy) Chen), "Runtime Attribution Framework: An External C-ABI and PKI-Based Zero-Trust Infrastructure for Non-Repudiable Execution Governance in Multi-Agent Systems (智能體運行期歸責框架:多智能體系統中基於外部 C-ABI 與 PKI 零信任的不可否認性執行治理基礎設施)," *Zenodo*, DOI: `10.5281/zenodo.20823163`, 2026.
+3. 陳濬程 (Chun-Cheng (Jimmy) Chen), "DROS 4-Layer Defense-in-Depth Architecture for Autonomous AI Workloads (DROS 自主型 AI 工作負載四層防禦縱深架構)," *Zenodo*, DOI: `10.5281/zenodo.21755654`, 2026.
+4. J. Groth, "On the Size of Pairing-Based Non-interactive Arguments," in *Advances in Cryptology – EUROCRYPT 2016*, LNCS vol. 9665, Springer, pp. 305–326, 2016. DOI: `10.1007/978-3-662-49896-5_11`.
+5. W3C Verifiable Credentials Working Group, "Verifiable Credentials Data Model v2.0," *W3C Recommendation*, 2026.
+6. OpenShip Ecosystem & Top-Celestial Company Ltd., "DROS-VEP Lite Multi-VEP 黑客松展示平台與自動化驗證套件," *GitHub*: `https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase`, 2026.
