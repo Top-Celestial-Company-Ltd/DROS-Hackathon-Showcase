@@ -17,16 +17,21 @@
 
 隨著自主 AI Agent（自主智能體）從對話式原型走向企業級執行場景，傳統資安架構正面臨根本性的崩潰。企業部署 AI Agent 時，必須對六大核心信任問題給出明確答案：**Principal**（*Agent 代表誰？*）、**Authorization**（*被授權做什麼？*）、**Tool/Action Bound**（*哪些 API 呼叫安全？*）、**Policy Gate**（*高風險動作如何控制？*）、**Audit Log**（*行動如何不可篡改地追溯？*）以及 **Expiry/Revocation**（*授權何時失效且如何即時停止？*）。然而，現有的企業安全處方最多只能回應一至兩個邊界：IAM 系統解決了身份認證，卻對動態 Tool 呼叫束手無策；Prompt 防火牆（Guardrails）僅能處理文字層提示，缺乏執行期動態授權與密碼學稽核能力；SIEM 平台僅提供事後日誌紀錄，缺乏帶內即時攔截與防衛能力。
 
-本論文提出 **DROS-6P** —— 全球第一個統合且確定性的物理層執行期治理架構，在單一 C-ABI 與 eBPF 帶內執行內核中，同時閉環解答這六大信任邊界。在微秒級的確定性決策延遲（$26.1\ \mu\text{s}$）下，DROS-6P 強制執行：(1) **Principal**：透過 3 階 PKI 簽章之 DROS 身份標籤 (DIT)；(2) **Authorization**：透過將角色精確映射至執行向量的確定性 Capability Bitmaps；(3) **Tool/Action Bound**：透過 FFI 邊界處的帶內 C-ABI 攔截器；(4) **Policy Gate**：透過動態資料遮蔽 (Redaction)、人工懸停審查 (HITL) 與 ZKP-Lite 零知識證明；(5) **Audit Log**：透過不可篡改的 SHA-256 Merkle 雜湊鏈與 Ed25519 數位簽章；以及 (6) **Expiry/Revocation**：透過 Read-Copy-Update (RCU) 原子指針交換實現 $O(1)$ 常數時間動態撤銷與秒級 HTTP 403 阻斷。我們提供完全可重現的本地測試環境（`test_verification_suite.py`），100% 通過自動化斷言測試（耗時 $0.004\text{s}$），並在六個異質產業賽道中驗證了 DROS-6P，證明統合物理層治理是企業安全部署 AI Agent 的充要條件。
+本論文提出 **DROS-6P** —— 旨在單一 C-ABI 與 eBPF 帶內執行層中，同時強制執行這六大信任邊界之確定性執行期治理微內核。透過將確定性決策延遲嚴格限制於 $26.1\ \mu\text{s}$（微秒級），DROS-6P 確保安全控制面本身不會在企業內部、外部或惡意 Agent 產生高頻系統呼叫（Syscalls）時成為效能瓶頸或單點故障點，從而有效防止自我引發的服務阻斷（Self-induced DDoS）與系統衰退。具體而言，DROS-6P 強制執行：(1) **Principal**：透過 3 階 PKI 簽章之 DROS 身份標籤 (DIT)；(2) **Authorization**：透過將角色精確映射至執行向量的確定性 Capability Bitmaps；(3) **Tool/Action Bound**：透過 FFI 邊界處的帶內 C-ABI 攔截器；(4) **Policy Gate**：透過動態資料遮蔽 (Redaction)、人工懸停審查 (HITL) 與 ZKP-Lite 零知識證明；(5) **Audit Log**：透過不可篡改的 SHA-256 Merkle 雜湊鏈與 Ed25519 數位簽章；以及 (6) **Expiry/Revocation**：透過 Read-Copy-Update (RCU) 原子指針交換實現 $O(1)$ 常數時間動態撤銷與秒級 HTTP 403 阻斷。我們提供完全可重現的本地測試環境（`test_verification_suite.py`），100% 通過自動化斷言測試（耗時 $0.004\text{s}$），並在六個異質產業賽道中驗證了 DROS-6P，證明統合物理層治理是企業安全部署 AI Agent 的充要條件。
 
 ---
 
 ## 1. 緒論與問題陳述 (Introduction & Problem Statement)
 
 ### 1.1 自主 AI Agent 的企業級失控危機
-隨著具備 Function Calling（函式呼叫）與 Tool Invocation（工具呼叫）能力的大語言模型（LLM）Agent 迅速普及，企業 IT 基礎設施暴露出了前所未有的治理缺口。與控制流固定的傳統軟體不同，自主 Agent 在執行期會產生動態且不可預測的執行路徑。當 Agent 被部署於企業核心環境 —— 存取 SAP ERP、核心銀行 API、醫院 EHR 資料庫或政府 MyData 門戶時 —— 未經管束的 Agent 將帶來毀滅性風險，包括 Prompt Injection（提示詞注入攻擊）、權限提升、跨機關資料外洩以及未授權的合約簽署。
+隨著具備 Function Calling（函式呼叫）與 Tool Invocation（工具呼叫）能力的大語言模型（LLM）Agent 迅速普及，企業 IT 基礎設施暴露出了嚴重的治理缺口。與控制流固定的傳統預編譯軟體不同，自主 Agent 在執行期會產生動態且不可預測的執行路徑。當 Agent 被部署於企業核心環境 —— 存取 SAP ERP、核心銀行 API、醫院 EHR 資料庫或政府 MyData 門戶時 —— 未經管束的 Agent 將帶來嚴重的營運風險，包括 Prompt Injection（提示詞注入攻擊）、權限提升、跨機關資料外洩以及未授權的合約簽署。
 
-### 1.2 六大 fundamental 信任要點 (The 6-Pillar Framework)
+### 1.2 高頻 Agent 執行期之吞吐量剛性需求與自我 DDoS 風險
+在企業實務部署中，自主 Agent 會跨內部、合作夥伴及外部網路產生高頻的系統呼叫（Syscalls）與 FFI 工具調用流。在營運尖峰負載或遭遇惡意利用（如遞迴工具調用攻擊）時，Agent 工作負載每秒可發起成千上萬次請求。若執行期治理微內核引入毫秒級的評估開銷（例如帶外網路呼叫或 JSON 政策解析），治理層自身將成為主要的吞吐量瓶頸，引發全系統的延遲放大與自我引發的服務阻斷（Self-induced DDoS）崩潰。
+
+為防止治理機制引發系統癱瘓並維持嚴格合規，評估控制面必須在微秒級的延遲預算內運作。DROS-6P 將其決策延遲嚴格限制於 **$26.1\ \mu\text{s}$**（微秒級），實現能吸收高吞吐量 Agent Syscall 流且不衰退底層服務可用性的即時帶內政策強制執行。
+
+### 1.3 六大 fundamental 信任要點 (The 6-Pillar Framework)
 要將 AI Agent 安全部署於企業或公部門中，系統必須在微秒級執行期的每一瞬間，精確回答以下六大信任問題：
 
 1. **Principal (代表誰)**：Agent 代表哪一個人、團隊、法人或公部門單位？
