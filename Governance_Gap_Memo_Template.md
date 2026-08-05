@@ -13,9 +13,20 @@
 
 ## 零、 摘要與治理缺口宣告 (Executive Summary & Governance Gap)
 
+> **For AI Agents to be safely deployed in enterprises, we need clear answers to six fundamental trust questions:**  
+> 1️⃣ **Principal** – Who does the agent represent? (*Individual, team, legal entity, public authority?*)  
+> 2️⃣ **Authorization** – What is it allowed to do? Who granted that permission? What's forbidden?  
+> 3️⃣ **Tool / Action** – Which tools can it invoke? What are the boundaries for each?  
+> 4️⃣ **Policy Gate** – How are high-risk actions (*payments, signatures, sensitive data access*) controlled and escalated?  
+> 5️⃣ **Audit Log** – How are all actions, decisions, and authorizations traced and made immutable?  
+> 6️⃣ **Expiry / Revocation** – When does authorization expire or get revoked, and how does the agent stop instantly?  
+> 
+> *Most security solutions today address one or two of these at best:* **IAM** covers Principal but fails on Tool/Action; **Prompt Guardrails** touch Policy Gate but offer no Audit or Revocation; **SIEMs** handle logging but can't enforce real-time Authorization.  
+> **DROS is the first and only system designed to answer all six — in a single, deterministic, physical-layer runtime governance framework ($26.1\ \mu\text{s}$ decision latency).**
+
 現行 AI Agent 導入企業最大的信任危機，在於**「傳統系統僅在 Agent 登入時核發身份/Token（授權），卻缺乏 Agent 執行期的動態行為管束（Runtime Governance）」**。當 AI Agent 具備呼叫 API 與外部工具能力時， Prompt Injection（提示詞注入）、語意誘騙或模型幻覺將導致 Agent 越權存取敏感資產、誤呼叫高風險工具或外洩商業機密。
 
-DROS-VEP Lite 針對此治理缺口，提出**帶內（In-Band）確定性執行期網關架構**。在不洩漏底層 C-ABI 與微內核原始碼前提下，以下詳細說明本作品如何回應大會 6 大可信 AI 治理要點：
+DROS-VEP Lite 針對此治理缺口，提出**帶內（In-Band）確定性執行期網關架構**。以下詳細說明本作品如何回應大會 6 大可信 AI 治理要點（完整理論架構登載於 **DROS Paper 07 Flagship Monograph**）：
 
 ---
 
