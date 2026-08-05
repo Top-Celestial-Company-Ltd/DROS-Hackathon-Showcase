@@ -74,13 +74,15 @@
 │  • 選擇性揭露與雙簽懸停        │        │  • Ed25519 簽章與法院憑證     │        │  • 秒級 403 硬性阻斷          │
 ```
 
+DROS-6P 物理層帶內縱深防禦架構之組件互動與實體布局，如 **圖 1** 所示：
+
 ![圖 1: DROS 物理層帶內縱深防禦架構圖](fig1_dros_defense_layers_zh.png)
 *圖 1：DROS-6P 物理層帶內縱深防禦架構圖，展示 PKI DIT 身份注入、Capability Bitmaps 位元圖、C-ABI FFI 攔截器、Policy Gate 門閥、Merkle 稽核鏈與 RCU 原子動態撤銷機制。*
 
 ### 2.1 要點 1：Principal (代表誰) —— Dros Identity Token (DIT)
 DROS-6P 將每次 Agent 呼叫綁定至 3 階 PKI 簽章的 **Dros Identity Token (DIT)**。DIT $\mathcal{T}_{\text{DIT}}$ 定義為多元組：
 $$\mathcal{T}_{\text{DIT}} = \Big( \text{ID}_{\text{principal}}, \text{ID}_{\text{agent}}, \mathcal{K}_{\text{pub}}, \mathcal{S}_{\text{scope}}, \mathcal{P}_{\text{prohibited}}, t_{\text{exp}}, \sigma_{\text{Ed25519}} \Big)$$
-其中 $\text{ID}_{\text{principal}}$ 明確登記了 Agent 所代表的法人、公民或企業團隊，杜絕 Agent 匿名冒用。
+其中 $\text{ID}_{\text{principal}}$ 明確登記了 Agent 所代表的法人、公民或企業團隊，杜絕 Agent 匿名冒用。DIT 憑證生成之 3 階 PKI 密碼學簽章流程，如 **圖 2** 所示：
 
 ![圖 2: 3 階 PKI 動態 DIT 憑證簽章鏈示意圖](fig4_dros_pki_chain_zh.png)
 *圖 2：DROS 身份標籤 (DIT) 之 3 階 PKI 密碼學簽章鏈結機制。*
@@ -110,7 +112,7 @@ $$H_i = \text{SHA-256}\Big( H_{i-1} \parallel t_i \parallel \text{ID}_{\text{pri
 ### 2.6 要點 6：Expiry & Revocation (失效與撤銷) —— $O(1)$ RCU 原子指針切換
 授權撤銷必須是即時的。DROS-6P 在共享記憶體內核中實作 **Read-Copy-Update (RCU) 原子指針切換**。當管理員發出撤銷訊號時：
 $$\text{AtomicSwap}\left( \mathcal{P}_{\text{active\_token\_ptr}}, \mathcal{P}_{\text{revoked\_null\_ptr}} \right)$$
-活躍 Token 指針在 $<1\ \mu\text{s}$ 內被原子覆寫。Agent 後續的所有 API 呼叫立即傳回 `HTTP 403 FORBIDDEN`，零過期視窗。
+活躍 Token 指針在 $<1\ \mu\text{s}$ 內被原子覆寫。Agent 後續的所有 API 呼叫立即傳回 `HTTP 403 FORBIDDEN`，零過期視窗。如 **圖 3** 所示，原子指針切換確保了即時的權限撤銷，且完全不會阻塞併發的讀取路徑：
 
 ![圖 3: RCU 原子指針切換動態撤銷機制圖](fig5_dros_rcu_zh.png)
 *圖 3：採用 Read-Copy-Update (RCU) 原子指針切換實現 $O(1)$ 常數時間即時權限撤銷。*
@@ -124,6 +126,8 @@ DROS-6P 物理層治理內核已在雙 OS 環境（Windows 11 本地工作站 / 
 - **伺服器引擎**：運行於 `http://localhost:8000/` 的 Python `server.py` 多線程 HTTP/REST 守護程序。
 - **C-ABI 帶內攔截決策延遲**：實測決策延遲為 $t_{\text{decision}} = 26.1\ \mu\text{s}$（微秒級）。
 - **密碼學演算法**：SHA-256 (Merkle 雜湊)、Ed25519 (DIT 簽章)、Groth16 (ZKP-Lite)。
+
+為了評估高併發負載下的長期運行穩定性，我們進行了 72 小時連續高壓力 Soak Test 測試。如 **圖 4** 所示，DROS-6P 在微秒級決策延遲上展現出極高的穩定性，且完全無記憶體洩漏或效能衰退現象。此外，**圖 5** 提供了 DROS-6P 與傳統帶外政策引擎（如 OPA - Open Policy Agent）的決策延遲對比基準，實證 DROS-6P 帶內 C-ABI 攔截器比傳統 API 閘道快上數個數量級（$26.1\ \mu\text{s}$ 對比 $4.2\text{ms}$）。
 
 ![圖 4: 72 小時連續高壓 Soak Test 穩定性測試數據圖](fig2_dros_72h_soak_test.png)
 *圖 4：實證 72 小時連續高壓力測試，展示在高頻 Agent 負載下極微秒延遲之高度穩定性。*
