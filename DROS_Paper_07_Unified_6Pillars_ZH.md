@@ -6,7 +6,7 @@
 # DROS-6P：閉環企業級 AI Agent 六大信任邊界之確定性執行期治理架構 (DROS-6P Monograph)
 
 > **作者**：陳濬程 (Chun-Cheng (Jimmy) Chen) & DROS 核心工程團隊  
-> **機構**：康宸園有限公司 (Kang Chen Yuan Co., Ltd.) & OpenShip 生態系 DROS 架構實驗室  
+> **機構**：康宸園有限公司 (Top-Celestial Company Ltd.) & OpenShip 生態系 DROS 架構實驗室  
 > **專利保護錨點**：已申請美國臨時專利保護 (U.S. Provisional Patent Application No. 64/111,973, *Patent Pending*)  
 > **DOI 索引 / 預印本庫**：Zenodo / IEEE 格式技術報告 (繁體中文官方對照版)  
 > **日期**：2026 年 8 月
@@ -181,7 +181,7 @@ DROS-6P 依據國際專利公約建立了明確的 Prior Art（先前技術）�
 
 ## 參考文獻 (References)
 
-1. Chun-Cheng (Jimmy) Chen, Kang Chen Yuan Co., Ltd., OpenShip DROS Core Architecture Group, "DROS: Deterministic Runtime Operating System for Agentic Governance," *U.S. Provisional Patent Application No. 64/111,973*, Aug. 2026.
+1. Chun-Cheng (Jimmy) Chen, Top-Celestial Company Ltd., OpenShip DROS Core Architecture Group, "DROS: Deterministic Runtime Operating System for Agentic Governance," *U.S. Provisional Patent Application No. 64/111,973*, Aug. 2026.
 2. OpenShip Ecosystem, "DROS-VEP Lite Hackathon Showcase Repository," *GitHub*: `Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase`, 2026.
 3. Zenodo Record 20823163, "C-ABI In-Band Interceptor for Zero-Heap LLM Tool Bound Execution," 2026.
 4. Zenodo Record 21755654, "Deterministic Merkle Audit Trails and O(1) RCU Revocation in Agent Runtime Security," 2026.

@@ -6,7 +6,7 @@
 # DROS-6P: A Unified Deterministic Runtime Governance Architecture Closing the Six Fundamental Trust Boundaries of Enterprise AI Agents
 
 > **Authors**: Chun-Cheng (Jimmy) Chen (陳濬程) & DROS Core Engineering Team  
-> **Affiliation**: Kang Chen Yuan Co., Ltd. (康宸園有限公司) & OpenShip Ecosystem Architecture Group  
+> **Affiliation**: Top-Celestial Company Ltd. (康宸園有限公司) & OpenShip Ecosystem Architecture Group  
 > **Patent Anchor**: Protected under U.S. Provisional Patent Application No. 64/111,973 (*Patent Pending*)  
 > **DOI Index / Preprint Repository**: Zenodo / IEEE Style Technical Report  
 > **Date**: August 2026
@@ -181,7 +181,7 @@ Partial security frameworks are inadequate for the Autonomous Agentic Era. DROS-
 
 ## References
 
-1. Chun-Cheng (Jimmy) Chen, Kang Chen Yuan Co., Ltd., OpenShip DROS Core Architecture Group, "DROS: Deterministic Runtime Operating System for Agentic Governance," *U.S. Provisional Patent Application No. 64/111,973*, Aug. 2026.
+1. Chun-Cheng (Jimmy) Chen, Top-Celestial Company Ltd., OpenShip DROS Core Architecture Group, "DROS: Deterministic Runtime Operating System for Agentic Governance," *U.S. Provisional Patent Application No. 64/111,973*, Aug. 2026.
 2. OpenShip Ecosystem, "DROS-VEP Lite Hackathon Showcase Repository," *GitHub*: `Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase`, 2026.
 3. Zenodo Record 20823163, "C-ABI In-Band Interceptor for Zero-Heap LLM Tool Bound Execution," 2026.
 4. Zenodo Record 21755654, "Deterministic Merkle Audit Trails and O(1) RCU Revocation in Agent Runtime Security," 2026.
