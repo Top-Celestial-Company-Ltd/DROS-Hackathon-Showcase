@@ -201,6 +201,14 @@ Partial security frameworks are inadequate for the Autonomous Agentic Era. DROS-
 
 ---
 
+## Acknowledgment & AI Collaboration Disclosure
+
+In accordance with IEEE 2024+ authorship guidelines and enterprise AI governance transparency principles, the authors declare that the novel security concepts, physical-layer architecture, 6-pillar framework, mathematical formalisms, and patent claims presented in this work were independently conceptualized, architected, and validated by Chun-Cheng (Jimmy) Chen. 
+
+Generative AI agents (Google Antigravity & Gemini-Pro) were utilized strictly as assistive pair-programming tools for Markdown formatting, LaTeX typesetting, syntactic refinement, and automated test suite scaffolding (`test_verification_suite.py`). AI tools held zero decision-making authority over core architectural logic or patent scope.
+
+---
+
 ## References
 
 1. C.-C. (Jimmy) Chen, "DROS: Deterministic Runtime Operating System for Agentic Governance," *U.S. Provisional Patent Application No. 64/111,973*, filed Aug. 2026.

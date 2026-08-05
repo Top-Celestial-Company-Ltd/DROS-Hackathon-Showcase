@@ -197,7 +197,15 @@ DROS-6P 依據國際專利公約建立了明確的 Prior Art（先前技術）�
 
 ## 5. 結論 (Conclusion)
 
-在自主 Agent 時代，殘缺不全的安全架構是不可接受的。DROS-6P 證明了企業級 AI Agent 的安全部署，需要一個能在單次 $26.1\ \mu\text{s}$ 通過中，同時閉環回答 Principal、Authorization、Tool/Action Bound、Policy Gate、Audit Log 與 Expiry/Revocation 的物理層治理內核。DROS-6P 為規模化、合規且可信的企業 AI Agent 部署，提供了不可或缺的確定性基礎設施。
+局部安全框架在自主 Agentic 時代是遠遠不夠的。DROS-6P 實證了企業 AI Agent 安全需要單一、大一統的物理層治理微內核，同時解答 Principal、Authorization、Tool/Action Bound、Policy Gate、Audit Log 與 Expiry/Revocation。透過在單一 $26.1\ \mu\text{s}$ 帶內 Pass 中執行所有六項防護，DROS-6P 為可擴展、合規且可信賴的企業 AI 部署提供了奠基性的治理基礎設施。
+
+---
+
+## 致謝與 AI 協作宣告 (Acknowledgment & AI Collaboration Disclosure)
+
+依據 IEEE 2024+ 作者資格規範與企業 AI 治理透明度原則，作者明確宣告：本作品中提出之創新資安概念、物理層架構、六大要點框架、數學形式化與專利主張，均由陳濬程 (Chun-Cheng (Jimmy) Chen) 獨立構思、設計與驗證。
+
+生成式 AI Agent（Google Antigravity & Gemini-Pro）僅作為輔助結對程式設計工具，嚴格用於 Markdown 格式化、LaTeX 排版、語法修飾與自動化測試套件腳手架（`test_verification_suite.py`）之建立。AI 工具對核心架構邏輯與專利保護範圍不具備任何決策權。
 
 ---
 
