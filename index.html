@@ -56,6 +56,13 @@
             align-items: center;
             gap: 16px;
         }
+        .logo-img {
+            height: 48px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.4));
+            border-radius: 50%;
+        }
         .badge-brand {
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
             color: #000;
@@ -225,7 +232,7 @@
         
         <header>
             <div class="logo-group">
-                <div class="badge-brand">OPENSHIP / DROS</div>
+                <img src="dros_logo_round.png" alt="DROS Official Logo" class="logo-img">
                 <div class="title-group">
                     <h1>DROS Multi-VEP 跨機構雙向聯防發射台 (Multi-VEP Peer-to-Peer Mesh Launchpad)</h1>
                     <p>OpenShip 商業部署基礎設施 — 託管與指揮獨立跨機構/跨企業虛擬節點 (Multi-VEP Peer-to-Peer Zero-Trust Mesh)</p>
