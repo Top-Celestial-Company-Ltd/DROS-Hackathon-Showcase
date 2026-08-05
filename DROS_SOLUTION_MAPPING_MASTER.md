@@ -21,7 +21,7 @@
 | **Track 03** | **醫療保險**：跨產業資料合作的誘因與邊界 | 📄 [Track 03 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track03_healthcare_insurance/DROS_SOLUTION_MAPPING.md) | 🌐 VEP #03 (Healthcare & Insurance) |
 | **Track 04** | **政府服務**：解決憑證碎片化背後的資料孤島，跨機關代理授權邊界（代查 / 代送件 / 本人確認三層控制） | 📄 [Track 04 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track04_gov_services/DROS_SOLUTION_MAPPING.md) | 🌐 [GovProxy VEP](http://localhost:8000/track04_gov_services/index.html) |
 | **Track 05** | **普惠金融**：移工數位信任與防詐憑證機制，87萬移工多文件複合 DIT 綁定、三層漸進信任矩陣、SIM Swap 防禦與 O(1) 緊急凍結 | 📄 [Track 05 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track05_inclusive_finance/DROS_SOLUTION_MAPPING.md) | 🌐 [MigraTrust VEP](http://localhost:8000/track05_inclusive_finance/index.html) |
-| **Track 06** | *待大會 8/22 續公布細項主題 06* | 📄 *(大會公布後 5 分鐘極速自動對應)* | 🌐 VEP #06 (Standby) |
+| **Track 06** | **供應鏈貿易金融 (加分題)**：RBA 稽核合規可驗證憑證，採購 AI Agent 可驗證工廠合規性但無法讀完整稽核報告，選擇性揭露閘門 + ZKP-Lite + W3C VC 2.0 | 📄 [Track 06 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track06_supply_chain_rba/DROS_SOLUTION_MAPPING.md) | 🌐 [SupplyProof VEP](http://localhost:8000/track06_supply_chain_rba/index.html) |
 
 ---
 
