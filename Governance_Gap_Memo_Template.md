@@ -7,7 +7,7 @@
 **作品名稱**：DROS-VEP Lite 確定性 Agent 執行期治理網關  
 **團隊名稱**：DROS 隊 (Top Celestial)  
 **保護專利**：U.S. Provisional Patent Application No. 64/111,973  
-**驗證展示 Portal**：`http://localhost:8888/index.html`
+**驗證展示 Portal**：`http://localhost:8000/index.html`
 
 ---
 
@@ -111,7 +111,7 @@ X-ERP-Database: SAP-HANA-Enterprise-8081
 2. **啟動展示伺服器與實時對抗 API**：
    ```bash
    python server.py
-   # 開啟網址: http://localhost:8888/index.html
+   # 開啟網址: http://localhost:8000/index.html
    ```
 
 ---

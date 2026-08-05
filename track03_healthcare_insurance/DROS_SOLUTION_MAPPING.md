@@ -134,7 +134,7 @@ python test_verification_suite.py
 
 # 2. 開啟全賽道 VEP 展演控制台
 python server.py
-# 瀏覽器存取: http://localhost:8888/index.html
+# 瀏覽器存取: http://localhost:8000/index.html
 ```
 
 ---

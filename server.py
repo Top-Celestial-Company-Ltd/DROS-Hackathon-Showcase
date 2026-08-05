@@ -19,7 +19,7 @@ if sys.platform == 'win32':
     except Exception:
         pass
 
-PORT = 8888
+PORT = 8000
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 class ReusableTCPServer(socketserver.TCPServer):

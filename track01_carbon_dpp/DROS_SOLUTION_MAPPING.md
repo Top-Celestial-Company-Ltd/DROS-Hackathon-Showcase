@@ -216,7 +216,7 @@ python test_verification_suite.py
 
 # 2. 開啟 Track 01 專屬獨立 VEP 控制台
 python server.py
-# 瀏覽器存取: http://localhost:8888/track01_carbon_dpp/index.html
+# 瀏覽器存取: http://localhost:8000/track01_carbon_dpp/index.html
 ```
 
 ---
