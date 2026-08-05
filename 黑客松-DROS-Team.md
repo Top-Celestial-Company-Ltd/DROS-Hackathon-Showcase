@@ -6,7 +6,7 @@
 
 | 姓名 | 學歷與現職 | 團隊角色與分工 |
 | :--- | :--- | :--- |
-| **陳濬程 (Jimmy Chen)** | 德州大學 UTA EMBA / 政治大學經濟系<br>**Top-Celestial Company Ltd. (康宸園有限公司) 創辦人** | **團隊代表 / 核心技術平台架構師 / AI 協作**<br>• DROS (Deterministic Runtime Operating System) 創作者<br>• DROS-VajraClaw 微內核與 C-ABI 帶內攔截器研發<br>• U.S. PPA No. 64/111,973 發明人與學術論文作者 |
+| **陳濬程 (Chun-Cheng (Jimmy) Chen)** | 德州大學 UTA EMBA / 政治大學經濟系<br>**Top-Celestial Company Ltd. (康宸園有限公司) 創辦人** | **團隊代表 / 核心技術平台架構師 / AI 協作**<br>• DROS (Deterministic Runtime Operating System) 創作者<br>• DROS-VajraClaw 微內核與 C-ABI 帶內攔截器研發<br>• U.S. PPA No. 64/111,973 發明人與學術論文作者 |
 | **溫韋程** | 政治大學經濟系<br>**金融 / 保險產業專業經理人** | **金融與保險資安顧問 / AI 協作**<br>• Track 02 (Fintech AML) 與 Track 03 (HIPAA 醫療保險) 業務情境設計<br>• 金融跨機構隱私與洗錢聯防合規邊界規劃 |
 | **楊英宗** | 政治大學經濟系<br>**產業 / 政府標案專案經理人** | **公部門與產業行政程序顧問 / AI 協作**<br>• Track 04 (政府代理服務) 與 Track 06 (RBA 供應鏈) 行政流程設計<br>• 跨機關憑證代查、代送件與本人授權三層控制矩陣規劃 |
 
@@ -59,12 +59,35 @@ DROS 能夠在單一物理層 Runtime 內，以 **26.1 微秒（$\mu\text{s}$）
 └───────────────────────────┘      └───────────────────────────┘      └───────────────────────────┘
 ```
 
-1. **1️⃣ Principal (代表誰)** ── **DIT (Dros Identity Token)**：每個 Agent 啟動時自動注入 3 階 PKI 加密身份憑證，強綁定團隊、企業與法人，防範匿名冒用。
-2. **2️⃣ Authorization (授權範圍)** ── **Capability Bitmap**：將權限精確映射至二進位位元向量，實現零開銷的 `PERMIT` 與 `PROHIBITED` 動作區隔。
-3. **3️⃣ Tool / Action Bound (工具邊界)** ── **C-ABI 帶內攔截器**：嵌入在 FFI 函式呼叫鏈中，未授權呼叫在 **26.1 微秒內觸發物理硬熔斷**，Prompt Injection 100% 無法繞過。
-4. **4️⃣ Policy Gate (過濾門閥)** ── **資料遮蔽、HITL 與 ZKP-Lite**：帶內自動遮蔽機密欄位；高風險動作自動懸停觸發人工雙簽（Human-in-the-Loop）；採用 Groth16 零知識證明實現「可驗證合規而不洩露原始數據」。
-5. **5️⃣ Audit Log (稽核追溯)** ── **SHA-256 Merkle Hash Chain**：每次決策自動寫入密碼學前後鏈結之稽核鏈，點擊即可出示具備法院採信力（Court-Admissible）的驗證憑證。
-6. **6️⃣ Expiry / Revocation (動態撤銷)** ── **$O(1)$ RCU 常數時間指針切換**：採用 RCU 原子記憶體交換，管理者點擊「一鍵撤銷」，全網關在 $< 1\ \mu\text{s}$ 內註銷 Token，後續請求瞬間傳回 `HTTP 403 FORBIDDEN`。
+1. **1️⃣ Principal (代表誰) ── DIT (Dros Identity Token)**
+   - **三階動態 PKI 簽章 (3-Tier Dynamic PKI)**：當 Agent 被啟動或接收命令時，DROS 會在其 Request Header 帶內注入非對稱加密簽章之 DIT 憑證。此憑證由根 CA、企業端 VEP 網關與 Agent 實體三層密碼學簽署。
+   - **執行期動態上下文綁定**：DIT 不僅包含「Agent 身份」，更綁定「委託人 (Principal) 身份、呼叫 Session ID、允許之 Scope 陣列與過期時間戳」。
+   - **不可偽造性**：DIT Token 作用於二進位通訊標頭層，LLM 模型的文字生成層完全無權接觸或修改該 Token，杜絕了 Prompt 層面的身分偽造（Impersonation Attack）。
+
+2. **2️⃣ Authorization (授權範圍) ── Capability Bitmap (能力位元圖)**
+   - **暫存器層級位元映射 (Register-Level Bitmasking)**：在 VEP 網關加載政策時，系統會將數百種 API 方法與工具權限映射為二進位位元圖（Capability Bitmap）。例如 `Bit 0` 代表 `query_dpp`，`Bit 5` 代表 `execute_payment`。
+   - **$O(1)$ 常數時間邏輯位元運算**：當 Agent 發起呼叫時，網關直接在 CPU 暫存器層級執行 `AND` 位元遮罩運算（Bitwise Masking），判定時間低於數納秒（nanoseconds），完全免去文字檔解析、字串比對或 JSON 反序列化開銷。
+   - **嚴格的動態 Scope 隔離**：即使 Agent 被注入惡意指令要求呼叫 `execute_payment`，只要其 Capability Bitmap 中對應的位元為 `0`，請求在暫存器比對階段就直接被拒絕。
+
+3. **3️⃣ Tool / Action Bound (工具邊界) ── C-ABI 帶內攔截器 (In-Band C-ABI Interceptor)**
+   - **外國函式介面 (FFI) 帶內插樁**：DROS 的攔截點部署於 Agent SDK 呼叫外部 API 的二進位 C-ABI（C Application Binary Interface）邊界，而非外掛的網路代理（Proxy）。
+   - **26.1 微秒確定性硬熔斷**：當 Agent 嘗試觸發未授權之工具呼叫（Tool Call）時，C-ABI 攔截器會在 **26.1 微秒（$\mu\text{s}$）內** 直接丟棄該呼叫，並向 Agent SDK 傳回確定性硬錯誤（Hard Error）。
+   - **物理層隔離與串鏈阻斷**：此阻斷發生於記憶體分配與 Socket 傳送之前。即使黑客試圖透過「工具串鏈（Tool Chaining）」繞過防線，未經授權的下步呼叫依然會被 C-ABI 帶內熔斷硬性截斷。
+
+4. **4️⃣ Policy Gate (過濾門閥) ── 資料遮蔽、HITL 與 ZKP-Lite 選擇性揭露**
+   - **帶內動態資料去識別化 (In-Band Dynamic Redaction)**：API 回傳 Payload 在離開伺服器記憶體前，Policy Gate 會依據 DIT 權限自動進行欄位遮蔽，將敏感欄位物理覆寫為 `[REDACTED_BY_VEP]`，僅放行合規摘要。
+   - **異步狀態懸停與雙重簽署 (HITL Suspension)**：針對高風險 API 呼叫，Policy Gate 會自動將交易掛起（Suspend）至安全佇列，並向 Principal 的手機端 App 推送 2FA 授權通知（設有 300 秒逾時機制），經真人簽署後方可解凍執行。
+   - **ZKP-Lite 零知識證明閘門 (Groth16 Selective Disclosure)**：採用輕量化 Groth16 零知識證明演算法。系統能在**不傳遞任何原始敏感數據（如真實稽核分數或成本數字）的前提下**，向第三方驗證 Agent 輸出密碼學證明 $\pi$，證明「該數據 100% 符合法規門檻」，實現真正的選擇性揭露（Selective Disclosure）。
+
+5. **5️⃣ Audit Log (稽核追溯) ── SHA-256 Merkle Hash Chain (防篡改密碼學稽核鏈)**
+   - **密碼學前後鏈結 (Cryptographic Hash Linking)**：每次 Agent 發起請求、VEP 決策（放行、熔斷、遮蔽、懸停）與 API 回應，均會生成包含微秒級時間戳、Principal 身份與動作特徵的資料塊，並與前一筆紀錄的 Hash 進行 SHA-256 雙重雜湊。
+   - **Merkle Root 樹狀錨定**：系統自動將歷史對決雜湊建構成 Merkle Tree，並定期將 Merkle Root 簽章錨定至不可竄改日誌中。
+   - **獨立憑證出示 (Court-Admissible Cert Modal)**：點擊控制台上的任一日誌，可即時出示包含 Ed25519 簽章與 Merkle 驗證路徑的密碼學憑證（Certificate）。任何針對歷史日誌的單字竄改，都會導致整條雜湊鏈與 Merkle Root 驗證崩潰。
+
+6. **6️⃣ Expiry / Revocation (動態撤銷) ── $O(1)$ RCU 常數時間指針切換**
+   - **RCU（Read-Copy-Update）記憶體原子交換**：DROS 在共享記憶體層級實作 RCU 技術。管理員或資安系統發出「一鍵凍結 / 撤銷」指令時，系統直接在 CPU 暫存器層級執行 **原子指針切換 (Atomic Pointer Swap)**。
+   - **$< 1$ 微秒記憶體切斷**：Token 指針會在 **$< 1\ \mu\text{s}$（微秒）內** 被原子覆寫為無效/空指針。
+   - **零過期視窗 (Zero Stale-Session Window)**：指針切換後，後續所有來自該 Agent 的 API 請求，在下一個 $26.1\ \mu\text{s}$ 的 Pass 中一律傳回 `HTTP 403 FORBIDDEN`，整體撤銷在 1 秒之內於全網關 100% 生效，不留任何時間差漏洞。
 
 ---
 
