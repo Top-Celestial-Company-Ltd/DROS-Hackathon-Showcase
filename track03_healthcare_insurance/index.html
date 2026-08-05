@@ -395,16 +395,22 @@
         </div>
     </div>
 
-    <!-- 🌐 OpenShip 託管多企業 VEP 微服務遙測儀 -->
+    <!-- 🌐 OpenShip 託管多企業 VEP 微服務遙測儀 (Hospital VEP <-> Insurance VEP P2P Mesh) -->
     <div class="vep-stack-card">
         <div class="vep-stack-title">
-            <span>🌐 OpenShip Cloud 託管 VEP 微服務狀態 (MediGuard Health Microservices)</span>
+            <span>🌐 MediGuard 跨機構雙向聯防架構 (Multi-VEP Peer-to-Peer Inter-Gate Architecture)</span>
+            <span style="font-size:0.75rem; color:var(--accent-green); border:1px solid var(--accent-green); padding:2px 8px; border-radius:4px; margin-left:auto;">🌐 VEP-1 (Insurance Claim) ◄── Zero-Trust Mesh ──► VEP-2 (Hospital EHR)</span>
         </div>
-        <div class="vep-stack-grid">
+        <div class="vep-stack-grid" style="grid-template-columns: repeat(5, 1fr);">
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🤖</div>
                 <div class="vep-mini-h">InsurTech Claim Agent</div>
                 <div class="vep-mini-sub">SDK Port 443 (Connected)</div>
+            </div>
+            <div class="vep-mini-box">
+                <div class="vep-mini-icon">🌐</div>
+                <div class="vep-mini-h">Multi-VEP P2P 通道</div>
+                <div class="vep-mini-sub">Insur-VEP ◄► Hosp-VEP</div>
             </div>
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🛡️</div>
