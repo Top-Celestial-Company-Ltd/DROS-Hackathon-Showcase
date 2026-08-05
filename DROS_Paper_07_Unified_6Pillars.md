@@ -72,13 +72,18 @@ Current enterprise security tools fail because they treat these six questions in
 │  Pillar 4: POLICY GATE       │        │  Pillar 5: AUDIT LOG         │        │  Pillar 6: REVOCATION        │
 │  Redaction / HITL / ZKP-Lite │        │  SHA-256 Merkle Hash Chain   │        │  O(1) RCU Pointer Swap       │
 │  • Selective Disclosure      │        │  • Ed25519 Signed Certs      │        │  • Instant 403 Enforcement   │
-└──────────────────────────────┘        └──────────────────────────────┘        └──────────────────────────────┘
 ```
+
+![Figure 1: DROS Physical-Layer Defense-in-Depth Architecture](fig1_dros_defense_layers_en.png)
+*Figure 1: DROS-6P physical-layer in-band defense-in-depth architecture, showing PKI DIT injection, Capability Bitmaps, C-ABI FFI interceptor, Policy Gate, Merkle Log, and RCU atomic revocation.*
 
 ### 2.1 Pillar 1: Principal — Dros Identity Token (DIT)
 DROS-6P binds every agent invocation to a 3-tier PKI-signed **Dros Identity Token (DIT)**. A DIT $\mathcal{T}_{\text{DIT}}$ is defined as the tuple:
 $$\mathcal{T}_{\text{DIT}} = \Big( \text{ID}_{\text{principal}}, \text{ID}_{\text{agent}}, \mathcal{K}_{\text{pub}}, \mathcal{S}_{\text{scope}}, \mathcal{P}_{\text{prohibited}}, t_{\text{exp}}, \sigma_{\text{Ed25519}} \Big)$$
 Where $\text{ID}_{\text{principal}}$ explicitly registers the legal entity, citizen, or enterprise team on whose behalf the agent operates, preventing agent impersonation.
+
+![Figure 2: 3-Tier PKI Dynamic DIT Token Signature Chain](fig4_dros_pki_chain_en.png)
+*Figure 2: 3-Tier PKI cryptographic signing chain for DROS Identity Tokens (DIT).*
 
 ### 2.2 Pillar 2: Authorization — Deterministic Capability Bitmaps
 Authorization is evaluated using zero-heap $O(1)$ **Capability Bitmaps**. Given a set of $N$ system tools $\mathcal{M} = \{m_1, m_2, \dots, m_N\}$, an agent's permission state is represented as a bit-vector $\mathbf{B} \in \{0, 1\}^N$:
@@ -107,6 +112,9 @@ Authorization revocation must be instant. DROS-6P implements **Read-Copy-Update 
 $$\text{AtomicSwap}\left( \mathcal{P}_{\text{active\_token\_ptr}}, \mathcal{P}_{\text{revoked\_null\_ptr}} \right)$$
 The active token pointer is atomically overwritten in $<1\ \mu\text{s}$. Subsequent API calls by the agent instantly evaluate to `HTTP 403 FORBIDDEN` with zero stale session window.
 
+![Figure 3: RCU Atomic Pointer Swap Mechanism](fig5_dros_rcu_en.png)
+*Figure 3: Read-Copy-Update (RCU) atomic pointer swapping for instant $O(1)$ token revocation.*
+
 ---
 
 ## 3. Empirical Evaluation, Reproducible Testbed & Benchmark Results
@@ -116,6 +124,12 @@ The DROS-6P physical-layer governance kernel was deployed and benchmarked on a d
 - **Server Engine**: Python `server.py` multi-threaded HTTP/REST daemon running at `http://localhost:8000/`.
 - **C-ABI / FFI Interceptor Latency**: Measured in-band decision latency $t_{\text{decision}} = 26.1\ \mu\text{s}$.
 - **Cryptographic Algorithms**: SHA-256 (Merkle Hash), Ed25519 (DIT Signatures), Groth16 (ZKP-Lite).
+
+![Figure 4: 72-Hour Continuous Stress & Soak Test Stability Benchmark](fig2_dros_72h_soak_test.png)
+*Figure 4: Empirical 72-hour continuous stress & soak test showing microsecond latency stability under continuous agent workloads.*
+
+![Figure 5: DROS vs OPA (Open Policy Agent) Decision Latency Comparison Benchmark](fig3_dros_vs_opa_benchmark.png)
+*Figure 5: Microsecond latency comparison benchmark: DROS-6P in-band C-ABI ($26.1\ \mu\text{s}$) vs OPA / traditional API Gateways.*
 
 ### 3.2 Executable Verification Suite (`test_verification_suite.py`)
 To guarantee 100% scientific reproducibility, the governance assertions were formalised into an automated TDD test suite (`test_verification_suite.py`). Table 2 details the execution benchmark results:

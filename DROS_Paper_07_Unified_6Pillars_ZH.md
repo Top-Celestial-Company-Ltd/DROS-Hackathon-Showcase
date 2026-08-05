@@ -72,13 +72,18 @@
 │  要點 4: POLICY GATE (門閥)  │        │  要點 5: AUDIT LOG (稽核)    │        │  要點 6: REVOCATION (撤銷)   │
 │  遮蔽 / HITL / ZKP-Lite      │        │  SHA-256 Merkle 雜湊鏈        │        │  O(1) RCU 原子指針切換       │
 │  • 選擇性揭露與雙簽懸停        │        │  • Ed25519 簽章與法院憑證     │        │  • 秒級 403 硬性阻斷          │
-└──────────────────────────────┘        └──────────────────────────────┘        └──────────────────────────────┘
 ```
+
+![圖 1: DROS 物理層帶內縱深防禦架構圖](fig1_dros_defense_layers_zh.png)
+*圖 1：DROS-6P 物理層帶內縱深防禦架構圖，展示 PKI DIT 身份注入、Capability Bitmaps 位元圖、C-ABI FFI 攔截器、Policy Gate 門閥、Merkle 稽核鏈與 RCU 原子動態撤銷機制。*
 
 ### 2.1 要點 1：Principal (代表誰) —— Dros Identity Token (DIT)
 DROS-6P 將每次 Agent 呼叫綁定至 3 階 PKI 簽章的 **Dros Identity Token (DIT)**。DIT $\mathcal{T}_{\text{DIT}}$ 定義為多元組：
 $$\mathcal{T}_{\text{DIT}} = \Big( \text{ID}_{\text{principal}}, \text{ID}_{\text{agent}}, \mathcal{K}_{\text{pub}}, \mathcal{S}_{\text{scope}}, \mathcal{P}_{\text{prohibited}}, t_{\text{exp}}, \sigma_{\text{Ed25519}} \Big)$$
 其中 $\text{ID}_{\text{principal}}$ 明確登記了 Agent 所代表的法人、公民或企業團隊，杜絕 Agent 匿名冒用。
+
+![圖 2: 3 階 PKI 動態 DIT 憑證簽章鏈示意圖](fig4_dros_pki_chain_zh.png)
+*圖 2：DROS 身份標籤 (DIT) 之 3 階 PKI 密碼學簽章鏈結機制。*
 
 ### 2.2 要點 2：Authorization (授權邊界) —— 確定性 Capability Bitmaps
 授權判定採用零堆積（Zero-Heap）的 $O(1)$ **Capability Bitmaps**。給定系統工具集合 $\mathcal{M} = \{m_1, m_2, \dots, m_N\}$，Agent 的權限狀態表示為位元向量 $\mathbf{B} \in \{0, 1\}^N$：
@@ -107,6 +112,9 @@ $$H_i = \text{SHA-256}\Big( H_{i-1} \parallel t_i \parallel \text{ID}_{\text{pri
 $$\text{AtomicSwap}\left( \mathcal{P}_{\text{active\_token\_ptr}}, \mathcal{P}_{\text{revoked\_null\_ptr}} \right)$$
 活躍 Token 指針在 $<1\ \mu\text{s}$ 內被原子覆寫。Agent 後續的所有 API 呼叫立即傳回 `HTTP 403 FORBIDDEN`，零過期視窗。
 
+![圖 3: RCU 原子指針切換動態撤銷機制圖](fig5_dros_rcu_zh.png)
+*圖 3：採用 Read-Copy-Update (RCU) 原子指針切換實現 $O(1)$ 常數時間即時權限撤銷。*
+
 ---
 
 ## 3. 實證評估、可重現測試環境與基準測試數據 (Empirical Evaluation & Benchmarks)
@@ -116,6 +124,12 @@ DROS-6P 物理層治理內核已在雙 OS 環境（Windows 11 本地工作站 / 
 - **伺服器引擎**：運行於 `http://localhost:8000/` 的 Python `server.py` 多線程 HTTP/REST 守護程序。
 - **C-ABI 帶內攔截決策延遲**：實測決策延遲為 $t_{\text{decision}} = 26.1\ \mu\text{s}$（微秒級）。
 - **密碼學演算法**：SHA-256 (Merkle 雜湊)、Ed25519 (DIT 簽章)、Groth16 (ZKP-Lite)。
+
+![圖 4: 72 小時連續高壓 Soak Test 穩定性測試數據圖](fig2_dros_72h_soak_test.png)
+*圖 4：實證 72 小時連續高壓力測試，展示在高頻 Agent 負載下極微秒延遲之高度穩定性。*
+
+![圖 5: DROS 與 OPA (Open Policy Agent) 決策延遲比較圖](fig3_dros_vs_opa_benchmark.png)
+*圖 5：微秒級延遲對比基準測試：DROS-6P 帶內 C-ABI ($26.1\ \mu\text{s}$) 對比 OPA 與傳統 API Gateway。*
 
 ### 3.2 可執行驗證套件數據 (`test_verification_suite.py`)
 為保證 100% 可重現性，治理斷言已形式化為自動化 TDD 測試套件 (`test_verification_suite.py`)。表 2 展示了自動化測試之驗證結果：
