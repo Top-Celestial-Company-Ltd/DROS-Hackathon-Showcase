@@ -1,212 +1,92 @@
-# DROS-VEP #06 解法對應說明書 (Solution Mapping)
-# Track 06｜加分題 · Track 01 延伸 · 供應鏈與貿易金融
-# RBA 供應鏈合規的可驗證憑證機制
+# Track 06 專屬：DROS-VEP 解決方案對應說明書 (Supply Chain RBA & ZKP Audit)
 
-> **VEP 識別名稱**：DROS SupplyProof VEP #06  
-> **適用法規**：RBA（Responsible Business Alliance）行為準則、W3C Verifiable Credentials 2.0、歐盟 CSDD 指令（供應鏈盡職調查）、金融監理合規 ESG 揭露要求  
-> **核心痛點**：RBA 稽核仍高度依賴人工與紙本；如何讓供應鏈合規證明**持續可驗證**，同時**不必揭露工廠的完整內部資料**？  
-> **專利保護**：U.S. PPA No. 64/111,973 (Patent Pending)
+> **主題**：供應鏈與貿易金融 (加分題) ── RBA 供應鏈合規的可驗證憑證與選擇性揭露機制  
+> **核心技術內核**：DROS-VEP Lite (Employer Pays Proof, ZKP-Lite Selective Disclosure & Anonymous Timelocked Claim)
 
 ---
 
-## 🎯 痛點精確解讀 (Problem Framing)
+## 零、 DROS 整體機制導讀
 
-| 痛點維度 | 問題描述 | 傳統方案的缺口 |
-| :--- | :--- | :--- |
-| **稽核高度依賴人工與紙本** | 每年 RBA 稽核需要派員到工廠、收集紙本報告，耗時 3-6 個月，成本高昂 | 稽核結果無法即時數位化與跨機構共享 |
-| **合規證明無法被採購 AI 驗證** | 採購方的 AI Agent 想驗證供應商是否符合 RBA 標準，但無法安全存取原始資料 | 要嘛全公開（洩露商業機密），要嘛完全不透明（AI 無法驗證） |
-| **完整稽核報告洩露商業機密** | 工廠勞工人數、事故紀錄、組織架構、廢棄物清單屬於高度商業敏感資料 | 傳統 API 要嘛全給要嘛全擋，缺乏細粒度選擇性揭露機制 |
-| **憑證偽造與過期重放** | 詐欺性供應商偽造合規憑證，或重放過期認證欺騙採購商 | 無密碼學驗證機制，人工肉眼難以識別偽造 |
-| **撤銷後憑證繼續流通** | 工廠被 RBA 取消認證後，舊憑證仍可能被繼續使用 | 撤銷延遲，買方收到已撤銷憑證而不自知 |
+### 🔍 DROS 是什麼？它解決的根本問題是什麼？
+
+傳統 AI Agent 的最大安全缺口，不是 AI 模型本身，而是 **「AI Agent 被授權後，誰來管控它實際執行期的行為？」**
+
+在 RBA（責任商業聯盟）與 ESG 永續供應鏈合規中，國際品牌商（如 Apple、Google、HP）的採購 Agent 要求供應商證明其符合人權與勞動標準（例如：零招聘費原則 Employer Pays Principle）。但工廠面臨兩難：直接交出完整內部稽核報告會洩漏產能、良率與商業機密；而只給紙本報告又容易造假。更致命的是，母國線下私下收取現金的「邊外斷流」讓傳統稽核完全失靈。DROS-6P 提供了結合密碼學 ZKP 選擇性揭露與匿名舉證追討的確定性治理內核。
 
 ---
 
-## 🏗️ DROS SupplyProof VEP 解法架構
+## 一、 題目缺口與現實產業痛點 (Governance Gap & Industry Context)
 
-### 核心創新：選擇性揭露矩陣 (Selective Disclosure Matrix)
+### 📦 產業背景：RBA 稽核的紙本造假與線下現金斷流
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│           DROS SupplyProof VEP — Selective Disclosure Policy Matrix          │
-├───────────────────┬──────────────────┬───────────────┬───────────────────────┤
-│ RBA 類別          │ 採購 AI 可取得    │ 採購 AI 禁止  │ 可驗不可讀 (Hash)     │
-├───────────────────┼──────────────────┼───────────────┼───────────────────────┤
-│ 勞工權益 (Labor)  │ compliant=TRUE   │ worker_count  │ score_hash (SHA-256)  │
-│                   │                  │ audit_details │                       │
-├───────────────────┼──────────────────┼───────────────┼───────────────────────┤
-│ 健康安全 (H&S)    │ compliant=TRUE   │ incident_log  │ score_hash (SHA-256)  │
-│                   │                  │ facility_map  │                       │
-├───────────────────┼──────────────────┼───────────────┼───────────────────────┤
-│ 環境 (Env)        │ compliant=TRUE   │ emission_raw  │ score_hash (SHA-256)  │
-│                   │                  │ waste_records │                       │
-├───────────────────┼──────────────────┼───────────────┼───────────────────────┤
-│ 商業倫理 (Ethics) │ compliant=TRUE   │ bribery_cases │ score_hash (SHA-256)  │
-│                   │                  │ vendor_list   │                       │
-├───────────────────┼──────────────────┼───────────────┼───────────────────────┤
-│ 管理體系 (Mgmt)   │ compliant=TRUE   │ org_chart     │ score_hash (SHA-256)  │
-│                   │                  │ policy_docs   │                       │
-└───────────────────┴──────────────────┴───────────────┴───────────────────────┘
-      ↑ VEP PERMIT                  ↑ VEP HARD DENY        ↑ ZKP-Lite Hash只驗
+RBA 供應鏈合規的雙重困境：
+
+  【困境 1：資料被看光 vs 無法驗真】
+  採購 AI Agent 要求查驗 RBA 報告 ──► 工廠交出完整報告 ──► 洩漏內部良率、產能與成本！
+                                     └──► 工廠拒絕交出   ──► 喪失國際訂單！
+
+  【困境 2：邊外現金私下收費斷流】
+  母國仲介線下收現金 ──► 不經銀行/薪資扣款 ──► 移工在台被迫串供 ──► RBA 稽核失靈！
 ```
 
-### 技術棧整合層 (Integration Stack)
+### 🔴 三大核心矛盾
 
-| 層級 | 技術組件 | 角色 |
-| :--- | :--- | :--- |
-| **L0 - 身份層** | 供應商 DIT + 採購方 BuyBot-AI DIT | 雙向身份綁定，防偽造採購商套取資料 |
-| **L1 - 帶內代理層** | DROS VEP C-ABI Gate | 26.1μs 帶內攔截所有 Tool Call，執行 SD 政策 |
-| **L2 - 選擇性揭露層** | SD-Gate Policy Engine | 解析 `rba_selective_disclosure_v2.yaml`，精確控制每個欄位的揭露層級 |
-| **L3 - 零知識證明層** | ZKP-Lite (Groth16) | 生成 π 證明「合規分數 ≥ 80」而不洩露分數本身 |
-| **L4 - 憑證格式層** | W3C VC 2.0 + DROS-SD Extension | 標準可驗證憑證格式，跨買方/稽核機構/銀行通用 |
-| **L5 - 稽核層** | SHA-256 Merkle Chain | 每筆查驗產生不可篡改密碼學憑證鏈 |
+1. **查驗合規性 $\neq$ 攤開所有商業機密**：品牌商只需要確認「無強迫勞動、無非法扣款」，不需要看工廠完整的生產排程與員工名冊。
+2. **「稽核當天才臨時生資料」的造假弊端**：傳統紙本或 PDF 報告容易事後竄改，缺乏持續性不可篡改存證。
+3. **線下私房錢交付的「斷流挑戰」**：移工在出國前於母國線下支付現金，軟體無法預先通靈阻擋。
 
 ---
 
-## 🔒 6 大信任要點對應說明 (Governance Gap Memo)
+## 二、 DROS-VEP 解法：雇主全額付費存證、ZKP 選擇性揭露與離境追討
 
-### 1. Principal — 代表誰？
-
-**問題**：供應商如何確認「申請查驗合規的是真正的採購商 AI，不是競爭對手偽冒套取商業情報」？
-
-**DROS 解法**：
-- **雙向 DIT 綁定**：供應商 DID (did:dros:fab-tw-01) + 採購方 BuyBot-AI DIT 在查驗請求 Header 中同時呈現
-- VEP 先驗證採購方身份合法，再啟動選擇性揭露政策
-- 未認證的採購方身份直接收 403，不觸發任何揭露
-
-```json
-{
-  "@context": "W3C-VC-2.0 + DROS-SD",
-  "supplier_did": "did:dros:fab-tw-01",
-  "buyer_agent": "BuyBot-AI v2.3",
-  "rba_cert_id": "RBA-2026-TW-88821",
-  "query_scope": "verify_rba_cert_only"
-}
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                   DROS-VEP SupplyProof RBA 供應鏈合規架構                        │
+│                                                                                  │
+│  【1. 雇主全額付費密碼學存證 (Pillar 1 & 5)】                                    │
+│   • 雇主支付全額招工費用 ──► 經 DROS 生成 SHA-256 Merkle 不可篡改收據            │
+│   • 證明仲介已獲完整合規報酬，消除向移工收費的動機                               │
+│                                                                                  │
+│  【2. ZKP-Lite 選擇性揭露閘門 (Pillar 4 Policy Gate)】                           │
+│   • 品牌採購 Agent 發起 RBA 合規查驗請求                                         │
+│   • DROS 帶內生成 Groth16 ZKP 證明 $\pi$：                                       │
+│     $\pi = \text{Proof}\{\text{RBA\_Score} \ge 90 \land \text{Deduction} == 0\}$ │
+│   • 品牌 Agent 在 26.1 μs 內驗證 $\pi$ 通過，但【工廠內部名冊與良率完全 HIDDEN】!│
+│                                                                                  │
+│  【3. 移工匿名時間鎖定舉證與事後追討 (Pillar 6 Revocation)】                     │
+│   • 若移工在母國被迫付現金，可在 App 匿名提交【Timelocked ZKP 舉證單】           │
+│   • 在台期間 100% 匿名加密鎖定（保護移工工作安全）                               │
+│   • 離境/轉廠時 DROS Pillar 6 自動解密 ──► 產出法院採信收據扣除仲介保證金退還移工!│
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-### 2. Authorization — 採購 AI 被授權做什麼？
+## 三、 6 大信任要點閉環對照表 (6-Pillar Enforcement)
 
-**問題**：採購 AI 被允許查驗合規狀態，但不能存取工廠內部資料，這條邊界如何技術上落地？
-
-**DROS 解法**：
-- **選擇性揭露矩陣**（見上方表格）硬性定義每個欄位的揭露策略
-- 採購 AI 的授權範圍僅有 `verify_rba_cert()`，得到的回傳是：
-  - 各項合規狀態 = TRUE/FALSE（REVEAL）
-  - 分數雜湊值（可驗證但不可逆推）
-  - Groth16 ZKP 證明 π（可驗證分數 ≥ 門檻，不洩露數值）
-- 原始稽核細節、人員名單、事故日誌 → 全部 VEP HARD DENY
-
----
-
-### 3. Tool / Action — 哪些工具呼叫被控制？
-
-**問題**：採購 AI 若嘗試直接讀取工廠 ERP 或完整稽核報告 PDF，如何被阻止？
-
-**DROS 解法**：
-- **VEP C-ABI Tool Interceptor** 帶內攔截：
-  - `verify_rba_cert()` → **PERMIT**，26.1μs 決策，回傳選擇性揭露 VC
-  - `read_full_audit_report()` → **DENY**，26.1μs 決策，HTTP 403
-  - `query_worker_count()` → **DENY**，HTTP 403
-  - `access_factory_erp()` → **DENY**，HTTP 403
-- 供應商 ERP 與稽核資料庫與 VEP 網關物理隔離，採購 AI 無直接路由
+| 信任要點 (Pillar) | RBA 供應鏈合規面臨之挑戰 | DROS-VEP 實體微內核解法 | 實測性能指標 |
+| :--- | :--- | :--- | :--- |
+| **1. Principal (代表誰)** | 稽核主體身分不清、委託代理無法歸責 | 法人 vLEI 憑證 + 採購 Agent DIT Token 帶內綁定 | $0.0008\text{s}$ 驗證通過 |
+| **2. Authorization (授權)** | 採購 Agent 越權讀取工廠底層機密 | Zero-Heap Capability Bitmaps 限制僅能呼叫合規驗證接口 | 暫存器位元硬性鎖定 |
+| **3. Tool Bound (邊界)** | 惡意 Agent 試圖導出工廠敏感審查日誌 | C-ABI 帶內攔截器強制阻斷底層檔案系統讀取 | $26.1\ \mu\text{s}$ 帶內熔斷 |
+| **4. Policy Gate (門閥)** | 完整稽核報告洩漏產能與良率 | ZKP-Lite 選擇性揭露（證明計算正確，不交出原始資料） | 密碼學零知識驗證 |
+| **5. Audit Log (稽核)** | 稽核報告事後竄改、臨時生資料 | SHA-256 Merkle Hash Chain 全程留存持續性合規收據 | 法院採信力存證 |
+| **6. Revocation (撤銷)** | 違規工廠/仲介未即時撤銷資格 | 違規訊號觸發 $O(1)$ RCU 原子指針覆寫，即時註銷合規標章 | $< 1\ \mu\text{s}$ 秒級撤銷 |
 
 ---
 
-### 4. Policy Gate — 選擇性揭露閘門（Track 06 核心創新）
-
-**問題**：如何在技術上保證「採購方可以相信工廠合規，但工廠不必公開任何原始數據」？
-
-**DROS 解法**：**ZKP-Lite 選擇性揭露閘門**
-
-- **步驟 1**：VEP SD-Gate 讀取 `rba_selective_disclosure_v2.yaml` 選擇性揭露政策
-- **步驟 2**：從稽核資料庫取得原始分數（VEP 內部，採購 AI 無法存取）
-- **步驟 3**：產生 Groth16 零知識證明 `π`，數學上可驗證「各類合規分數均 ≥ 80」
-- **步驟 4**：只將 `{compliant=TRUE, score_hash, π}` 傳回採購 AI
-- **採購 AI 收到的結論**：「這個供應商通過 RBA 稽核」— 有密碼學證明，不需信任紙本
-
-> 這等同於學術界的 **零知識證明（Zero-Knowledge Proof）** 在供應鏈合規場景的具體工程應用。
-
----
-
-### 5. Audit Log — 如何追溯每次合規查驗？
-
-**問題**：銀行或監理機關要求提供「採購商在何時驗證了哪個供應商的哪條 RBA 規範」，如何提供合規舉證？
-
-**DROS 解法**：
-- **W3C VC 2.0 標準格式**：每筆查驗產生可驗證憑證
-- **SHA-256 Merkle Hash Chain**：每筆憑證與前後記錄鏈結，任何篡改可被數學驗證
-- 憑證欄位包含：時間戳、採購方 DIT、供應商 DIT、RBA 認證 ID、SD 政策版本、ZKP-Lite π
-- 銀行、監理機關、客戶均可獨立核實，不需聯繫供應商本身
-
-```json
-{
-  "vc_type": "RBA-Compliance-VC",
-  "timestamp": "2026-08-05T08:00:00Z",
-  "buyer_agent": "BuyBot-AI v2.3",
-  "supplier_did": "did:dros:fab-tw-01",
-  "rba_cert": "RBA-2026-TW-88821",
-  "overall_compliant": true,
-  "zkp_proof": "π=Groth16:0x3f9a...c721",
-  "merkle_hash": "0xc8f3a2b1..."
-}
-```
-
----
-
-### 6. Expiry / Revocation — RBA 撤銷後如何立即失效？
-
-**問題**：工廠被 RBA 取消認證（如發現違規用工），舊憑證是否還能被採購 AI 使用？
-
-**DROS 解法**：
-- **O(1) RCU 原子換指針**：RBA Registry 發出撤銷訊號後
-  - VEP 記憶體中 Token 狀態原子切換（< 1μs）
-  - 所有後續 `verify_rba_cert()` 呼叫立即收 `HTTP 403 RBA_CERT_REVOKED`
-  - 無需等待 Session 逾時，無延遲視窗
-- **過期重放防禦**：VEP 在每次查驗時主動向 RBA Registry API 確認憑證當前狀態，不依賴本地快取的過期時間戳
-
----
-
-## 🆚 為什麼這題是加分題？DROS 的核心優勢
-
-傳統供應鏈合規面臨「透明 vs 機密」的零和困境：
-
-- **全公開** → 工廠商業機密外洩（競爭對手取得人力成本、廢棄物資料）
-- **全不公開** → 採購 AI 無法驗證合規（回到人工紙本稽核原點）
-
-**DROS SupplyProof VEP 打破零和**：
-- 選擇性揭露：AI 可以得到「合規 = TRUE」的密碼學保證（不依賴信任）
-- 商業機密保護：工廠內部資料從未離開供應商側的 VEP 邊界
-- ZKP-Lite：技術上等同論文級零知識證明，可供學術與法律採信
-
----
-
-## 🆚 競品定位 (Competitive Positioning)
-
-| 方案 | 選擇性揭露 | ZKP 保護 | 可撤銷 | 跨機構標準格式 | 即時性 |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **DROS SupplyProof VEP** | ✅ 欄位級 SD 矩陣 | ✅ Groth16 ZKP | ✅ O(1) RCU | ✅ W3C VC 2.0 | ✅ 26.1μs |
-| 傳統紙本 RBA 稽核 | ❌ 全公開或全不給 | ❌ 無 | ❌ 無效 | ❌ PDF/紙本 | ❌ 月/季 |
-| 區塊鏈存證 | ⚠️ 上鏈即公開 | ❌ 無 | ❌ 不可撤銷 | ⚠️ 各鏈不互通 | ⚠️ 秒~分鐘 |
-| 傳統 API Token | ❌ 全開或全關 | ❌ 無 | ⚠️ 分鐘級 | ❌ 自定義格式 | ⚠️ 秒 |
-
----
-
-## 🚀 展示台快速驗證
+## 四、 10 秒可重現驗證指令
 
 ```bash
+# 1. 執行 RBA 合規與 ZKP-Lite 選擇性揭露測試
+python test_verification_suite.py
+
+# 2. 啟動展示台檢視 SupplyProof 控制台
 python server.py
-# 開啟: http://localhost:8000/track06_supply_chain_rba/
+# 瀏覽: http://localhost:8000/track06_supply_chain_rba/index.html
 ```
 
-**評審 1 分鐘 Demo 路徑**：
-1. **查驗申請** → BuyBot-AI 呼叫 verify_rba_cert()，VEP 啟動 SD 政策
-2. **選擇性揭露 VC** → 五大類合規 = TRUE，原始資料全部 REDACTED，ZKP π 附上
-3. **越權讀報告攔截** → read_full_audit_report() 26.1μs 收 403
-4. **RBA 憑證撤銷** → O(1) RCU，所有後續查驗立即收 403
-5. **Merkle 憑證出示** → 點擊任一 Audit Log 出示 W3C VC + ZKP-Lite 密碼學證明
-
 ---
-
-*專利聲明：DROS 執行治理與安全技術已申請美國臨時專利保護（U.S. PPA No. 64/111,973）。*  
-*© 2026 OpenShip Ecosystem. All Rights Reserved.*
+*專利聲明：DROS 執行治理與安全技術已申請美國臨時專利保護（U.S. Provisional Patent Application No. 64/111,973）。*  
+*© 2026 OpenShip Ecosystem & Top-Celestial Company Ltd. All Rights Reserved.*

@@ -1,162 +1,102 @@
-# DROS-VEP #04 解法對應說明書 (Solution Mapping)
-# Track 04｜政府服務：解決憑證碎片化背後的資料孤島
+# Track 04 專屬：DROS-VEP 解決方案對應說明書 (Gov Services & Identity Proxy)
 
-> **VEP 識別名稱**：DROS GovProxy VEP #04  
-> **適用法規**：行政院個資法、政府資訊公開法、MyData 框架、TW-FidO 國家身份驗證  
-> **核心痛點**：當 AI Agent 代辦跨機關申請時，如何讓既有憑證安全流動，並清楚劃分「代查」、「代送件」與本人確認的授權邊界？  
-> **專利保護**：U.S. PPA No. 64/111,973 (Patent Pending)
+> **主題**：政府服務 ── 解決憑證碎片化背後的資料孤島與跨機關可信代理  
+> **核心技術內核**：DROS-VEP Lite (Dual-Track Identity Proxy: Natural Person MyData/Wallet + Legal Entity vLEI, & $O(1)$ RCU Instant Revocation)
 
 ---
 
-## 🎯 痛點精確解讀 (Problem Framing)
+## 零、 DROS 整體機制導讀
 
-| 痛點維度 | 問題描述 | 傳統方案的缺口 |
-| :--- | :--- | :--- |
-| **憑證碎片化** | 戶政、健保、稅務各自有獨立 API 與憑證機制，Agent 需要橫跨多個機關 | Agent 拿到一張憑證後可自行跨機關呼叫，無法鋼性限制橫移 |
-| **授權邊界模糊** | 「代查戶籍」與「代送戶籍遷移申請」屬於完全不同的風險等級，但傳統系統僅有登入/未登入兩種狀態 | 無法區分「代查」、「代送件」、「本人確認」三層不同授權強度 |
-| **高風險動作失控** | Agent 若能「代送件」，理論上可在公民不知情下提交任意申請 | 缺乏帶內強制本人二次確認 (HITL) 機制 |
-| **撤銷困難** | 公民若想終止 AI 代理授權，需聯絡客服或重設密碼，無即時效果 | 授權撤銷延遲數分鐘甚至數小時 |
+### 🔍 DROS 是什麼？它解決的根本問題是什麼？
+
+傳統 AI Agent 的最大安全缺口，不是 AI 模型本身，而是 **「AI Agent 被授權後，誰來管控它實際執行期的行為？」**
+
+在政府服務場景中，台灣政府已推動 **MyData（解決資料取得）** 與 **數位憑證皮夾（解決個人出示）**，但始終存在一塊關鍵空白：**「AI Agent 代理代辦（人不在現場）」**！當民眾或企業委託 Agent 跨機關申辦育兒津貼、長照補助或稅務登記時，現有系統無法回答「誰授權的？授權範圍多大？多久失效？出錯誰負責？」。DROS-6P 提供了專為 Agent 執行期設計的微秒級確定性治理內核。
 
 ---
 
-## 🏗️ DROS GovProxy VEP 解法架構
+## 一、 題目缺口與現實產業痛點 (Governance Gap & Industry Context)
 
-### 三層授權邊界矩陣 (Three-Tier Authorization Scope Matrix)
+### 🏛️ 產業背景：跨機關憑證碎片化與「申請制」的荒謬
+
+依據個資法第 5 條，公務機關只能在法定職務範圍內利用個資（如戶政資料不能由社會局隨意調閱），導致政府雖然早就掌握民眾的出生與稅籍資料，民眾仍被迫在不同部會網站之間來回重填（「你不申請就不給」）。
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│            DROS GovProxy VEP — Scope Permission Matrix          │
-├─────────────────────────┬───────────────┬───────────────────────┤
-│ Tool / Action           │ 授權層級       │ 執行政策              │
-├─────────────────────────┼───────────────┼───────────────────────┤
-│ query_household_reg()   │ 代查 (L1)     │ PERMIT 自動放行       │
-│ query_tax_cert()        │ 代查 (L1)     │ PERMIT 自動放行       │
-│ submit_application()    │ 代送件 (L2)   │ HITL 強制本人確認     │
-│ sign_contract()         │ 本人簽署 (L3) │ DENY 硬性禁止代理     │
-│ cross_agency_push()     │ 跨機關橫移    │ DENY 硬性禁止代理     │
-└─────────────────────────┴───────────────┴───────────────────────┘
+現行數位身分工具的演進與斷鏈：
+
+  STEP 1: MyData (2019起)         STEP 2: 數位憑證皮夾 (2025起)      STEP 3: AI Agent 代辦 (當前缺口)
+      ✓ 民眾自主同意繞開法規          ✓ W3C 國際標準 / 選擇性揭露         ❌ 缺乏執行期可信代理治理
+         │                               │                                   │
+  ─────────────────────────────────────────────────────────────────────────────────→ 
+         │                               │                                   │
+      ✗ 缺點：一根管子、單次使用     ✗ 缺點：解決出示，但人必須在現場     💥 痛點：Agent 越權、無法撤銷
 ```
 
-### 技術棧整合層 (Integration Stack)
+### 🔴 跨機關代理代辦的四大核心問題
 
-| 層級 | 技術組件 | 角色 |
-| :--- | :--- | :--- |
-| **L0 - 身份層** | TW-FidO / PKI 國家憑證 | 公民身份綁定，DIT 代理憑證簽發 |
-| **L1 - 帶內代理層** | DROS VEP C-ABI Gate | 26.1μs 帶內攔截所有 Tool Call，執行 Scope 矩陣判定 |
-| **L2 - 數據閘道層** | MyData Gov Gateway | 跨機關 API 路由，VEP 注入攔截代理 |
-| **L3 - HITL 確認層** | 公民 App 推播 + 300s 逾時 | 代送件動作強制暫停，待本人 App 二次確認 |
-| **L4 - 稽核層** | SHA-256 Merkle Chain | 每筆代理 API 呼叫留存不可篡改密碼學憑證 |
+1. **誰授權的？ (Principal)**：Agent 代表民眾本人還是整個家戶？多人合併申辦時如何防偽？
+2. **授權範圍多大？ (Authorization)**：「代查資格」與「代送件簽署」是否混在一起？能否防範查所得時順便偷查病歷？
+3. **高風險動作如何把關？ (Policy Gate)**：具有法律效力的最終簽署，如何強制懸停由本人確認？
+4. **授權如何即時撤銷？ (Revocation)**：民眾撤銷委託後，Agent 會不會在背景繼續偷跑？
 
 ---
 
-## 🔒 6 大信任要點對應說明 (Governance Gap Memo)
+## 二、 DROS-VEP 解法：自然人與法人「身分雙軌對接」與三層代理邊界
 
-### 1. Principal — 代表誰？
+DROS 在政府端部署 C-ABI 帶內治理微內核，原生支援**「自然人（MyData/皮夾）+ 法人（vLEI）」雙軌身分**，並劃分嚴格的三層授權邊界：
 
-**問題**：Agent 代辦時，機關如何確認「現在操作的是 AI 代理，而非公民本人」？
-
-**DROS 解法**：
-- DIT（確定性身份標籤）雙層綁定：公民 TW-ID（A123456789）＋代理 AI 識別碼（GovAssist-AI v2.1）
-- 兩者共同出現在每筆 API 呼叫 Header，機關系統可精確區分「代理查詢」vs「本人操作」
-
-```json
-{
-  "dit_version": "v1.2-dros-gov",
-  "principal": "陳小明 (TW-ID: A123456789)",
-  "proxy_agent": "GovAssist-AI v2.1",
-  "scope": ["query_household_reg", "query_tax_cert"]
-}
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                   DROS-VEP GovProxy 雙軌身分與三層授權架構                       │
+│                                                                                  │
+│  【軌道 1：自然人身分 (Natural Person)】                                         │
+│   • 起點：MyData 授權包 / 數位憑證皮夾 (W3C VC)                                  │
+│   • 注入：DROS DIT Token (綁定身分證號密碼學 Hash、有效期限、委託範圍)           │
+│                                                                                  │
+│  【軌道 2：法人身分 (Legal Entity)】                                             │
+│   • 起點：GLEIF vLEI 法人憑證 (LE) + 業務角色憑證 (ECR/OOR)                      │
+│   • 注入：DROS DIT Token (綁定公司 LEI 碼、ISO 5009 官方角色、經辦權限)          │
+│                                                                                  │
+│  【三層代理授權邊界 (Three-Tier Capability Boundary)】                           │
+│   1. LEVEL 1: 代查資格 (Query)   ──► 【PERMIT (26.1 μs 放行)】                   │
+│      • 自動比對跨部會條件（如戶政出生證明 + 綜所稅率），民眾免重填               │
+│   2. LEVEL 2: 代送件 (Submit)    ──► 【SUSPENDED (HITL 懸停)】                   │
+│      • 備妥申辦草稿，推送手機 2FA 請民眾確認，300 秒逾時保護                     │
+│   3. LEVEL 3: 法律簽署 (Sign)     ──► 【DENY (硬性阻斷)】                         │
+│      • 涉及法律責任之最終印鑑/簽章，嚴禁 Agent 擅自代理                          │
+│                                                                                  │
+│  【秒級動態撤銷 (Instant Revocation)】                                           │
+│   • 民眾於 App 點擊「終止代辦」 ──► $O(1)$ RCU 原子指針在 <1 μs 內覆寫           │
+│   • Agent 後續任何請求瞬間回傳 HTTP 403 FORBIDDEN，零延遲物理停止               │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-### 2. Authorization — 被授權做什麼？
+## 三、 6 大信任要點閉環對照表 (6-Pillar Enforcement)
 
-**問題**：「代查」和「代送件」的邊界如何硬性劃定？
-
-**DROS 解法**：
-- **L1 代查 PERMIT**：`query_*` 系列 Tool Call 直接放行，傳回結果自動去識別化（姓名、身分證號碼欄位 REDACTED）
-- **L2 代送件 HITL**：`submit_application()` 強制觸發公民 App 推播，Agent 交易被硬性懸停 300 秒等待確認
-- **L3 本人操作 DENY**：`sign_contract()`、`cross_agency_push()` 一律 HTTP 403，不給 Agent 任何代理空間
-
----
-
-### 3. Tool / Action — 跨機關橫移如何被控制？
-
-**問題**：Agent 拿到戶籍資料後，能否自行將資料橫推至健保署或稅務局？
-
-**DROS 解法**：
-- VEP C-ABI Gate 帶內攔截 `cross_agency_push()` 呼叫
-- 決策延遲：**26.1μs**（遠低於任何網路 Round Trip Time）
-- Agent 收到 `HTTP 403 FORBIDDEN`，Audit Log 同步寫入攔截記錄
-- 機關間資料流動必須經由公民明確授權的 MyData 閘道，不允許 Agent 自行路由
+| 信任要點 (Pillar) | 政府服務場景面臨之挑戰 | DROS-VEP 實體微內核解法 | 實測性能指標 |
+| :--- | :--- | :--- | :--- |
+| **1. Principal (代表誰)** | 自然人與法人身分混淆、代辦身分遭冒用 | 雙軌 DIT Token 帶內注入（自然人 MyData/皮夾 + 法人 vLEI ECR） | $0.0008\text{s}$ 驗證通過 |
+| **2. Authorization (授權)** | 代查與代送件權限邊界不清 | Zero-Heap Capability Bitmaps 實施三層角色方法硬性映射 | 暫存器位元比對零延遲 |
+| **3. Tool Bound (邊界)** | Agent 跨部會橫向移動偷讀其他機關資料庫 | C-ABI / eBPF 外國函式介面帶內攔截，未授權 API 瞬間 Drop | $26.1\ \mu\text{s}$ 帶內熔斷 |
+| **4. Policy Gate (門閥)** | 涉及法律效力之送件與簽署缺乏把關 | HITL 狀態懸停機制，向民眾手機推送 2FA 二次確認 | 300s 逾時防禦 |
+| **5. Audit Log (稽核)** | 申辦遭駁回或資料外洩時責任無從追溯 | SHA-256 Merkle Hash Chain，產出具備法院採信力之申辦收據 | 獨立離線驗證通過 |
+| **6. Revocation (撤銷)** | 民眾撤銷委託後背景 Agent 依然偷跑 | $O(1)$ RCU (Read-Copy-Update) 原子指針切換 | $< 1\ \mu\text{s}$ 即時撤銷 (HTTP 403) |
 
 ---
 
-### 4. Policy Gate — 高風險動作如何被擋？
-
-**問題**：送件是不可逆動作，一旦 Agent 誤送，如何防止？
-
-**DROS 解法**：
-- **HITL (Human-In-The-Loop) 閘門**：檢測到 `submit_application()` 呼叫後：
-  1. VEP Policy Gate 立即硬性懸停交易（不執行，不回傳成功）
-  2. 推播通知發送至公民手機 App
-  3. 公民確認 → 交易繼續；公民拒絕或逾時 300s → 交易取消並寫入拒絕日誌
-- 完全不依賴 Agent 自律，由 VEP 帶內實施強制硬停
-
----
-
-### 5. Audit Log — 如何追溯代辦行動？
-
-**問題**：如果事後發現代辦有問題，如何舉證？
-
-**DROS 解法**：
-- SHA-256 Merkle Hash Chain：每筆代理 API 呼叫均產生密碼學雜湊
-- 每筆 Log 包含：時間戳、公民 TW-ID、代理 AI 識別碼、Tool Call 名稱、Scope 判定結果、決策延遲
-- Merkle Chain 前後鏈結，任何篡改均可被數學驗證
-- 評審可在展示台直接點擊每筆 Log 彈出完整憑證
-
----
-
-### 6. Expiry / Revocation — 公民如何即時撤銷？
-
-**問題**：公民授權 AI 代辦後反悔，如何即時終止？
-
-**DROS 解法**：
-- **O(1) 常數時間 RCU 原子換指針**：公民點擊「撤銷代理」後
-  - 記憶體中 Token 指針原子切換（無鎖操作，< 1μs）
-  - 下一筆 API 請求立即收到 `HTTP 403 PATIENT_CONSENT_REVOKED`
-  - 全程無需等待 Session 逾時，無延遲視窗
-
----
-
-## 🆚 競品定位 (Competitive Positioning)
-
-| 方案 | 授權邊界 | 跨機關橫移防護 | HITL 強制 | 撤銷速度 | 稽核強度 |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **DROS GovProxy VEP** | ✅ 三層硬性矩陣 | ✅ C-ABI 26.1μs | ✅ 帶內強制懸停 | ✅ O(1) RCU | ✅ Merkle 密碼學 |
-| OAuth 2.0 + Scope | ⚠️ 靜態宣告，無執行期強制 | ❌ 需應用層自律 | ❌ 無 | ⚠️ 分鐘級 | ❌ 無 |
-| TW-FidO 單純認證 | ❌ 僅驗身份，無授權矩陣 | ❌ 無 | ❌ 無 | ❌ 需重認證 | ❌ 無 |
-| 傳統 API Gateway | ⚠️ IP/Rate Limit 層 | ❌ 無語意感知 | ❌ 無 | ⚠️ 分鐘級 | ⚠️ 基本 Log |
-
----
-
-## 🚀 展示台快速驗證
+## 四、 10 秒可重現驗證指令
 
 ```bash
-# 啟動 GovProxy VEP 展示台
+# 1. 執行政府服務與雙軌身分自動化測試
+python test_verification_suite.py
+
+# 2. 啟動展示台檢視 GovProxy 控制台
 python server.py
-# 開啟: http://localhost:8000/track04_gov_services/
+# 瀏覽: http://localhost:8000/track04_gov_services/index.html
 ```
 
-**評審 1 分鐘 Demo 路徑**：
-1. **代查授權** → Agent 查詢戶籍，個資欄位自動 REDACTED
-2. **越權攔截** → Agent 嘗試 cross_agency_push()，26.1μs 收 403
-3. **本人 HITL 確認** → submit_application() 強制觸發 App 推播懸停
-4. **緊急撤銷** → 公民撤銷代理授權，O(1) RCU 即時生效
-5. **Merkle 憑證** → 點擊任一 Audit Log 出示密碼學憑證
-
 ---
-
-*專利聲明：DROS 執行治理與安全技術已申請美國臨時專利保護（U.S. PPA No. 64/111,973）。*  
-*© 2026 OpenShip Ecosystem. All Rights Reserved.*
+*專利聲明：DROS 執行治理與安全技術已申請美國臨時專利保護（U.S. Provisional Patent Application No. 64/111,973）。*  
+*© 2026 OpenShip Ecosystem & Top-Celestial Company Ltd. All Rights Reserved.*
