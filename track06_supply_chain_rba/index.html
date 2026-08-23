@@ -132,21 +132,24 @@
         .chip-icon { font-size: 1.4rem; color: var(--accent-red); }
         .redteam-title { font-size: 1.05rem; font-weight: 800; color: #fff; }
         .auto-fuzzer-badge {
-            background: rgba(153,27,27,0.6); border: 1px solid var(--accent-red);
-            color: #fca5a5; font-size: 0.72rem; font-weight: 800;
-            padding: 3px 8px; border-radius: 6px;
+            background: linear-gradient(135deg, var(--accent-amber), var(--accent-rust));
+            color: #000; font-weight: 700; font-size: 0.82rem;
+            padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap;
         }
-        .select-brain {
-            background: rgba(12,10,6,0.92); border: 1px solid var(--border-color);
-            color: #fff; padding: 10px; border-radius: 8px;
-            font-family: 'Fira Code', monospace; font-size: 0.82rem; font-weight: 600;
-            width: 100%; cursor: pointer;
+        .btn-guided:hover { box-shadow: 0 0 15px rgba(245,158,11,0.5); transform: translateY(-1px); }
+
+        /* RedTeam Live Fuzzer Box */
+        .redteam-box {
+            background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.35);
+            border-radius: 12px; padding: 14px 20px; margin-bottom: 16px;
         }
+        .redteam-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .redteam-title { font-size: 0.88rem; font-weight: 700; color: #fca5a5; display: flex; align-items: center; gap: 8px; }
         .btn-fuzz {
             background: linear-gradient(135deg, #dc2626, #991b1b);
-            border: none; color: #fff;
-            padding: 10px 18px; border-radius: 8px;
-            font-weight: 800; font-size: 0.82rem;
+            color: #fff; font-weight: 700; font-size: 0.78rem;
+            padding: 6px 14px; border-radius: 6px; border: none;
             cursor: pointer; transition: all 0.2s; white-space: nowrap;
         }
         .btn-fuzz:hover { box-shadow: 0 0 15px rgba(220,38,38,0.5); }
@@ -160,29 +163,12 @@
         .fuzz-line.attack { color: #fca5a5; }
         .fuzz-line.blocked { color: var(--accent-green); font-weight: 700; }
 
-        /* Workflow */
-        .workflow-bar {
-            display: grid; grid-template-columns: repeat(5, 1fr);
-            gap: 10px; margin-bottom: 16px;
-        }
-        .step-card {
-            background: var(--panel-bg); border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 12px;
-            text-align: center; transition: all 0.3s; cursor: pointer;
-        }
-        .step-card.active {
-            border-color: var(--accent-amber);
-            box-shadow: 0 0 15px rgba(245,158,11,0.25);
-            background: rgba(245,158,11,0.08);
-        }
-        .step-num { font-size: 0.75rem; color: var(--accent-amber); font-weight: 700; }
-        .step-title { font-size: 0.85rem; font-weight: 600; margin-top: 2px; color: #fff; }
-
         /* Main Grid */
         .main-grid {
             display: grid; grid-template-columns: 1.1fr 1.2fr 1fr;
             gap: 20px; margin-bottom: 20px;
         }
+
         .panel {
             background: var(--panel-bg); border: 1px solid var(--border-color);
             border-radius: 12px; backdrop-filter: blur(12px);
@@ -193,47 +179,6 @@
             border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
         }
         .panel-title { font-size: 0.95rem; font-weight: 600; color: var(--accent-amber); display: flex; align-items: center; gap: 8px; }
-
-        .pillars-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .pillar-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 8px; padding: 10px; font-size: 0.78rem;
-        }
-        .pillar-name { font-weight: 600; color: var(--accent-blue); margin-bottom: 4px; }
-        .pillar-val { color: var(--text-muted); font-family: 'Fira Code', monospace; }
-
-        /* VC Card */
-        .vc-card {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--accent-amber);
-            border-radius: 10px; padding: 14px;
-            font-family: 'Fira Code', monospace; font-size: 0.73rem;
-            position: relative; overflow: hidden;
-        }
-        .vc-card::before {
-            content: 'VERIFIABLE CREDENTIAL';
-            position: absolute; top: 6px; right: 10px;
-            font-size: 0.6rem; font-weight: 800;
-            color: rgba(245,158,11,0.4); letter-spacing: 2px;
-        }
-        .vc-field { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .vc-key { color: var(--text-muted); }
-        .vc-val { color: var(--accent-green); }
-        .vc-val.hidden { color: var(--accent-red); text-decoration: line-through; }
-        .vc-val.hashed { color: var(--accent-amber); }
-        .vc-val.proof { color: var(--accent-purple); font-size: 0.65rem; word-break: break-all; }
-
-        .chat-box {
-            background: rgba(0,0,0,0.45); border: 1px solid var(--border-color);
-            border-radius: 8px; height: 200px; overflow-y: auto;
-            padding: 12px; display: flex; flex-direction: column; gap: 10px; font-size: 0.84rem;
-        }
-        .msg { padding: 8px 12px; border-radius: 6px; max-width: 90%; }
-        .msg.user { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); align-self: flex-start; }
-        .msg.agent { background: rgba(234,88,12,0.12); border: 1px solid rgba(234,88,12,0.3); align-self: flex-end; }
-        .msg.system { background: rgba(167,139,250,0.10); border: 1px solid rgba(167,139,250,0.3); align-self: center; width:100%; text-align:center; }
-        .msg.vep-alert { background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.5); color: #fca5a5; align-self: center; width:100%; text-align:center; }
 
         .btn {
             background: linear-gradient(135deg, #1e1206, #0f0904);
@@ -248,12 +193,12 @@
 
         .gate-status {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
-            background: rgba(74,222,128,0.08); border: 1px solid var(--accent-green); color: var(--accent-green);
+            padding: 10px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+            background: rgba(74,222,128,0.1); border: 1px solid var(--accent-green); color: var(--accent-green);
         }
-        .gate-status.blocked { background: rgba(248,113,113,0.08); border-color: var(--accent-red); color: var(--accent-red); }
-        .gate-status.disclosed { background: rgba(245,158,11,0.08); border-color: var(--accent-amber); color: var(--accent-amber); }
-        .gate-status.revoked { background: rgba(167,139,250,0.08); border-color: var(--accent-purple); color: var(--accent-purple); }
+        .gate-status.denied {
+            background: rgba(248,113,113,0.1); border-color: var(--accent-red); color: var(--accent-red);
+        }
 
         .audit-stream {
             background: #030201; border: 1px solid var(--border-color);
@@ -756,67 +701,67 @@
         if (sceneId === 1) runStep(1);
         else if (sceneId === 2) runStep(2);
         else if (sceneId === 3) runStep(3);
-        else if (sceneId === 4) revokeRBA();
-        else if (sceneId === 5) {
-            openCertModal('[SCENE 5] Full Compliance Certificate | Supplier: fab-tw-01 | RBA: RBA-2026-TW-88821 | ZKP: Active | Timestamp: ' + new Date().toISOString(),
-                'RBA-Registry:Validated | W3C-VC:2.0 | SHA256:Signed');
-            logAudit('[CERT_INSPECT] Cryptographic Compliance Certificate inspection triggered.', 'SHA256:Active');
-        }
+        else if (sceneId === 4) runStep(4);
+        else if (sceneId === 5) revokeRBA();
     }
 
     function runStep(step) {
-        setStepActive(step);
         const badge = document.getElementById('gate-badge');
         const resp = document.getElementById('json-response');
 
-        if (isRevoked && step !== 4) {
-            logAudit(`[DENIED] BuyBot-AI attempted Step ${step} but RBA cert REVOKED. HTTP 403.`, 'eBPF:REJECTED_403');
-            appendChat('user', `BuyBot-AI v2.3 嘗試執行步驟 ${step}...`);
+        if (isRevoked && step !== 5) {
+            logAudit(`[DENIED] May-God Agent attempted Step ${step} but RBA cert REVOKED. HTTP 403.`, 'eBPF:REJECTED_403');
+            appendChat('user', `美家派遣 Agent 嘗試執行步驟 ${step}...`);
             appendChat('vep-alert', '❌ [403 REVOKED] RBA 合規憑證已撤銷，SupplyProof VEP 拒絕所有後續查驗！');
             return;
         }
 
         if (step === 1) {
             badge.className = 'status-badge badge-permit';
-            badge.innerText = 'VC VERIFIED';
-            logConsole('--> [STEP 1] BuyBot-AI: verify_rba_cert(supplier="fab-tw-01")');
-            logConsole('--> DIT: BuyBot-AI v2.3 | Supplier DIT: did:dros:fab-tw-01');
-            logConsole('--> RBA Registry API: RBA-2026-TW-88821 → VALID ✅');
-            logConsole('--> SD Policy: rba_selective_disclosure_v2.yaml loaded');
-            resp.innerHTML = '{\n  "status": "CERT_VALID",\n  "rba_cert": "RBA-2026-TW-88821",\n  "supplier": "did:dros:fab-tw-01",\n  "expiry": "2027-03-31",\n  "overall_compliant": true,\n  "full_report": "[BLOCKED_BY_SD_GATE]"\n}';
-            appendChat('user', 'BuyBot-AI v2.3：呼叫 verify_rba_cert(supplier="fab-tw-01") 申請合規查驗。');
-            appendChat('agent', 'DROS VEP：<b>[VC VERIFIED 26.1μs]</b> RBA-2026-TW-88821 有效期至 2027-03-31。選擇性揭露閘門啟動，僅傳回合規狀態，工廠原始資料封鎖。');
-            logAudit('[VC_VERIFIED] BuyBot-AI verify_rba_cert() → RBA-2026-TW-88821 VALID. SD-Gate activated. Full report: BLOCKED.', 'RBA-Registry:API | W3C-VC:2.0');
+            badge.innerText = '關卡1: 母國審查完成';
+            logConsole('--> [關卡 1：母國端文件審查] 移工 Budi 上傳印尼/菲律賓非結構化多語 PDF 體檢表與 POEA 契約...');
+            logConsole('--> 美家 AI Agent 多模態 OCR 瞬間解析完成 (耗時: 0.8s，取代 3~4 週人工！)');
+            logConsole('--> DROS 帶內注入 DIT Token (did:dros:worker-budi-881) 並遮蔽敏感個資');
+            resp.innerHTML = '{\n  "status": "ORIGIN_DOCS_VERIFIED",\n  "worker": "Budi (ID: ****-991)",\n  "poea_contract": "VALID_MATCH",\n  "medical_exam": "PASS_CLEAN",\n  "processing_time": "0.82s",\n  "redacted_fields": ["ssn", "family_notes", "medical_raw"]\n}';
+            appendChat('user', '移工 Budi：上傳印尼/菲律賓母國體檢表與 POEA 海外就業契約掃描檔。');
+            appendChat('agent', '美家 AI Agent：<b>[母國多模態審查完成 0.8s]</b> 瞬間解析多語契約與體檢，DROS 注入 DIT 憑證並自動遮蔽個資，<b>破除母國端 3~4 週人工校對黑洞！</b>');
+            logAudit('[ORIGIN_INTAKE] Multimodal OCR verified POEA/Medical docs in 0.82s. DIT Token injected: did:dros:worker-budi-881.', 'AI-OCR:PASS | DROS-DIT:Injected');
 
         } else if (step === 2) {
-            badge.className = 'status-badge badge-disclosed';
-            badge.innerText = 'SD DISCLOSED';
-            logConsole('--> [STEP 2] Selective Disclosure Gate processing...');
-            logConsole('--> REVEAL: labor.compliant=TRUE | hs.compliant=TRUE | env.compliant=TRUE');
-            logConsole('--> REVEAL: ethics.compliant=TRUE | mgmt.compliant=TRUE');
-            logConsole('--> HIDDEN: worker_count, incident_log, emission_raw, org_chart [REDACTED]');
-            logConsole('--> ZKP-Lite: π=Groth16:0x3f9a...c721 (score ≥ 80 WITHOUT revealing score)');
-            resp.innerHTML = '{\n  "sd_response": {\n    "labor": {"compliant": true, "details": "[REDACTED]"},\n    "health_safety": {"compliant": true, "incident_log": "[REDACTED]"},\n    "environment": {"compliant": true, "emission_raw": "[REDACTED]"},\n    "ethics": {"compliant": true, "bribery_cases": "[REDACTED]"},\n    "mgmt": {"compliant": true, "org_chart": "[REDACTED]"}\n  },\n  "zkp_proof": "π=Groth16:0x3f9a...c721",\n  "score_hash": "0x8fa21c..."\n}';
-            appendChat('user', 'BuyBot-AI v2.3：請求各 RBA 類別詳細合規狀態。');
-            appendChat('agent', 'DROS VEP <b>[SD_GATE]</b>：傳回五大類合規狀態 = TRUE。工廠勞工人數、事故紀錄、組織圖、廢棄物原始記錄全部 REDACTED。ZKP-Lite Proof π 附上，可數學驗證分數 ≥ 80 但不洩露分數本身。');
-            logAudit('[SD_GATE] Selective Disclosure: {labor, hs, env, ethics, mgmt}.compliant=TRUE revealed. worker_count/incident_log/org_chart HIDDEN. ZKP-Lite π generated.', 'ZKP:Groth16 | RBA-Registry:SD');
+            badge.className = 'status-badge badge-permit';
+            badge.innerText = '關卡2: 雇主付費存證';
+            logConsole('--> [關卡 2：台灣端跨機關行政] 雇主全額支付招工費用 ➔ 美家 ➔ 海外母國仲介');
+            logConsole('--> 銀行電文 Hash 綁定 ➔ DROS 生成 SHA-256 Merkle 密碼學收據');
+            logConsole('--> 跨機關自動送件 (勞動部/移民署 ARC 居留證) 耗時: 1.2s，取代 2~3 週反覆核驗！');
+            resp.innerHTML = '{\n  "employer_pays_status": "PAID_IN_FULL",\n  "payer": "TSMC / Enterprise Client",\n  "agency": "May-God Human Resources",\n  "overseas_agency_payout": "$4,200 USD (CLEAN_RECEIPT)",\n  "merkle_receipt": "0x8fa21c99b8214301...",\n  "worker_deduction_prohibited": true\n}';
+            appendChat('user', '美家 AI Agent：向台灣勞動部與移民署送交居留證申請，並出具雇主全額付費證明。');
+            appendChat('agent', 'DROS 物理內核：<b>[雇主全額付費存證 1.2s]</b> 生成 SHA-256 Merkle 密碼學收據，證明海外仲介已獲足額報酬，<b>破除台灣端 2~3 週跨機關行政黑洞！</b>');
+            logAudit('[EMPLOYER_PAYS] Merkle Receipt generated for TSMC/May-God payment to overseas partner. Deduction PROHIBITED.', 'SHA256:Signed | InterAgency:Linked');
 
         } else if (step === 3) {
             badge.className = 'status-badge badge-deny';
-            badge.innerText = '26.1μs BLOCKED';
-            logConsole('--> [STEP 3] BuyBot-AI: read_full_audit_report(supplier="fab-tw-01")');
-            logConsole('--> SD-Gate Policy: PROHIBITED [full_report_access]');
-            logConsole('--> [VEP C-ABI HARD INTERCEPT] HTTP 403 FORBIDDEN in 26.1μs');
-            resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PROHIBITED: read_full_audit_report",\n  "sd_policy": "full_report_access_denied",\n  "decision_latency": "26.1us",\n  "note": "Only verify_rba_cert() is permitted for BuyBot-AI"\n}';
-            appendChat('user', 'BuyBot-AI v2.3 嘗試呼叫 read_full_audit_report(fab-tw-01)，試圖讀取完整稽核報告...');
-            appendChat('vep-alert', '🛡️ [INTERCEPTED 26.1μs] read_full_audit_report() 違反選擇性揭露政策！VEP C-ABI 帶內硬性攔截，HTTP 403。BuyBot-AI 無法存取工廠原始稽核資料。');
-            logAudit('[TOOL_BLOCK] BuyBot-AI read_full_audit_report() → PROHIBITED (SD-Policy) → 403 in 26.1μs. Factory internal data protected.', 'PaloAlto-PANOS:Blocked | SD-Gate:DENY');
+            badge.innerText = '關卡3: 越權阻斷 (26.1μs)';
+            logConsole('--> [關卡 3：大廠 RBA 稽核抽查] 上市櫃大廠採購 Agent 試圖呼叫 read_factory_full_payroll_and_yield()');
+            logConsole('--> 企圖偷看美家人力內部利潤結構、所有員工薪資與工廠良率...');
+            logConsole('--> 💥 [DROS C-ABI HARD INTERCEPT] 帶內硬性熔斷！HTTP 403 TOOL_PROHIBITED in 26.1μs');
+            resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PROHIBITED: read_factory_full_payroll_and_yield",\n  "sd_policy": "commercial_secrets_protection_active",\n  "decision_latency": "26.1us",\n  "note": "Enterprise Buyer Agent cannot read full factory confidential payroll or yield rates!"\n}';
+            appendChat('user', '大廠採購 Agent 試圖呼叫 read_factory_full_payroll_and_yield() 偷看工廠良率與美家內部利潤結構...');
+            appendChat('vep-alert', '🛡️ [HARD INTERCEPTED 26.1μs] 違反商業機密隔離政策！DROS C-ABI 帶內硬性熔斷 HTTP 403，大廠 Agent 碰不到任何內部機密！');
+            logAudit('[TOOL_BLOCK] Enterprise Buyer Agent attempted full payroll/yield dump → 403 BLOCKED in 26.1μs. Commercial secrets protected.', 'C-ABI:DROP | SD-Gate:DENY');
 
         } else if (step === 4) {
-            revokeRBA();
+            badge.className = 'status-badge badge-disclosed';
+            badge.innerText = '關卡3: ZKP 零扣款放行';
+            logConsole('--> [關卡 3：ZKP-Lite 零知識證明] DROS 帶內生成 Groth16 ZKP 證明 π...');
+            logConsole('--> π = Proof{實領薪資 == 應發全額 ∧ 仲介費用扣款 == 0}');
+            logConsole('--> 上市櫃大廠與 KPMG 稽核員在 26.1μs 內驗證通過，商業機密與移工隱私 100% HIDDEN！');
+            resp.innerHTML = '{\n  "zkp_proof": "π = Groth16:0x3f9a91b2c48821...",\n  "rba_compliance": {\n    "labor_fee_deduction": 0,\n    "take_home_pay_verified": true,\n    "passport_withholding": false\n  },\n  "confidential_payroll_data": "[HIDDEN_BY_ZKP]",\n  "kpmg_audit_verdict": "100% PASS_CERTIFIED"\n}';
+            appendChat('user', 'KPMG / 大廠稽核員：請求驗證移工「實領薪資是否零非法扣款」？');
+            appendChat('agent', 'DROS 選擇性揭露閘門：<b>[ZKP-Lite 零扣款證明放行]</b> 出示密碼學證明 π，證明實領全額薪資、零扣除仲介費！<b>美家財務機密 100% 隱蔽，KPMG 稽核 100% 通過！</b>');
+            logAudit('[ZKP_ZERO_DEDUCTION] Groth16 π verified: Zero illegal deduction. KPMG audit certified in 26.1μs.', 'ZKP:Groth16 | Audit:CERTIFIED');
 
         } else if (step === 5) {
-            openCertModal('[STEP 5] Merkle Compliance Audit Chain Inspection | RBA: RBA-2026-TW-88821 | All disclosures SD-signed',
+            openCertModal('[STEP 5] Merkle Compliance Audit Chain Inspection | May-God Human Resources RBA-2026 | All disclosures SD-signed',
                 'RBA-Registry:Validated | ZKP:Groth16 | SHA256:Active');
             logAudit('[CERT_INSPECT] Manual Merkle Compliance Certificate inspection triggered.', 'SHA256:Active');
         }
