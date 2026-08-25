@@ -12,6 +12,70 @@
 
 ---
 
+## 🖥️ 傳統作業系統 (OS) vs DROS 確定性治理作業系統對照表
+
+DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process）。DROS 實現了**「底層治理與上層業務的完全解耦」**，讓全世界所有開發者專注於應用目標與商業邏輯，治理機制由微內核一鍵原生賦能：
+
+| 治理維度 | 傳統作業系統 (Linux / POSIX OS) | **DROS 確定性 AI 治理作業系統 (AI Agent OS)** | 核心解決的痛點 |
+| :--- | :--- | :--- | :--- |
+| **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
+| **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
+| **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
+| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **26.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **5. 存取稽核 (Auditing)** | `auditd` / Linux Journal 日誌 | **SHA-256 Merkle Hash 密碼學證據鏈** | 解決「事後偽造與串供，產出法院採信收據」 |
+| **6. 資源回收 (Revocation)** | `kill -9` / Process Terminate | **$O(1)$ RCU 原子指針秒級動態撤銷** | 解決「授權過期或被撤銷後，背景 Agent 偷跑」 |
+
+---
+
+## 🔺 跨產業統一治理核心：DROS「黃金三角形模型 (The Golden Triangle)」
+
+在所有產業高信任場景中，**AI 是 Detection & Knowledge Layer（分析引擎），DROS 則是 Execution Governance Layer（執行期治理底座）**。兩者透過「最小必要資訊」與「確定性門閥」完美閉環，解決「AI 不必被 100% 盲目信任，也能安全在真實世界執行」的世紀難題：
+
+```
+                    【REAL-WORLD DATA / ENTERPRISE CORE】
+                                      │
+                                      ▼
+                        ┌───────────────────────────┐
+                        │   DROS 執行期政策閘門層   │
+                        └─────────────┬─────────────┘
+                                      │
+                 ┌────────────────────┴────────────────────┐
+                 ▼                                         ▼
+     【Allowed Data (最小必要揭露)】               【Forbidden Data (機密隔離)】
+     • 製造: 去識別化碳足跡/製程係數               • 製造: 核心 BOM 原料成本/良率
+     • 金融: 去識別化圖關聯特徵/行為向量           • 金融: 明文姓名/身分證號/原始帳戶明細
+     • 醫療: ICD-10診斷碼/理賠金額/住院天數        • 醫療: 18項 PHI/病歷日誌/遺傳病史
+     • 政府: 補助門檻試算條件 (年齡/所得級距)      • 政府: 跨機關完整稅籍/醫療病歷
+     • 普惠金融: 居留許可狀態/合法就業證明         • 普惠金融: 完整母國銀行帳號/私密密碼
+     • 供應鏈: 合規狀態 TRUE / ZKP 證明            • 供應鏈: 工廠良率/全體薪資/組織圖
+                 │                                         │
+                 ▼                                         ▼
+     ┌────────────────────────┐              ┌──────────────────────────┐
+     │ 產業 AI Detection /    │              │ 💥 C-ABI 帶內硬性阻斷    │
+     │ Domain Agent 決策引擎  │              │ (HTTP 403 26.1 μs 熔斷)  │
+     └───────────┬────────────┘              └──────────────────────────┘
+                 │
+                 ▼ (Risk Score / Analysis / Pre-check)
+     ┌────────────────────────┐
+     │ DROS Policy Gate       │
+     │ 帶內防禦 + 人類雙簽    │
+     └───────────┬────────────┘
+                 │
+                 ▼
+     【確定性執行 / Merkle 密碼學證據鏈】
+```
+
+---
+
+## 🔌 DROS 的 2 大通用接口 (Two Universal Interfaces)
+
+DROS 在底層完成了 6P 閉環，對外僅留下 2 個標準接口即可對接全世界所有的 AI 應用層：
+
+1. **📥 接口 ①：Data Ingest（最小必要特徵安全輸入接口 / Safe Ingress）**：過濾機密與 PHI，僅向 AI 提供去識別化特徵向量與 ZKP 證明。
+2. **📤 接口 ②：Execution Sink（確定性動作與工具執行接口 / Safe Egress）**：在 C-ABI 二進位層級於 $26.1\,\mu\text{s}$ 內完成 6P 帶內安全檢驗與 Merkle 密碼學存證。
+
+---
+
 ## 📚 題目別「DROS 解法對應說明書」索引地圖
 
 | 題目 Track | 主題情境 | 專屬解法對應說明書連結 | 專屬獨立 VEP 控制台 |
@@ -27,10 +91,10 @@
 
 ## 🔒 6 大信任要點通解框架 (The 6 Pillars Universal Framework)
 
-不管大會公布何種新題目 (Track 03 ~ 06)，DROS-VEP Lite 均能以通用硬體與網關邊界實施鋼性防護：
+不管大會公布何種新題目 (Track 01 ~ 06)，DROS-VEP Lite 均能以通用硬體與網關邊界實施鋼性防護：
 
-1. **Principal (身份)**：DIT Token 帶內注入，強綁定團隊、企業與法人的加密 Key。
-2. **Authorization (授權)**：Scope 矩陣明確宣告 `PERMIT` 與 `PROHIBITED` 動作與欄位。
+1. **Principal (身份)**：DIT Token 帶內注入，強綁定團隊、企業與法人的加密 Key（法人 vLEI + 自然人 MyData/FIDO 雙軌）。
+2. **Authorization (授權)**：Zero-Heap Capability Bitmaps 暫存器級精確鎖定 `PERMIT` 與 `PROHIBITED` 動作與欄位。
 3. **Tool/Action Bound (邊界)**：所有 Tool Call 必須過 C-ABI 網關，未授權動作在 26.1μs 內硬熔斷。
 4. **Policy Gate (門閥)**：機密資料自動 Redact 遮蔽，高風險動作觸發 HITL 懸停雙簽。
 5. **Audit Log (稽核)**：Tamper-Evident SHA-256 Merkle Chain，點擊出示可獨立驗證之 Cert Modal。
