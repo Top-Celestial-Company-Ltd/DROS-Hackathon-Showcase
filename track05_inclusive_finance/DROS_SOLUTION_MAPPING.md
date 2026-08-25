@@ -15,6 +15,43 @@
 
 ---
 
+### 🖥️ 傳統作業系統 (OS) vs DROS 確定性治理作業系統對照表
+
+DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process）。DROS 實現了**「底層治理與上層業務的完全解耦」**，讓開發者專注應用目標，治理機制一鍵原生賦能：
+
+| 治理維度 | 傳統作業系統 (Linux / POSIX OS) | **DROS 確定性 AI 治理作業系統 (AI Agent OS)** | 核心解決的痛點 |
+| :--- | :--- | :--- | :--- |
+| **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
+| **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
+| **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
+| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **26.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **5. 存取稽核 (Auditing)** | `auditd` / Linux Journal 日誌 | **SHA-256 Merkle Hash 密碼學證據鏈** | 解決「事後偽造與串供，產出法院採信收據」 |
+| **6. 資源回收 (Revocation)** | `kill -9` / Process Terminate | **$O(1)$ RCU 原子指針秒級動態撤銷** | 解決「授權過期或被撤銷後，背景 Agent 偷跑」 |
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        【上層：多元豐富的業務應用層 (Application Layer)】              │
+│                                                                                        │
+│   Track 01: 碳足跡計算      Track 02: 反詐特徵提取      Track 03: 醫療病歷解析         │
+│   Track 04: 政府津貼試算    Track 05: 移工居留審核      Track 06: RBA 契約多模態審查   │
+│                                                                                        │
+│   👉 開發者只需專注：Prompt 工程、業務流程、UI 介面、演算法與任務目標！               │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+                                            ▲
+                                            │ 簡單極致的標準介面 (C-ABI / DIT / REST)
+                                            ▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                   【底層：DROS-6P 確定性治理微內核 (Deterministic OS Kernel)】         │
+│                                                                                        │
+│   1. Principal (DIT 注入)       2. Authorization (位元圖映射)  3. Tool Bound (帶內阻斷)│
+│   4. Policy Gate (微秒級熔斷)   5. Audit Log (Merkle 證據鏈)   6. Revocation (RCU 撤銷)│
+│                                                                                        │
+│   🛡️ 原生具備：二進位層級安全約束、零堆積分配、法院採信力、跨機構可信網狀聯防！        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## 一、 題目缺口與現實產業痛點 (Governance Gap & Industry Context)
 
 ### 🌏 產業背景：第三類帳戶的數位難民與人頭戶溫床
