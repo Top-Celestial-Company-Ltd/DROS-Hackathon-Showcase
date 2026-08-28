@@ -235,16 +235,17 @@ DROS 在底層完成了 6P 閉環，對外僅留下 2 個標準接口即可對�
 
 ---
 
-## 📚 題目別「DROS 解法對應說明書」索引地圖
+## 📚 題目別「DROS 解法對應說明書」索引地圖（含 Ingress / Egress 治理對照）
 
-| 題目 Track | 主題情境 | 專屬解法對應說明書連結 | 專屬獨立 VEP 控制台 |
-| :--- | :--- | :--- | :--- |
-| **Track 01** | **製造貿易**：碳足跡與 DPP 數位產品護照資料流控制 | 📄 [Track 01 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track01_carbon_dpp/DROS_SOLUTION_MAPPING.md) | 🌐 [Alpha 製造 VEP](http://localhost:8000/track01_carbon_dpp/index.html) |
-| **Track 02** | **電商與第三方支付**：隱私保護下的可疑行為偵測 | 📄 [Track 02 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track02_fintech_privacy/DROS_SOLUTION_MAPPING.md) | 🌐 [PayFlow 金融 VEP](http://localhost:8000/track02_fintech_privacy/index.html) |
-| **Track 03** | **醫療保險**：跨產業資料合作的誘因與邊界 | 📄 [Track 03 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track03_healthcare_insurance/DROS_SOLUTION_MAPPING.md) | 🌐 [MediGuard 醫療 VEP](http://localhost:8000/track03_healthcare_insurance/index.html) |
-| **Track 04** | **政府服務**：解決憑證碎片化背後的資料孤島，跨機關代理授權邊界（代查 / 代送件 / 本人確認三層控制） | 📄 [Track 04 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track04_gov_services/DROS_SOLUTION_MAPPING.md) | 🌐 [GovProxy VEP](http://localhost:8000/track04_gov_services/index.html) |
-| **Track 05** | **普惠金融**：移工數位信任與防詐憑證機制，87萬移工多文件複合 DIT 綁定、三層漸進信任矩陣、SIM Swap 防禦與 O(1) 緊急凍結 | 📄 [Track 05 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track05_inclusive_finance/DROS_SOLUTION_MAPPING.md) | 🌐 [MigraTrust VEP](http://localhost:8000/track05_inclusive_finance/index.html) |
-| **Track 06** | **供應鏈貿易金融 (加分題)**：RBA 稽核合規可驗證憑證，採購 AI Agent 可驗證工廠合規性但無法讀完整稽核報告，選擇性揭露閘門 + ZKP-Lite + W3C VC 2.0 | 📄 [Track 06 DROS 解法說明](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track06_supply_chain_rba/DROS_SOLUTION_MAPPING.md) | 🌐 [SupplyProof VEP](http://localhost:8000/track06_supply_chain_rba/index.html) |
+| 題目 Track | 主題情境 | 📥 Ingress 治理（安全特徵輸入 / 資料最小化） | 📤 Egress 治理（確定性動作輸出 / C-ABI 硬防線） | 專屬解法說明 | 控制台 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Track 01**<br>製造貿易 | 碳足跡與 DPP 數位產品護照 | **動態 Redact 遮蔽**：隔離核心原料 BOM 成本與良率，僅向 AI 輸入去識別化碳排係數。 | **歐盟 CBAM 門閥**：未授權輸出商業機密瞬間熔斷，僅放行符合標準之 ZKP 碳排憑證。 | 📄 [Track 01](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track01_carbon_dpp/DROS_SOLUTION_MAPPING.md) | 🌐 [Alpha 製造](http://localhost:8000/track01_carbon_dpp/index.html) |
+| **Track 02**<br>第三方支付 | 隱私保護下的洗錢與可疑行為偵測 | **去識別化密態特徵**：遮蔽真實姓名、身分證與帳號明細，僅向風控 AI 提供拓撲行為向量。 | **微秒支付阻斷**：偵測到異常洗錢特徵時，C-ABI 瞬間懸停掛起交易，觸發調查員雙簽。 | 📄 [Track 02](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track02_fintech_privacy/DROS_SOLUTION_MAPPING.md) | 🌐 [PayFlow 金融](http://localhost:8000/track02_fintech_privacy/index.html) |
+| **Track 03**<br>醫療保險 | 跨產業資料合作的誘因與邊界 | **18項 PHI 自動遮蔽**：病歷日誌與基因資料嚴密隔離，僅輸入 ICD-10 診斷碼與理賠金額。 | **保險聯盟鏈對接**：越權調閱病歷即刻 26.1 μs 硬熔斷 (HTTP 403)，放行即刻產出 Merkle 存證。 | 📄 [Track 03](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track03_healthcare_insurance/DROS_SOLUTION_MAPPING.md) | 🌐 [MediGuard 醫療](http://localhost:8000/track03_healthcare_insurance/index.html) |
+| **Track 04**<br>政府服務 | 憑證碎片化與跨機關代理授權邊界 | **三層代理範圍過濾**：事務所 vLEI 僅能獲取「代查門檻 (所得級距)」，嚴格隔離完整稅籍。 | **代送件與越權阻斷**：Agent 企圖發起本人專屬「全戶戶籍查調」瞬間硬攔截，產出 W3C VC 收據。 | 📄 [Track 04](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track04_gov_services/DROS_SOLUTION_MAPPING.md) | 🌐 [GovProxy 政府](http://localhost:8000/track04_gov_services/index.html) |
+| **Track 05**<br>普惠金融 | 移工數位信任與防詐憑證機制 | **1:1:1 複合身分綁定**：護照+居留證+電信門號綁定為 DIT，隱匿母國敏感銀行密碼。 | **SIM Swap 連鎖凍結**：偵測到換卡或異常轉帳，O(1) RCU 原子指針秒級凍結 Token 權限。 | 📄 [Track 05](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track05_inclusive_finance/DROS_SOLUTION_MAPPING.md) | 🌐 [MigraTrust 移工](http://localhost:8000/track05_inclusive_finance/index.html) |
+| **Track 06**<br>供應鏈金融 | RBA 稽核合規可驗證憑證 (加分題) | **選擇性揭露 ZKP-Lite**：採購 AI 僅能讀取「合規狀態 TRUE」，完全無法獲取全廠薪資與良率。 | **雇主付費 Merkle 存證**：物理鎖定採購 Tool Call，越權讀取報告即刻熔斷，產出法庭採信收據。 | 📄 [Track 06](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track06_supply_chain_rba/DROS_SOLUTION_MAPPING.md) | 🌐 [SupplyProof 供應鏈](http://localhost:8000/track06_supply_chain_rba/index.html) |
+
 ---
 
 ## 🔒 6 大信任要點通解框架 (The 6 Pillars Universal Framework)
