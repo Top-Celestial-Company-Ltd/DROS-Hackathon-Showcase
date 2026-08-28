@@ -1,0 +1,537 @@
+--- Page 1 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+Slides Total
+GLEIF 
+Aug 2026
+Trustworthy AI agents
+Mandate, workload and transaction evidence
+A design pattern for agents that act only when identity, evidence and policy 
+converge.
+--- Page 2 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+OPENING CASE
+Should the agent pay this invoice?
+TRUSTWORTHY AI WORKSHOP 02
+PROPOSED ACTION
+Submit an €8,420 supplier 
+payment
+The decision needs more than 
+a valid invoice signature.
+• Who issued the invoice?
+• Were the goods accepted?
+• Does the beneficiary match?
+• Has this invoice already been paid?
+Start with the action; work backward to the claims and evidence required to authorize it.
+--- Page 3 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+MODULE 09 — WORKED EXAMPLE
+Five claims must be proven before payment
+TRUSTWORTHY AI WORKSHOP 03
+Required claim Authoritative evidence Decision test
+Invoice was issued Supplier invoice credential Signature valid; supplier LEI matches contract
+Amount is correct Line items + tax + purchase order Recompute deterministically; currency and totals agree
+Goods were accepted Buyer or warehouse receipt Object IDs, quantity, time and independence agree
+Beneficiary is valid Bank or registry-backed account evidence Account is bound to the supplier legal entity
+Invoice is unpaid Buyer ledger + bank settlement state No duplicate invoice, intent or settlement exists
+No single signature proves the whole transaction.
+--- Page 4 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+MODULE 10 — DECISION LOGIC
+Hard gates first; confidence only routes review
+TRUSTWORTHY AI WORKSHOP 04
+HARD GATES
+A failure blocks or escalates the action.
+• Cryptographic proof and schema pass
+• Issuer is authorized for this claim
+• Credential is current at decision time
+• Entity , invoice and account IDs match
+• Amount recomputes; no duplicate exists
+• Mandate covers operation, value and time
+CONFIDENCE AND RISK
+Scores decide the review path—not the facts.
+• Independent corroboration strength
+• Anomaly and fraud indicators
+• Source quality and freshness
+• Model uncertainty
+• Value and jurisdictional risk
+An LLM confidence score cannot override failed cryptography, authority, identity or mandate checks.
+--- Page 5 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+ARCHITECTURE
+Trustworthy agents separate six control planes
+TRUSTWORTHY AI WORKSHOP 05
+The agent proposes; deterministic services verify; policy decides; an enforcement gateway acts and signs the receipt.
+--- Page 6 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+OPERATING MODEL
+Three trust pillars organize the six planes
+TRUSTWORTHY AI WORKSHOP 06
+1  Mandate
+Who may act for whom?
+• Legal entity and role
+• Delegation and scope
+• Limits, time and policy
+2  Workload
+What software is calling?
+• Build provenance
+• Deployment attestation
+• Workload identity
+3  Transaction
+Are the facts sufficient 
+now?
+• Authoritative evidence
+• Cross-checks and contradictions
+• Hard gates and receipt
+All three pillars must resolve to the same legal entity and converge at the policy decision point.
+--- Page 7 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+PILLAR 1 — MANDATE
+Mandate trust answers: who may act for whom?
+TRUSTWORTHY AI WORKSHOP 07
+Legal entity
+LEI identifies the 
+principal
+Authorized 
+role
+vLEI OOR or 
+governed role
+Agent 
+delegate
+workload ID + 
+deployment
+A USABLE MANDATE BINDS
+• principal legal entity and authorized role
+• delegate workload and deployment identity
+• permitted operation and transaction class
+• amount, currency, beneficiary and jurisdiction limits
+• validity window, revocation, nonce and policy version
+• proof and evidence references for later replay
+The mandate authorizes an action class; it does not prove the transaction facts.
+--- Page 8 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+MANDATE CREDENTIAL
+A mandate must be bounded and replay-resistant
+TRUSTWORTHY AI WORKSHOP 08
+{
+"type": "AgentMandateCredential",
+"issuer": {
+"entityLei": "LEI-BUYER...",
+"roleCredential": "vlei:OOR:ap-controller"
+},
+"delegate": {
+"spiffeId": "spiffe://buyer .example/agent/ap-17",
+"deploymentDigest": "sha256:..."
+},
+"operation": "submit_payment",
+"transactionClass": "supplier_invoice",
+"constraints": {
+"currency": "EUR", "amountLimit": "10000.00",
+"beneficiaryLei": "LEI-SUPPLIER..."
+},
+"validFrom": "...", "validUntil": "...",
+"nonce": "single-use:92817",
+"policyVersion": "ap-policy-12",
+"proof": { "type": "organization-service-signature" }
+}
+VERIFIER CHECKS
+• The issuer role is authorized for delegation.
+• The delegate matches the attested workload.
+• The operation, amount and beneficiary are in 
+scope.
+• The mandate is current and not revoked.
+• The nonce has not been consumed.
+• The policy version is available for replay.
+Illustrative JSON — production credentials require 
+governed schemas, privacy controls and cryptographic 
+profiles.
+--- Page 9 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+PILLAR 2 — WORKLOAD
+Workload trust answers: what software is calling?
+TRUSTWORTHY AI WORKSHOP 09
+1 Build provenance source, builder , dependencies
+2 Official release publisher signature + version
+3 Security assessment independent evaluation
+4 Deployment attestation approved image + runtime state
+5 Workload identity SPIFFE ID used on this call
+WHAT IT PROVES
+• The running caller derives from an 
+approved build.
+• The deployment state was appraised 
+under policy.
+• The session identity names the intended 
+workload.
+WHAT IT DOES NOT PROVE
+That the invoice is correct, the goods 
+arrived, or the mandate covers this 
+payment.
+Workload evidence binds the caller to the mandate; transaction evidence still decides whether this action is justified.
+--- Page 10 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+PILLAR 3 — TRANSACTION
+Transaction trust asks whether the facts suffice now
+TRUSTWORTHY AI WORKSHOP 10
+{
+"evidenceId": "evidence:warehouse:93821",
+"claimType": "GoodsReceived",
+"issuer": "lei:WAREHOUSE...",
+"subject": "shipment:...",
+"object": "batch:...",
+"assertion": { "quantity": 1024,
+"condition": "accepted" },
+"observedAt": "2026-08-10T13:42:00Z",
+"issuedAt": "...",
+"collectionMethod": "warehouse-scan",
+"independenceDomain": "buyer-warehouse",
+"derivedFrom": ["sensor:...", "order:..."],
+"credentialStatus": "https://...",
+"proof": { "type": "..." }
+}
+EVALUATE FIVE QUESTIONS
+1 Authentic? proof and integrity
+2 Authoritative? issuer policy for this claim
+3 Current? status, time and freshness
+4 Corroborated? independent evidence domains
+5 Permitted? mandate and transaction policy
+A signature establishes attribution and integrity—not the 
+truth of the underlying claim.
+--- Page 11 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+TRUST GRAPH — ISSUER POLICY
+Every claim needs the right authoritative issuer
+TRUSTWORTHY AI WORKSHOP 11
+Claim Expected authoritative issuer Identity or credential link
+Legal entity identity Business registry / GLEIF / vLEI issuer LEI + registry reference
+Organizational role Qualified or governed role issuer vLEI OOR / role credential
+Agent mandate Entity through an authorized representative principal LEI + delegate workload ID
+Build provenance Build platform / software publisher artifact digest + SLSA/in-toto
+Deployment state Control plane / attestation verifier deployment digest + RATS evidence
+Goods received Buyer / warehouse / carrier for its own event shipment, batch, SSCC + issuer LEI
+Settlement Bank or payment service payment intent + bank transaction ID
+Credential format answers “how is the claim carried?” Issuer policy answers “who is allowed to say it?”
+--- Page 12 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+ENTITY RESOLUTION
+LEI and vLEI close the identity loop
+TRUSTWORTHY AI WORKSHOP 12
+Credentials differ; the LEI lets systems resolve the same organization across mandates, transactions and business standards.
+--- Page 13 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+DECISION AND ENFORCEMENT
+Policy binds all three pillars into one action
+TRUSTWORTHY AI WORKSHOP 13
+Mandate
+principal LEI • role • delegate • limits
+Workload
+provenance • attestation • SPIFFE ID
+Transaction
+claims • issuers • cross -checks • status
+Policy decision 
+point
+• hard gates
+• risk thresholds
+• contradictions
+• signed decision
+Single-use
+grant
+operation • value • 
+expiry • nonce
+Enforcement
+gateway
+consume once
+sign receipt
+Audit record = evidence refs + policy version + deployment version + decision + grant + execution 
+receipt
+--- Page 14 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+FUTURE FRONTIER
+Physical AI strengthens evidence—not absolute truth
+TRUSTWORTHY AI WORKSHOP 14
+Separate observation, inference and action; bind object, sensor, runtime, time and location; corroborate independently.
+--- Page 15 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+WORKSHOP SYNTHESIS
+Design for verifiable action, not a truthful agent
+TRUSTWORTHY AI WORKSHOP 15
+Mandate
+who may act
+Workload
+what is calling
+Transaction
+what is true enough
+Authorized action
++ signed receipt
+Build next • Use LEI and vLEI to bind mandate credentials to the real legal entity.
+• Keep build, deployment, workload and transaction attestations distinct.
+• Make issuer policy, hard gates, contradictions, grants and receipts machine-readable.
+The objective is not to prove that an agent is truthful. It is to prove that an action followed from authenticated, authoritative and sufficiently independent 
+evidence under an enforceable mandate and reproducible policy.
+--- Page 16 ---
+Slide Deck Pages Honey LavaAmber Azure Damson CloudLavender Shell SmokeCyprus Tu rq uo ise Emp ress 
+En vy
+16|
+Math Center of Slide
+Math Center of Slide
+Max Left 
+Max Right 
+Max Bottom 
+Normal Bottom 
+Content Top
+Header Top
+Optimal Right Margin
+Optimal Right Margin
+Res erved for
+Design Element
+Slide Boundary Slide Boundary
+Slide Boundary Slide Boundary
+Limitations
+▪ This presentation contains confidential and proprietary 
+information and/or trade secrets of the Global Legal 
+Entity Identifier Foundation (GLEIF) and/or its affiliates, 
+and is not to be published, reproduced, copied, or 
+disclosed without the express written consent of Global 
+Legal Entity Identifier Foundation.
+▪ Global Legal Entity Identifier Foundation, the Global Legal 
+Entity Identifier Foundation logo are service marks of 
+Global Legal Entity Identifier Foundation.
+16 © 2026  G LEIF and/or its affiliates. All rights reserved.   |   Author: GLEIF   |   Organizational Identity    |   G LEIF Publi c
