@@ -55,7 +55,7 @@ DROS-VEP Lite 原生架構設計為可直接對接國際官方標準與台灣國
 | **APL 側車參考底座** | **米豐米科技 MLMTEK / OIA LAB** (`github.com/OIA-LAB/apl-sidecar`) | 將上層資訊最小化遮蔽計畫編譯為 **DROS 帶內政策閘門位元圖 (Pillar 4)**。 |
 | **MyData 測試模組** | **數位發展部 (moda Taiwan)** | 公民自主授權包，作為 **政府服務 Agent 可信代辦 (Track 04)** 之自然人身分起點。 |
 | **保險科技共享平台** | **中華民國人壽保險商業同業公會 (壽險公會理賠聯盟鏈 / 醫起通)** | 跨產業 EHR 電子病歷 18 項 PHI 帶內動態遮蔽與 ZKP 條款合規證明 **(Track 03)**。 |
-| **npm 社群開源插件** | **DeepSeek Harness & npm** (`dsh-plugin-vajraclaw`) | 為自然人與社群開發者 Agent 提供零依賴之 1 微秒硬熔斷安全外掛。 |
+| **npm 社群免費授權插件** | **DeepSeek Harness & npm** (`dsh-plugin-vajraclaw`) | 為自然人與社群開發者 Agent 提供零依賴之 1 微秒硬熔斷安全外掛。 |
 
 ---
 

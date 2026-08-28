@@ -16,7 +16,7 @@
 
 1. **頂尖 AI Agent 執行期治理架構研發**：
    - 創立 **DROS (Deterministic Runtime Operating System)**，專注於解決自主 AI Agent 進入企業時的「執行期失控與資安漏洞」問題。
-   - 研發 **DROS-VajraClaw** 開源邊界防線網關，實現帶內 26.1 微秒（$\mu\text{s}$）確定性物理層硬熔斷。
+   - 研發 **DROS-VajraClaw** 確定性邊界防線網關，實現帶內 26.1 微秒（$\mu\text{s}$）確定性物理層硬熔斷。
 2. **堅實的專利與學術成果**：
    - 已申請美國臨時發明專利：**U.S. Provisional Patent Application No. 64/111,973**（*Patent Pending*）。
    - 在國際學術預印本庫（Zenodo）發表 7 篇核心技術論文，涵蓋 C-ABI 帶內攔截、Merkle 稽核鏈、$O(1)$ RCU 動態撤銷、RedTeam 測試大腦與 **DROS-6P 大一統六大信任要點治理架構**。
@@ -128,7 +128,7 @@ DROS 不是既有資安工具的替代品，而是 **AI Agent 執行期治理 (A
 ## 五、 全賽道 (5+1 題) DROS 確定性解法對應地圖 (Solution Mapping Master)
 
 > 🌐 **全棧展示與驗證平台**：`http://localhost:8000/index.html`  
-> 🔗 **GitHub 開源展示倉庫**：[https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase)
+> 🔗 **GitHub 展演驗證倉庫**：[https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase)
 
 | 題目 Track | 題目情境與痛點 | Multi-VEP 雙向對接解法 (P2P Inter-Gate Protocol) | 專屬獨立 VEP 控制台與解法文件 |
 | :--- | :--- | :--- | :--- |
