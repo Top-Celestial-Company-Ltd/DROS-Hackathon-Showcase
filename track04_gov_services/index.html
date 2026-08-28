@@ -829,11 +829,32 @@
                 <button class="close-btn" onclick="closeCertModal()">✕</button>
             </div>
             <div class="cert-field">
-                <div class="cert-label">Event Timestamp & Raw Payload:</div>
+                <div class="cert-label">📅 事件精確時間戳與原始載荷 (Timestamp & Raw Payload):</div>
                 <div class="cert-val" id="modalRawPayload">...</div>
             </div>
+            <!-- 🏛️ Real-World Trust Anchors (Explicit Breakdown) -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
+                <div>
+                    <div style="color:#fbbf24; font-weight:700; font-size:0.8rem; margin-bottom:4px;">🏛️ 事務所 GLEIF 法人憑證 (vLEI):</div>
+                    <div style="background:#03060d; border:1px solid rgba(251,191,36,0.3); border-radius:6px; padding:7px 10px; font-family:'Fira Code',monospace; font-size:0.74rem; color:#fef08a;">GLEIF-vLEI#LegalProxy-TW (ACTIVE)</div>
+                </div>
+                <div>
+                    <div style="color:#38bdf8; font-weight:700; font-size:0.8rem; margin-bottom:4px;">🔐 APL 跨機關法定代辦權 (Mandate):</div>
+                    <div style="background:#03060d; border:1px solid rgba(56,189,248,0.3); border-radius:6px; padding:7px 10px; font-family:'Fira Code',monospace; font-size:0.74rem; color:#bae6fd;">APL: Delegated-Gov-Agent#MOF-Auth</div>
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
+                <div>
+                    <div style="color:#c084fc; font-weight:700; font-size:0.8rem; margin-bottom:4px;">💼 自然人 W3C DID 錢包 / moda MyData:</div>
+                    <div style="background:#03060d; border:1px solid rgba(192,132,252,0.3); border-radius:6px; padding:7px 10px; font-family:'Fira Code',monospace; font-size:0.74rem; color:#e9d5ff;">did:mydata:citizen-tw-4819 (FIDO-Verified)</div>
+                </div>
+                <div>
+                    <div style="color:#4ade80; font-weight:700; font-size:0.8rem; margin-bottom:4px;">📜 W3C 可驗證代理憑證 (VC 2.0):</div>
+                    <div style="background:#03060d; border:1px solid rgba(74,222,128,0.3); border-radius:6px; padding:7px 10px; font-family:'Fira Code',monospace; font-size:0.74rem; color:#bbf7d0;">W3C-VC-2.0: Gov-Tax-Delegate-Credential</div>
+                </div>
+            </div>
             <div class="cert-field">
-                <div class="cert-label">Enterprise Gov Telemetry Header:</div>
+                <div class="cert-label">🌐 跨機關微服務遙測標頭 (Telemetry Header):</div>
                 <div class="cert-val" id="modalTelemetryHeader" style="color:var(--accent-cyan);">HTTP/1.1 200 OK | X-DROS-VEP-Latency: 26.1us | X-Gov-MyData: Intercepted | X-TW-FidO: Validated</div>
             </div>
             <div class="cert-field">
