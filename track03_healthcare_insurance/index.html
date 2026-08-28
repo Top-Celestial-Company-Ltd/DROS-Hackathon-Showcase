@@ -566,7 +566,7 @@ phi_redaction_rules:
             </div>
 
             <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.7;">
-                <p><b>1. Principal</b>: Patient Consent DIT Token (<code>Patient-Consent#991</code>)</p>
+                <p><b>1. Principal</b>: 🏛️ GLEIF Org vLEI (<code>vLEI:InsurTech-TW#8892</code>) ＋ 👤 Patient DIT (<code>Patient-Consent#991</code>) (<code>Patient-Consent#991</code>)</p>
                 <p><b>2. Authorization</b>: Scope (<code>claims:read_summary</code>)</p>
                 <p><b>3. Tool Bound</b>: FFI C-ABI (<code>get_claims_summary()</code> only)</p>
                 <p><b>4. Policy Gate</b>: 18 PHI Auto-Redact + HITL Suspension</p>
@@ -593,7 +593,8 @@ phi_redaction_rules:
             <div class="modal-body">
                 <p><b>Issuer</b>: National Taiwan University Hospital (EHR Gateway)</p>
                 <p><b>Subject</b>: InsurTech-Claim-Agent#102</p>
-                <p><b>Patient Consent Token</b>: TOK-CONSENT-991 (VERIFIED_ACTIVE)</p>
+                <p><b>🏛️ Legal Entity Identity (vLEI)</b>: <code>GLEIF-vLEI:25490000000000000000#InsurTechTW-Active</code></p>
+                <p><b>👤 Patient Consent DIT Token</b>: <code>TOK-CONSENT-991 (VERIFIED_ACTIVE)</code></p>
                 <p><b>Merkle Root Hash</b>: <code>0x9b38f71a0c4e8210394781293abcde7a82e60f1c3d90284719283748deaf</code></p>
                 <p><b>PHI Redaction Proof</b>: 18 Identifiers Overwritten In-Memory before TCP Assembly.</p>
                 <p><b>Compliance Standard</b>: US HIPAA 45 CFR §164.514 / Taiwan PDPA Compliant.</p>
