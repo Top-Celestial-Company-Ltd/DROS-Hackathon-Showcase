@@ -736,25 +736,99 @@
                 <div class="modal-title">🛡️ DROS Cryptographic Audit Certificate & Telemetry Proof</div>
                 <button class="close-btn" onclick="closeCertModal()">✕</button>
             </div>
-            <div class="cert-field">
-                <div class="cert-label">Event Timestamp & Raw Payload:</div>
-                <div class="cert-val" id="modalRawPayload">...</div>
+            <!-- 🔄 雙模切換標籤頁 (Dual-Mode Standard Switcher) -->
+            <div style="display:flex; gap:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; margin-bottom:10px;">
+                <button id="tab-btn-parsed" onclick="switchCertTab('parsed')" style="background:var(--accent-purple); color:#000; border:none; font-weight:800; padding:6px 12px; border-radius:6px; font-size:0.78rem; cursor:pointer;">
+                    📊 競賽指標參數視圖 (Hackathon View)
+                </button>
+                <button id="tab-btn-standard" onclick="switchCertTab('standard')" style="background:rgba(255,255,255,0.08); color:var(--text-muted); border:1px solid rgba(255,255,255,0.1); font-weight:700; padding:6px 12px; border-radius:6px; font-size:0.78rem; cursor:pointer;">
+                    🌐 W3C VC 2.0 / IETF RFC-6962 國際標準 JSON-LD
+                </button>
             </div>
-            <div class="cert-field">
-                <div class="cert-label">Enterprise Microservice Telemetry Header:</div>
-                <div class="cert-val" id="modalTelemetryHeader" style="color:var(--accent-purple)">HTTP/1.1 200 OK | X-DROS-VEP-Latency: 26.1us | X-CyberSecurity-WAF: PaloAlto-PANOS-InBand | X-Network-eBPF: Hooked | X-ERP: Banking-DB-9081</div>
+
+            <!-- TAB 1: 競賽指標參數視圖 (Hackathon View) -->
+            <div id="tab-content-parsed" style="display:flex; flex-direction:column; gap:10px;">
+                <div class="cert-field">
+                    <div class="cert-label">📅 事件精確時間戳與原始載荷 (Timestamp & Raw Payload):</div>
+                    <div class="cert-val" id="modalRawPayload">...</div>
+                </div>
+                <!-- 🏛️ Real-World Trust Anchors (Explicit Breakdown) -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:6px;">
+                    <div>
+                        <div style="color:#fbbf24; font-weight:700; font-size:0.8rem; margin-bottom:4px;">🏛️ 電支銀行 GLEIF 法人憑證 (vLEI):</div>
+                        <div style="background:#03060d; border:1px solid rgba(251,191,36,0.3); border-radius:6px; padding:7px 10px; font-family:'Fira Code',monospace; font-size:0.74rem; color:#fef08a;">GLEIF-vLEI#PayFlowBank-TW (ACTIVE)</div>
+                    </div>
+                    <div>
+                        <div style="color:#38bdf8; font-weight:700; font-size:0.8rem; margin-bottom:4px;">🔐 APL 洗錢防制法定職權 (Mandate):</div>
+                        <div style="background:#03060d; border:1px solid rgba(56,189,248,0.3); border-radius:6px; padding:7px 10px; font-family:'Fira Code',monospace; font-size:0.74rem; color:#bae6fd;">APL: AML-Compliance-Officer#FSC-TW</div>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:6px;">
+                    <div>
+                        <div style="color:#c084fc; font-weight:700; font-size:0.8rem; margin-bottom:4px;">💼 自然人 W3C DID 數位身分皮夾:</div>
+                        <div style="background:#03060d; border:1px solid rgba(192,132,252,0.3); border-radius:6px; padding:7px 10px; font-family:'Fira Code',monospace; font-size:0.74rem; color:#e9d5ff;">did:ion:user-tw-9812#fido</div>
+                    </div>
+                    <div>
+                        <div style="color:#4ade80; font-weight:700; font-size:0.8rem; margin-bottom:4px;">📜 W3C 密態圖特徵憑證 (VC 2.0):</div>
+                        <div style="background:#03060d; border:1px solid rgba(74,222,128,0.3); border-radius:6px; padding:7px 10px; font-family:'Fira Code',monospace; font-size:0.74rem; color:#bbf7d0;">W3C-VC-2.0: FinTech-GraphProof-ZKP</div>
+                    </div>
+                </div>
+                <div class="cert-field">
+                    <div class="cert-label">🌐 企業微服務遙測標頭 (Telemetry Header):</div>
+                    <div class="cert-val" id="modalTelemetryHeader" style="color:var(--accent-purple)">HTTP/1.1 200 OK | X-DROS-VEP-Latency: 26.1us | X-CyberSecurity-WAF: PaloAlto-PANOS-InBand | X-Network-eBPF: Hooked | X-ERP: Banking-DB-9081</div>
+                </div>
+                <div class="cert-field">
+                    <div class="cert-label">🔒 SHA-256 Event Hash:</div>
+                    <div class="cert-val" id="modalHash">...</div>
+                </div>
+                <div class="cert-field">
+                    <div class="cert-label">🔗 Merkle Chain Link (Prev Hash):</div>
+                    <div class="cert-val" id="modalPrevHash">...</div>
+                </div>
+                <div class="cert-field">
+                    <div class="cert-label">⚡ Policy Latency & Execution Metric:</div>
+                    <div class="cert-val" style="color:var(--accent-green)">Decision Latency: 26.1 μs | In-Band Intercept: PASS | PII Masking: ZERO-EXFIL</div>
+                </div>
             </div>
-            <div class="cert-field">
-                <div class="cert-label">SHA-256 Event Hash:</div>
-                <div class="cert-val" id="modalHash">...</div>
-            </div>
-            <div class="cert-field">
-                <div class="cert-label">Merkle Chain Link (Prev Hash):</div>
-                <div class="cert-val" id="modalPrevHash">...</div>
-            </div>
-            <div class="cert-field">
-                <div class="cert-label">Policy Latency & Execution Metric:</div>
-                <div class="cert-val" style="color:var(--accent-green)">Decision Latency: 26.1 μs | In-Band Intercept: PASS</div>
+
+            <!-- TAB 2: W3C VC 2.0 / IETF RFC-6962 國際標準 JSON-LD 規範 -->
+            <div id="tab-content-standard" style="display:none; flex-direction:column; gap:8px;">
+                <div style="color:var(--accent-cyan); font-weight:700; font-size:0.8rem;">📜 遵循 W3C Verifiable Credentials 2.0 ＆ IETF RFC-6962 規範格式：</div>
+                <pre style="background:#03060d; border:1px solid rgba(192,132,252,0.3); border-radius:8px; padding:10px; font-family:'Fira Code',monospace; font-size:0.72rem; color:#4ade80; overflow-y:auto; max-height:270px; line-height:1.4;">{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://schema.gleif.org/vlei/v1",
+    "https://schema.fsc.gov.tw/aml/v1",
+    "https://ietf.org/rfc/rfc6962"
+  ],
+  "type": ["VerifiableCredential", "FinTechAntiMoneyLaunderingProof", "DROSGovernanceReceipt"],
+  "issuer": "did:gleif:254900PayFlowBankTWActive",
+  "issuanceDate": "2026-08-28T14:33:04.077Z",
+  "credentialSubject": {
+    "id": "did:ion:user-tw-9812#fido",
+    "legalMandate": "APL:AML-Compliance-Officer#FSC-TW",
+    "vcStandard": "W3C-VC-2.0:FinTech-GraphProof-ZKP",
+    "amlVectorMetrics": {
+      "riskScore": "0.12 (LOW)",
+      "rawPiiExfiltration": 0,
+      "unauthorizedTransferBlocked": 1
+    },
+    "drosInvariants": {
+      "executionBoundary": "C-ABI-InBand",
+      "decisionLatency": "26.1us",
+      "unauthorizedExecutionCount": 0,
+      "observableStateDrift": 0
+    }
+  },
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2026-08-28T14:33:04.077Z",
+    "verificationMethod": "did:gleif#key-fintech-1",
+    "proofPurpose": "assertionMethod",
+    "merkleRoot": "0x9a8f172a18de4ba6cc7a4029ca26d60c...",
+    "previousBlockHash": "0x6eabddbe1cbb8346cc7a4029ca26d60c..."
+  }
+}</pre>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button class="btn" onclick="closeCertModal()">關閉憑證頁面</button>
@@ -768,6 +842,28 @@
 
     <script>
         let isRevoked = false;
+
+        function switchCertTab(mode) {
+            const btnP = document.getElementById('tab-btn-parsed');
+            const btnS = document.getElementById('tab-btn-standard');
+            const conP = document.getElementById('tab-content-parsed');
+            const conS = document.getElementById('tab-content-standard');
+            if (mode === 'parsed') {
+                btnP.style.background = 'var(--accent-purple)';
+                btnP.style.color = '#000';
+                btnS.style.background = 'rgba(255,255,255,0.08)';
+                btnS.style.color = 'var(--text-muted)';
+                conP.style.display = 'flex';
+                conS.style.display = 'none';
+            } else {
+                btnS.style.background = 'var(--accent-cyan)';
+                btnS.style.color = '#000';
+                btnP.style.background = 'rgba(255,255,255,0.08)';
+                btnP.style.color = 'var(--text-muted)';
+                conP.style.display = 'none';
+                conS.style.display = 'flex';
+            }
+        }
 
         // 🎬 評審 4 大核心 Guided Demo 演練腳本
         function runScene(sceneId) {
