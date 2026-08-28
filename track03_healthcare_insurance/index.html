@@ -610,7 +610,18 @@ phi_redaction_rules:
                 <span style="font-size:1.1rem; font-weight:800; color:#fff;">🛡️ DROS Cryptographic Audit Certificate & Telemetry Proof</span>
                 <button onclick="closeCertModal()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">✕</button>
             </div>
-            <div style="display:flex; flex-direction:column; gap:12px; font-size:0.84rem;">
+            <!-- 🔄 雙模切換標籤頁 (Dual-Mode Standard Switcher) -->
+            <div style="display:flex; gap:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">
+                <button id="tab-btn-parsed" onclick="switchCertTab('parsed')" style="background:var(--accent-green); color:#000; border:none; font-weight:800; padding:6px 12px; border-radius:6px; font-size:0.78rem; cursor:pointer;">
+                    📊 競賽指標參數視圖 (Hackathon View)
+                </button>
+                <button id="tab-btn-standard" onclick="switchCertTab('standard')" style="background:rgba(255,255,255,0.08); color:var(--text-muted); border:1px solid rgba(255,255,255,0.1); font-weight:700; padding:6px 12px; border-radius:6px; font-size:0.78rem; cursor:pointer;">
+                    🌐 W3C VC 2.0 / RFC-6962 國際標準 JSON-LD
+                </button>
+            </div>
+
+            <!-- TAB 1: 競賽指標參數視圖 (Hackathon View) -->
+            <div id="tab-content-parsed" style="display:flex; flex-direction:column; gap:10px;">
                 <div>
                     <div style="color:var(--text-muted); margin-bottom:4px;">📅 事件精確時間戳與原始載荷 (Timestamp & Raw Payload):</div>
                     <div id="modalRawPayload" style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--text-main);">...</div>
@@ -653,6 +664,41 @@ phi_redaction_rules:
                     <div style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--accent-green);">Decision Latency: 26.1 μs | In-Band Intercept: PASS | HIPAA Safe Harbor 18 PHI: ZERO-EXFIL</div>
                 </div>
             </div>
+
+            <!-- TAB 2: W3C VC 2.0 / IETF RFC-6962 國際標準 JSON-LD 規範 -->
+            <div id="tab-content-standard" style="display:none; flex-direction:column; gap:8px;">
+                <div style="color:var(--accent-cyan); font-weight:700; font-size:0.8rem;">📜 遵循 W3C Verifiable Credentials 2.0 ＆ IETF RFC-6962 規範格式：</div>
+                <pre style="background:#03060d; border:1px solid rgba(0,242,254,0.3); border-radius:8px; padding:10px; font-family:'Fira Code',monospace; font-size:0.72rem; color:#4ade80; overflow-y:auto; max-height:270px; line-height:1.4;">{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://schema.gleif.org/vlei/v1",
+    "https://ietf.org/rfc/rfc6962"
+  ],
+  "type": ["VerifiableCredential", "AuditLogReceipt", "DROSGovernanceReceipt"],
+  "issuer": "did:gleif:254900InsurTechTW8892",
+  "issuanceDate": "2026-08-28T14:33:04.077Z",
+  "credentialSubject": {
+    "id": "did:ion:patient-tw-991#ed25519",
+    "legalMandate": "APL:Claims-Examiner-Role#NTU-Auth",
+    "vcStandard": "W3C-VC-2.0:Claims-Proof-ZKP-Lite",
+    "drosInvariants": {
+      "executionBoundary": "C-ABI-InBand",
+      "decisionLatency": "26.1us",
+      "unauthorizedExecutionCount": 0,
+      "observableStateDrift": 0,
+      "hipaa18PhiExfiltration": 0
+    }
+  },
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2026-08-28T14:33:04.077Z",
+    "verificationMethod": "did:gleif#key-1",
+    "proofPurpose": "assertionMethod",
+    "merkleRoot": "0x2f9183758de3ba5acf326e3e265a4f7b...",
+    "previousBlockHash": "0x1b06f0d695279cee87596a4e2c89bc70..."
+  }
+}</pre>
+            </div>
             <div style="display:flex; justify-content:flex-end;">
                 <button onclick="closeCertModal()" style="background:var(--accent-green); color:#000; font-weight:800; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">關閉憑證頁面</button>
             </div>
@@ -660,6 +706,28 @@ phi_redaction_rules:
     </div>
 
     <script>
+        function switchCertTab(mode) {
+            const btnP = document.getElementById('tab-btn-parsed');
+            const btnS = document.getElementById('tab-btn-standard');
+            const conP = document.getElementById('tab-content-parsed');
+            const conS = document.getElementById('tab-content-standard');
+            if (mode === 'parsed') {
+                btnP.style.background = 'var(--accent-green)';
+                btnP.style.color = '#000';
+                btnS.style.background = 'rgba(255,255,255,0.08)';
+                btnS.style.color = 'var(--text-muted)';
+                conP.style.display = 'flex';
+                conS.style.display = 'none';
+            } else {
+                btnS.style.background = 'var(--accent-cyan)';
+                btnS.style.color = '#000';
+                btnP.style.background = 'rgba(255,255,255,0.08)';
+                btnP.style.color = 'var(--text-muted)';
+                conP.style.display = 'none';
+                conS.style.display = 'flex';
+            }
+        }
+
         function openCertModal(logText, teleInfo='PaloAlto-PANOS:InBand | eBPF:Hooked | Hospital-EHR:8083') {
             const now = new Date().toISOString();
             document.getElementById('modalRawPayload').innerText = `${now} | ${logText}`;
