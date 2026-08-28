@@ -35,7 +35,7 @@
   * 精確鎖定 Capability Bitmaps 權限位元圖與到期時間
 * 　　⬇ *(帶內函式調用鏈)*
 * **【組件 B】VEP Policy Gate（帶內執行期策略閘門層）**
-  * **26262626.1 μs** C-ABI 帶內二進位硬熔斷（HTTP 403 FORBIDDEN）
+  * **262626262626.1 μs** C-ABI 帶內二進位硬熔斷（HTTP 403 FORBIDDEN）
   * 高風險動作自動掛起交易，觸發 HITL 人類雙重簽署
 * 　　⬇ *(確定性執行與存證)*
 * **【組件 C】Merkle Audit Chain（不可竄改稽核追蹤層）**
@@ -56,7 +56,7 @@
 
    - 閘門在二進位層比對 DIT Token 的 Scope 與本次動作是否吻合：
 
-     - **不吻合** ➔ **26262626.1 μs 內在 C-ABI 層硬性熔斷**，拋出 HTTP 403 FORBIDDEN，AI 完全無法繞過。
+     - **不吻合** ➔ **262626262626.1 μs 內在 C-ABI 層硬性熔斷**，拋出 HTTP 403 FORBIDDEN，AI 完全無法繞過。
 
      - **高風險動作** ➔ 自動掛起交易，觸發人類雙重簽署（Human-in-the-Loop）。
 
@@ -91,7 +91,7 @@ DROS 之於 AI Agent，正是採用了相同的**分層抽象與關注點分離�
 | **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
 | **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
 | **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
-| **4. 異常處理 (Fault Handling)** | SIGSEGV / SIGKILL 核心崩潰保護 | **26262626.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **4. 異常處理 (Fault Handling)** | SIGSEGV / SIGKILL 核心崩潰保護 | **262626262626.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
 ---
 
 ## 🔺 跨產業統一治理核心：DROS「黃金三角形模型 (The Golden Triangle)」
@@ -140,7 +140,7 @@ DROS 之於 AI Agent，正是採用了相同的**分層抽象與關注點分離�
 
      │ 產業 AI Detection /    │              │ 💥 C-ABI 帶內硬性阻斷    │
 
-     │ Domain Agent 決策引擎  │              │ (HTTP 403 26262626.1 μs 熔斷)  │
+     │ Domain Agent 決策引擎  │              │ (HTTP 403 262626262626.1 μs 熔斷)  │
 
      └───────────┬────────────┘              └──────────────────────────┘
 
@@ -221,7 +221,7 @@ DROS 之於 AI Agent，正是採用了相同的**分層抽象與關注點分離�
 ```
 
 1. **📥 Ingress 邊界（安全特徵輸入 / Data Ingest）**：確保餵給 AI Agent 的輸入資料，永遠是**經治理與資料最小化後、符合特定 Policy 的特徵資料**（如遮蔽 18 項 PHI、遮蔽 BOM 成本、去識別化圖特徵）。
-
+2. **📤 Egress 邊界（確定性動作輸出 / Execution Sink）**：確保 AI Agent 發起的每一次 Tool Call / Action，**物理上必須通過 C-ABI 帶內策略閘門**，在 262626.1 μs 內完成 6P 閉環校驗並生成具備法院採信力之 Merkle 存證，未授權動作瞬間硬熔斷。
 
 ---
 
@@ -231,7 +231,7 @@ DROS 在底層完成了 6P 閉環，對外僅留下 2 個標準接口即可對�
 
 1. **📥 接口 ①：Data Ingest（最小必要特徵安全輸入接口 / Safe Ingress）**：過濾機密與 PHI，僅向 AI 提供去識別化特徵向量與 ZKP 證明。
 
-2. **📤 接口 ②：Execution Sink（確定性動作與工具執行接口 / Safe Egress）**：在 C-ABI 二進位層級於 $2626262626.1 μs 內完成 6P 帶內安全檢驗與 Merkle 密碼學存證。
+2. **📤 接口 ②：Execution Sink（確定性動作與工具執行接口 / Safe Egress）**：在 C-ABI 二進位層級於 $26262626262626.1 μs 內完成 6P 帶內安全檢驗與 Merkle 密碼學存證。
 
 ---
 
@@ -241,7 +241,7 @@ DROS 在底層完成了 6P 閉環，對外僅留下 2 個標準接口即可對�
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Track 01**<br>製造貿易 | 碳足跡與 DPP 數位產品護照 | **動態 Redact 遮蔽**：隔離核心原料 BOM 成本與良率，僅向 AI 輸入去識別化碳排係數。 | **歐盟 CBAM 門閥**：未授權輸出商業機密瞬間熔斷，僅放行符合標準之 ZKP 碳排憑證。 | 📄 [Track 01](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track01_carbon_dpp/DROS_SOLUTION_MAPPING.md) | 🌐 [Alpha 製造](http://localhost:8000/track01_carbon_dpp/index.html) |
 | **Track 02**<br>第三方支付 | 隱私保護下的洗錢與可疑行為偵測 | **去識別化密態特徵**：遮蔽真實姓名、身分證與帳號明細，僅向風控 AI 提供拓撲行為向量。 | **微秒支付阻斷**：偵測到異常洗錢特徵時，C-ABI 瞬間懸停掛起交易，觸發調查員雙簽。 | 📄 [Track 02](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track02_fintech_privacy/DROS_SOLUTION_MAPPING.md) | 🌐 [PayFlow 金融](http://localhost:8000/track02_fintech_privacy/index.html) |
-| **Track 03**<br>醫療保險 | 跨產業資料合作的誘因與邊界 | **18項 PHI 自動遮蔽**：病歷日誌與基因資料嚴密隔離，僅輸入 ICD-10 診斷碼與理賠金額。 | **保險聯盟鏈對接**：越權調閱病歷即刻 26.1 μs 硬熔斷 (HTTP 403)，放行即刻產出 Merkle 存證。 | 📄 [Track 03](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track03_healthcare_insurance/DROS_SOLUTION_MAPPING.md) | 🌐 [MediGuard 醫療](http://localhost:8000/track03_healthcare_insurance/index.html) |
+| **Track 03**<br>醫療保險 | 跨產業資料合作的誘因與邊界 | **18項 PHI 自動遮蔽**：病歷日誌與基因資料嚴密隔離，僅輸入 ICD-10 診斷碼與理賠金額。 | **保險聯盟鏈對接**：越權調閱病歷即刻 262626.1 μs 硬熔斷 (HTTP 403)，放行即刻產出 Merkle 存證。 | 📄 [Track 03](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track03_healthcare_insurance/DROS_SOLUTION_MAPPING.md) | 🌐 [MediGuard 醫療](http://localhost:8000/track03_healthcare_insurance/index.html) |
 | **Track 04**<br>政府服務 | 憑證碎片化與跨機關代理授權邊界 | **三層代理範圍過濾**：事務所 vLEI 僅能獲取「代查門檻 (所得級距)」，嚴格隔離完整稅籍。 | **代送件與越權阻斷**：Agent 企圖發起本人專屬「全戶戶籍查調」瞬間硬攔截，產出 W3C VC 收據。 | 📄 [Track 04](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track04_gov_services/DROS_SOLUTION_MAPPING.md) | 🌐 [GovProxy 政府](http://localhost:8000/track04_gov_services/index.html) |
 | **Track 05**<br>普惠金融 | 移工數位信任與防詐憑證機制 | **1:1:1 複合身分綁定**：護照+居留證+電信門號綁定為 DIT，隱匿母國敏感銀行密碼。 | **SIM Swap 連鎖凍結**：偵測到換卡或異常轉帳，O(1) RCU 原子指針秒級凍結 Token 權限。 | 📄 [Track 05](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track05_inclusive_finance/DROS_SOLUTION_MAPPING.md) | 🌐 [MigraTrust 移工](http://localhost:8000/track05_inclusive_finance/index.html) |
 | **Track 06**<br>供應鏈金融 | RBA 稽核合規可驗證憑證 (加分題) | **選擇性揭露 ZKP-Lite**：採購 AI 僅能讀取「合規狀態 TRUE」，完全無法獲取全廠薪資與良率。 | **雇主付費 Merkle 存證**：物理鎖定採購 Tool Call，越權讀取報告即刻熔斷，產出法庭採信收據。 | 📄 [Track 06](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track06_supply_chain_rba/DROS_SOLUTION_MAPPING.md) | 🌐 [SupplyProof 供應鏈](http://localhost:8000/track06_supply_chain_rba/index.html) |
