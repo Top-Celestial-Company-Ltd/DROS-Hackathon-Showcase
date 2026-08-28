@@ -64,4 +64,14 @@ DROS-VEP Lite is architected to natively interface with official international s
 - 🏛️ **[DROS Whitepaper Summary](DROS_Paper_07_Unified_6Pillars.md)**: The 6-Pillars Enterprise AI Trust Model.
 
 ---
+
+## 📜 Academic Publications & DOI Citations
+If you reference DROS zero-trust execution governance or the multi-track evaluation showcase in your research, please cite the DROS Academic Trilogy on Zenodo:
+
+* 📖 **[DROS Trilogy Reading Guide (Technical Note)](https://doi.org/10.5281/zenodo.22114036)**: *An Agent Runtime Operation Substrate* (Zenodo: [10.5281/zenodo.22114036](https://zenodo.org/records/22114036))
+* 🏛️ **Paper 1: DROS-6P** — *A Unified Deterministic Runtime Governance Architecture Closing the Six Fundamental Trust Boundaries of Enterprise AI Agents* (DOI: [`10.5281/zenodo.21833970`](https://doi.org/10.5281/zenodo.21833970))
+* 🏛️ **Paper 2: DROS 4-Layer (v3)** — *Bridging the Agent-to-Execution Attribution Gap in Autonomous AI Workloads: A 4-Layer Deterministic Runtime Operating System* (DOI: [`10.5281/zenodo.22092008`](https://doi.org/10.5281/zenodo.22092008))
+* 🏛️ **Paper 3: DROS-PGM** — *A Deterministic Kernel-Level Execution Control Plane for Post-Compromise Security in Autonomous AI Systems* (DOI: [`10.5281/zenodo.21903687`](https://doi.org/10.5281/zenodo.21903687))
+
+---
 *Patent Notice: DROS execution governance and security technology is protected under U.S. Provisional Patent Application (U.S. PPA No. 64/111,973, Patent Pending).*

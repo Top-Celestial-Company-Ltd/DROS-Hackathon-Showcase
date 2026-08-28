@@ -64,4 +64,14 @@ DROS-VEP Lite 原生架構設計為可直接對接國際官方標準與台灣國
 - 🏛️ **[DROS 六大信任基石架構解析](DROS_SOLUTION_MAPPING_MASTER.md)**：企業級 AI 信任模型落地實踐。
 
 ---
+
+## 📜 國際學術論文、三部曲與 DOI 引用註記
+若您在學術研究、技術白皮書或多軌展演評測中引用 DROS 執行期治理架構，歡迎引用我們已公開於 Zenodo 的三部曲權威論文：
+
+* 📖 **[DROS 學術三部曲導讀 (Reading Guide Technical Note)](https://doi.org/10.5281/zenodo.22114036)**：*面向自主 AI 工作負載的確定性執行期作業基板*（Zenodo: [10.5281/zenodo.22114036](https://zenodo.org/records/22114036)）
+* 🏛️ **Paper 1: DROS-6P** — *閉環企業級 AI Agent 六大信任邊界之確定性執行期治理架構*（DOI: [`10.5281/zenodo.21833970`](https://doi.org/10.5281/zenodo.21833970)）
+* 🏛️ **Paper 2: DROS 四層 (v3)** — *彌合自主 AI 負載中「代理人至執行歸因鴻溝」之四層確定性執行期作業系統*（DOI: [`10.5281/zenodo.22092008`](https://doi.org/10.5281/zenodo.22092008)）
+* 🏛️ **Paper 3: DROS-PGM** — *基於內核級運行期安全之確定性執行控制平面 (Post-Compromise)*（DOI: [`10.5281/zenodo.21903687`](https://doi.org/10.5281/zenodo.21903687)）
+
+---
 *專利聲明：DROS 執行治理與安全技術已申請美國臨時專利保護（U.S. Provisional Patent Application No. 64/111,973，Patent Pending）。*
