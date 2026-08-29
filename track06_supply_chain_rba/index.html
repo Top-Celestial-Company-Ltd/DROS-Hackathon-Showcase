@@ -753,15 +753,19 @@
         if (mode === 'parsed') {
             btnP.style.background = 'var(--accent-amber)';
             btnP.style.color = '#000';
+            btnP.style.border = 'none';
             btnS.style.background = 'rgba(255,255,255,0.08)';
-            btnS.style.color = 'var(--text-muted)';
+            btnS.style.color = '#94a3b8';
+            btnS.style.border = '1px solid rgba(255,255,255,0.1)';
             conP.style.display = 'flex';
             conS.style.display = 'none';
         } else {
-            btnS.style.background = 'var(--accent-cyan)';
+            btnS.style.background = 'var(--accent-amber)';
             btnS.style.color = '#000';
+            btnS.style.border = 'none';
             btnP.style.background = 'rgba(255,255,255,0.08)';
-            btnP.style.color = 'var(--text-muted)';
+            btnP.style.color = '#94a3b8';
+            btnP.style.border = '1px solid rgba(255,255,255,0.1)';
             conP.style.display = 'none';
             conS.style.display = 'flex';
         }
