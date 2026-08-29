@@ -827,6 +827,7 @@
     }
 
     function runStep(step) {
+        setStepActive(step);
         const badge = document.getElementById('gate-badge');
         const resp = document.getElementById('json-response');
 
