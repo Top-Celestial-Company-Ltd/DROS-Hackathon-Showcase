@@ -522,6 +522,59 @@
         </div>
     </div>
 
+    <!-- 6 Elements Compliance Inspector Table (說明與對照表) -->
+    <div class="explainer-section">
+        <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) 具體解讀與日誌對照說明</div>
+        <table class="elements-table">
+            <thead>
+                <tr>
+                    <th>信任要素 (Pillar)</th>
+                    <th>大會題目問的重點</th>
+                    <th>DROS-VEP-lite 的精確解答 (Hardware/Gateway Level)</th>
+                    <th>日誌 (Audit Log) 顯示的具體細節</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>1. Principal (代表誰)</b></td>
+                    <td>Agent 代表哪一個人、團隊、法人或公部門？</td>
+                    <td><b>DIT (Deterministic Identity Token)</b> 加密標籤綁定 Agent A (採購主管)。</td>
+                    <td><code style="color:var(--accent-purple)">Principal: Agent A (Procurement Manager)</code></td>
+                </tr>
+                <tr>
+                    <td><b>2. Authorization (授權範圍)</b></td>
+                    <td>誰授權？允許做什麼？禁止做什麼？</td>
+                    <td><b>Scope-Based 權限矩陣</b>，僅允許 `query_vendor_info`，禁止 `execute_payment`。</td>
+                    <td><code style="color:var(--accent-purple)">Scope: query_vendor_info</code></td>
+                </tr>
+                <tr>
+                    <td><b>3. Tool / Action (工具邊界)</b></td>
+                    <td>能呼叫什麼工具？權限與邊界為何？</td>
+                    <td><b>VEP Interceptor 帶內代理</b>，嘗試呼叫 `execute_payment` 在微秒級退回。</td>
+                    <td><code style="color:var(--accent-amber)">[TOOL_INTERCEPT] Tool: execute_payment -> DENIED</code></td>
+                </tr>
+                <tr>
+                    <td><b>4. Policy Gate (過濾門閥)</b></td>
+                    <td>高風險/敏感動作如何被攔擋與把關？</td>
+                    <td><b>Privacy Gate & HITL Suspended</b>，完全去識別化購物明細，洗錢爆表時硬性掛起懸停要求 MFA。</td>
+                    <td><code style="color:var(--accent-amber)">[POLICY_GATE] Required HITL Approval</code></td>
+                </tr>
+                <tr>
+                    <td><b>5. Audit Log (追溯稽核)</b></td>
+                    <td>如何追溯行動？記錄依據為何？</td>
+                    <td><b>Tamper-evident SHA-256 Merkle Hash Chain</b>，點擊 Log 可出示密碼學安全憑證與 Prev Hash。</td>
+                    <td><code style="color:var(--accent-green)">SHA256: 0x9a8f4c21... (可獨立驗證)</code></td>
+                </tr>
+                <tr>
+                    <td><b>6. Revocation (動態撤銷)</b></td>
+                    <td>授權過期或撤銷後，如何阻止 Agent 繼續執行？</td>
+                    <td><b>$O(1)$ 常數時間 Payment Token 凍結</b>，風控中心點擊凍結，支付 API 權限秒級失效傳回 `403`。</td>
+                    <td><code style="color:var(--accent-red)">[RISK_FREEZE] Token invalidated -> 403</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <!-- 5-Step E-Commerce Payment & Risk Workflow -->
     <div class="workflow-bar">
         <div class="step-card active" id="step1" onclick="runStep(1)">
@@ -646,58 +699,7 @@
 
     </div>
 
-    <!-- 6 Elements Compliance Inspector Table (說明與對照表) -->
-    <div class="explainer-section">
-        <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) 具體解讀與日誌對照說明</div>
-        <table class="elements-table">
-            <thead>
-                <tr>
-                    <th>信任要素 (Pillar)</th>
-                    <th>大會題目問的重點</th>
-                    <th>DROS-VEP-lite 的精確解答 (Hardware/Gateway Level)</th>
-                    <th>日誌 (Audit Log) 顯示的具體細節</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><b>1. Principal (代表誰)</b></td>
-                    <td>Agent 代表哪一個人、團隊、法人或公部門？</td>
-                    <td><b>DIT (Deterministic Identity Token)</b> 加密標籤綁定 Agent A (採購主管)。</td>
-                    <td><code style="color:var(--accent-purple)">Principal: Agent A (Procurement Manager)</code></td>
-                </tr>
-                <tr>
-                    <td><b>2. Authorization (授權範圍)</b></td>
-                    <td>誰授權？允許做什麼？禁止做什麼？</td>
-                    <td><b>Scope-Based 權限矩陣</b>，僅允許 `query_vendor_info`，禁止 `execute_payment`。</td>
-                    <td><code style="color:var(--accent-purple)">Scope: query_vendor_info</code></td>
-                </tr>
-                <tr>
-                    <td><b>3. Tool / Action (工具邊界)</b></td>
-                    <td>能呼叫什麼工具？權限與邊界為何？</td>
-                    <td><b>VEP Interceptor 帶內代理</b>，嘗試呼叫 `execute_payment` 在微秒級退回。</td>
-                    <td><code style="color:var(--accent-amber)">[TOOL_INTERCEPT] Tool: execute_payment -> DENIED</code></td>
-                </tr>
-                <tr>
-                    <td><b>4. Policy Gate (過濾門閥)</b></td>
-                    <td>高風險/敏感動作如何被攔擋與把關？</td>
-                    <td><b>Privacy Gate & HITL Suspended</b>，完全去識別化購物明細，洗錢爆表時硬性掛起懸停要求 MFA。</td>
-                    <td><code style="color:var(--accent-amber)">[POLICY_GATE] Required HITL Approval</code></td>
-                </tr>
-                <tr>
-                    <td><b>5. Audit Log (追溯稽核)</b></td>
-                    <td>如何追溯行動？記錄依據為何？</td>
-                    <td><b>Tamper-evident SHA-256 Merkle Hash Chain</b>，點擊 Log 可出示密碼學安全憑證與 Prev Hash。</td>
-                    <td><code style="color:var(--accent-green)">SHA256: 0x9a8f4c21... (可獨立驗證)</code></td>
-                </tr>
-                <tr>
-                    <td><b>6. Revocation (動態撤銷)</b></td>
-                    <td>授權過期或撤銷後，如何阻止 Agent 繼續執行？</td>
-                    <td><b>$O(1)$ 常數時間 Payment Token 凍結</b>，風控中心點擊凍結，支付 API 權限秒級失效傳回 `403`。</td>
-                    <td><code style="color:var(--accent-red)">[RISK_FREEZE] Token invalidated -> 403</code></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    
 
     <!-- 🎛️ 本主題專屬：紅隊攻擊大腦 (Attacker LLM Engine) 對抗測試面板 (置底呈現) -->
     <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">

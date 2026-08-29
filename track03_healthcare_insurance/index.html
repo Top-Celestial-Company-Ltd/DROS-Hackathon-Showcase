@@ -431,6 +431,61 @@
     </div>
 
     <!-- 5 步驟工作流程導覽列 -->
+    <!-- 🔍 大會 6 大信任要點 (Governance Gap Memo) 解讀表格 -->
+    <div style="background:var(--panel-bg); border:1px solid rgba(0,230,118,0.3); border-radius:12px; padding:20px; margin-top:20px; backdrop-filter:blur(12px);">
+        <div style="font-size:1.05rem; font-weight:800; color:#fff; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+            <span>🔍 大會 6 大信任要點 (Governance Gap Memo) —— 智慧醫療核保與個資脫敏解讀</span>
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+            <thead>
+                <tr>
+                    <th style="background:rgba(0,230,118,0.15); color:var(--accent-green); padding:10px 12px; text-align:left; border:1px solid rgba(0,230,118,0.25); font-weight:700;">信任要素 (Pillar)</th>
+                    <th style="background:rgba(0,230,118,0.15); color:var(--accent-green); padding:10px 12px; text-align:left; border:1px solid rgba(0,230,118,0.25); font-weight:700;">大會題目問的重點</th>
+                    <th style="background:rgba(0,230,118,0.15); color:var(--accent-green); padding:10px 12px; text-align:left; border:1px solid rgba(0,230,118,0.25); font-weight:700;">DROS HealthProxy VEP 的精確解答</th>
+                    <th style="background:rgba(0,230,118,0.15); color:var(--accent-green); padding:10px 12px; text-align:left; border:1px solid rgba(0,230,118,0.25); font-weight:700;">日誌 (Audit Log) 顯示的具體細節</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>1. Principal (代表誰)</b></td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">Agent 代表哪家保險公司？是否取得病患授權？</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>GLEIF 法人 vLEI ＋ 病患 DIT 同意標籤</b>：雙重密碼學定錨，確保保險 AI 合法受託。</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-cyan)">Principal: InsurTechTW-8892 | Patient-DIT: TOK-CONSENT-991</code></td>
+                </tr>
+                <tr>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>2. Authorization (授權範圍)</b></td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">AI 能讀哪些病歷？允許全院調閱嗎？</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>Scope-Based 細粒度隔離</b>：僅允許 `claims:read_summary`，禁止跨科別未授權病歷查詢。</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-cyan)">Scope: claims:read_summary | Prohibited: export_full_ehr</code></td>
+                </tr>
+                <tr>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>3. Tool / Action (工具邊界)</b></td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">Agent 呼叫非法醫療資料庫工具時如何攔截？</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>VEP C-ABI 帶內代理</b>：呼叫 `export_full_ehr_history()` 在 26.1μs 物理熔斷退回 403。</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-yellow)">[TOOL_BLOCK] export_full_ehr_history() → 26.1μs DENIED 403</code></td>
+                </tr>
+                <tr>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>4. Policy Gate (過濾門閥)</b></td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">如何確保 18 種個資 (PHI) 絕不流向保險端？</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>HIPAA Safe Harbor 18 項自動脫敏門閥</b>：記憶體內直接抹除身分證、電話、地址等機密。</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-yellow)">[POLICY_GATE] 18-PHI Redacted: ZERO-EXFILTRATION</code></td>
+                </tr>
+                <tr>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>5. Audit Log (追溯稽核)</b></td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">如何追溯每次調閱行為，確保合規？</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>SHA-256 Merkle Hash Chain</b>：不可篡改稽核鏈，留存密碼學憑證供衛福部與金管會核驗。</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-green)">SHA256: 0x9b38f71a... (可獨立驗證)</code></td>
+                </tr>
+                <tr>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>6. Revocation (動態撤銷)</b></td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">病患撤回同意後，Agent 能否繼續存取？</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>$O(1)$ RCU 原子換指針</b>：病患 App 點擊撤銷授權，次一 API 請求即傳回 403 斷開。</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-red)">[REVOKE_SIGNAL] Consent Token REVOKED → 403 All EHR APIs</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="workflow-bar">
         <div class="step-card active" id="st-1" onclick="runStep(1)">
             <div class="step-num">STEP 1</div>
@@ -565,60 +620,7 @@ phi_redaction_rules:
 
     </div>
 
-    <!-- 🔍 大會 6 大信任要點 (Governance Gap Memo) 解讀表格 -->
-    <div style="background:var(--panel-bg); border:1px solid rgba(0,230,118,0.3); border-radius:12px; padding:20px; margin-top:20px; backdrop-filter:blur(12px);">
-        <div style="font-size:1.05rem; font-weight:800; color:#fff; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-            <span>🔍 大會 6 大信任要點 (Governance Gap Memo) —— 智慧醫療核保與個資脫敏解讀</span>
-        </div>
-        <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
-            <thead>
-                <tr>
-                    <th style="background:rgba(0,230,118,0.15); color:var(--accent-green); padding:10px 12px; text-align:left; border:1px solid rgba(0,230,118,0.25); font-weight:700;">信任要素 (Pillar)</th>
-                    <th style="background:rgba(0,230,118,0.15); color:var(--accent-green); padding:10px 12px; text-align:left; border:1px solid rgba(0,230,118,0.25); font-weight:700;">大會題目問的重點</th>
-                    <th style="background:rgba(0,230,118,0.15); color:var(--accent-green); padding:10px 12px; text-align:left; border:1px solid rgba(0,230,118,0.25); font-weight:700;">DROS HealthProxy VEP 的精確解答</th>
-                    <th style="background:rgba(0,230,118,0.15); color:var(--accent-green); padding:10px 12px; text-align:left; border:1px solid rgba(0,230,118,0.25); font-weight:700;">日誌 (Audit Log) 顯示的具體細節</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>1. Principal (代表誰)</b></td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">Agent 代表哪家保險公司？是否取得病患授權？</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>GLEIF 法人 vLEI ＋ 病患 DIT 同意標籤</b>：雙重密碼學定錨，確保保險 AI 合法受託。</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-cyan)">Principal: InsurTechTW-8892 | Patient-DIT: TOK-CONSENT-991</code></td>
-                </tr>
-                <tr>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>2. Authorization (授權範圍)</b></td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">AI 能讀哪些病歷？允許全院調閱嗎？</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>Scope-Based 細粒度隔離</b>：僅允許 `claims:read_summary`，禁止跨科別未授權病歷查詢。</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-cyan)">Scope: claims:read_summary | Prohibited: export_full_ehr</code></td>
-                </tr>
-                <tr>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>3. Tool / Action (工具邊界)</b></td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">Agent 呼叫非法醫療資料庫工具時如何攔截？</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>VEP C-ABI 帶內代理</b>：呼叫 `export_full_ehr_history()` 在 26.1μs 物理熔斷退回 403。</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-yellow)">[TOOL_BLOCK] export_full_ehr_history() → 26.1μs DENIED 403</code></td>
-                </tr>
-                <tr>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>4. Policy Gate (過濾門閥)</b></td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">如何確保 18 種個資 (PHI) 絕不流向保險端？</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>HIPAA Safe Harbor 18 項自動脫敏門閥</b>：記憶體內直接抹除身分證、電話、地址等機密。</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-yellow)">[POLICY_GATE] 18-PHI Redacted: ZERO-EXFILTRATION</code></td>
-                </tr>
-                <tr>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>5. Audit Log (追溯稽核)</b></td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">如何追溯每次調閱行為，確保合規？</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>SHA-256 Merkle Hash Chain</b>：不可篡改稽核鏈，留存密碼學憑證供衛福部與金管會核驗。</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-green)">SHA256: 0x9b38f71a... (可獨立驗證)</code></td>
-                </tr>
-                <tr>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>6. Revocation (動態撤銷)</b></td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">病患撤回同意後，Agent 能否繼續存取？</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>$O(1)$ RCU 原子換指針</b>：病患 App 點擊撤銷授權，次一 API 請求即傳回 403 斷開。</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-red)">[REVOKE_SIGNAL] Consent Token REVOKED → 403 All EHR APIs</code></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    
 
     <!-- 🔴 紅隊對抗攻擊大腦 (Attacker LLM Engine / Fuzzer) Panel (置底呈現) -->
     <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">

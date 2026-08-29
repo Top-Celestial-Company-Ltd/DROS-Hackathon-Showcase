@@ -453,6 +453,59 @@
         </div>
     </div>
 
+    <!-- 6 Elements Compliance Table -->
+    <div class="explainer-section">
+        <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) — 移工普惠金融防詐解讀</div>
+        <table class="elements-table">
+            <thead>
+                <tr>
+                    <th>信任要素 (Pillar)</th>
+                    <th>大會題目問的重點</th>
+                    <th>DROS MigraTrust VEP 的精確解答</th>
+                    <th>日誌 (Audit Log) 具體細節</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>1. Principal (身份)</b></td>
+                    <td>如何確認「使用金融服務的是移工本人」而非冒名者？</td>
+                    <td><b>多文件複合 DIT</b>：護照號 + ARC 居留證 + 勞動許可，三件合一密碼學 Token，單文件偽造無效。生物特徵雜湊綁定額外防護。</td>
+                    <td><code style="color:var(--accent-teal)">Principal: 陳阮明 | ARC: AA12345678 | VN-Passport: B12345678</code></td>
+                </tr>
+                <tr>
+                    <td><b>2. Authorization (授權)</b></td>
+                    <td>如何在普惠開戶的同時，防止高風險金融操作被濫用？</td>
+                    <td><b>三層信任矩陣</b>：L1 (ARC+護照) 僅能小額匯款；L2 (+ 勞動許可) 才能大額但需 HITL 確認；L3 高風險一律 DENY。</td>
+                    <td><code style="color:var(--accent-teal)">Tier: L1 | Scope: open_account, remit_small(≤3K)</code></td>
+                </tr>
+                <tr>
+                    <td><b>3. Tool / Action (工具邊界)</b></td>
+                    <td>當詐騙集團嘗試用移工帳戶進行人頭轉帳，如何被攔截？</td>
+                    <td><b>VEP C-ABI 帶內攔截</b>：cross_bank_transfer() 與 overseas_3rd_party() 無論何種信任等級一律 HTTP 403，26.1μs 決策。</td>
+                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] overseas_3rd_party() → 403 DENIED 26.1μs</code></td>
+                </tr>
+                <tr>
+                    <td><b>4. Policy Gate (過濾門閥)</b></td>
+                    <td>SIM Swap 攻擊奪取 OTP 後，如何阻止詐騙匯款？</td>
+                    <td><b>行為異常偵測 Gate</b>：偵測到 SIM Swap 特徵（新 SIM 號碼 + 大額匯款請求）後，即時啟動帳戶凍結，所有 API 收 403。</td>
+                    <td><code style="color:var(--accent-yellow)">[SIM_SWAP_DETECTED] Anomaly Score: 0.97 → FREEZE_TRIGGERED</code></td>
+                </tr>
+                <tr>
+                    <td><b>5. Audit Log (追溯稽核)</b></td>
+                    <td>當移工事後申訴被詐騙，如何舉證？</td>
+                    <td><b>SHA-256 Merkle Hash Chain</b>：每筆開戶、匯款、攔截均留存密碼學憑證，含 DIT 身份、操作時間戳、決策延遲，可呈交法院。</td>
+                    <td><code style="color:var(--accent-green)">SHA256: 0x9f22a7b1... (可獨立驗證)</code></td>
+                </tr>
+                <tr>
+                    <td><b>6. Revocation (撤銷)</b></td>
+                    <td>移工發現帳戶被冒用後，如何即時阻止後續交易？</td>
+                    <td><b>O(1) RCU 原子換指針</b>：移工本人或雇主從 App 點擊「緊急凍結」，記憶體原子切換，次一 API 請求即 403，無任何延遲視窗。</td>
+                    <td><code style="color:var(--accent-red)">[FREEZE_SIGNAL] Account FROZEN via RCU → All APIs: 403</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <!-- Workflow Bar -->
     <div class="workflow-bar">
         <div class="step-card active" id="st-1" onclick="runStep(1)">
@@ -597,58 +650,7 @@
         </div>
     </div>
 
-    <!-- 6 Elements Compliance Table -->
-    <div class="explainer-section">
-        <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) — 移工普惠金融防詐解讀</div>
-        <table class="elements-table">
-            <thead>
-                <tr>
-                    <th>信任要素 (Pillar)</th>
-                    <th>大會題目問的重點</th>
-                    <th>DROS MigraTrust VEP 的精確解答</th>
-                    <th>日誌 (Audit Log) 具體細節</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><b>1. Principal (身份)</b></td>
-                    <td>如何確認「使用金融服務的是移工本人」而非冒名者？</td>
-                    <td><b>多文件複合 DIT</b>：護照號 + ARC 居留證 + 勞動許可，三件合一密碼學 Token，單文件偽造無效。生物特徵雜湊綁定額外防護。</td>
-                    <td><code style="color:var(--accent-teal)">Principal: 陳阮明 | ARC: AA12345678 | VN-Passport: B12345678</code></td>
-                </tr>
-                <tr>
-                    <td><b>2. Authorization (授權)</b></td>
-                    <td>如何在普惠開戶的同時，防止高風險金融操作被濫用？</td>
-                    <td><b>三層信任矩陣</b>：L1 (ARC+護照) 僅能小額匯款；L2 (+ 勞動許可) 才能大額但需 HITL 確認；L3 高風險一律 DENY。</td>
-                    <td><code style="color:var(--accent-teal)">Tier: L1 | Scope: open_account, remit_small(≤3K)</code></td>
-                </tr>
-                <tr>
-                    <td><b>3. Tool / Action (工具邊界)</b></td>
-                    <td>當詐騙集團嘗試用移工帳戶進行人頭轉帳，如何被攔截？</td>
-                    <td><b>VEP C-ABI 帶內攔截</b>：cross_bank_transfer() 與 overseas_3rd_party() 無論何種信任等級一律 HTTP 403，26.1μs 決策。</td>
-                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] overseas_3rd_party() → 403 DENIED 26.1μs</code></td>
-                </tr>
-                <tr>
-                    <td><b>4. Policy Gate (過濾門閥)</b></td>
-                    <td>SIM Swap 攻擊奪取 OTP 後，如何阻止詐騙匯款？</td>
-                    <td><b>行為異常偵測 Gate</b>：偵測到 SIM Swap 特徵（新 SIM 號碼 + 大額匯款請求）後，即時啟動帳戶凍結，所有 API 收 403。</td>
-                    <td><code style="color:var(--accent-yellow)">[SIM_SWAP_DETECTED] Anomaly Score: 0.97 → FREEZE_TRIGGERED</code></td>
-                </tr>
-                <tr>
-                    <td><b>5. Audit Log (追溯稽核)</b></td>
-                    <td>當移工事後申訴被詐騙，如何舉證？</td>
-                    <td><b>SHA-256 Merkle Hash Chain</b>：每筆開戶、匯款、攔截均留存密碼學憑證，含 DIT 身份、操作時間戳、決策延遲，可呈交法院。</td>
-                    <td><code style="color:var(--accent-green)">SHA256: 0x9f22a7b1... (可獨立驗證)</code></td>
-                </tr>
-                <tr>
-                    <td><b>6. Revocation (撤銷)</b></td>
-                    <td>移工發現帳戶被冒用後，如何即時阻止後續交易？</td>
-                    <td><b>O(1) RCU 原子換指針</b>：移工本人或雇主從 App 點擊「緊急凍結」，記憶體原子切換，次一 API 請求即 403，無任何延遲視窗。</td>
-                    <td><code style="color:var(--accent-red)">[FREEZE_SIGNAL] Account FROZEN via RCU → All APIs: 403</code></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    
 
     <!-- Red Team Fuzzer (置底呈現) -->
     <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">

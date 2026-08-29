@@ -417,7 +417,60 @@
     </div>
 </div>
 
-<!-- Workflow Bar -->
+<!-- 6 Elements Compliance Table -->
+<div class="explainer-section">
+    <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) — RBA 供應鏈合規可驗證憑證解讀</div>
+    <table class="elements-table">
+        <thead>
+            <tr>
+                <th>信任要素 (Pillar)</th>
+                <th>大會題目問的重點</th>
+                <th>DROS SupplyProof VEP 的精確解答</th>
+                <th>日誌 (Audit Log) 具體細節</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>1. Principal (身份)</b></td>
+                <td>誰在申請查驗合規？供應商如何確認採購方身份？</td>
+                <td><b>雙向 DIT 綁定</b>：供應商 DIT (did:dros:fab-tw-01) + 採購方 BuyBot-AI DIT，雙向身份不可偽冒，避免偽造採購商套取合規資料。</td>
+                <td><code style="color:var(--accent-teal)">Supplier: fab-tw-01 | Buyer: BuyBot-AI v2.3 | RBA: RBA-2026-TW-88821</code></td>
+            </tr>
+            <tr>
+                <td><b>2. Authorization (授權邊界)</b></td>
+                <td>採購 AI 被授權查驗什麼？不能讀哪些工廠內部資料？</td>
+                <td><b>選擇性揭露矩陣</b>：BuyBot-AI 只能取得「各項合規 = TRUE/FALSE」與雜湊值；勞工人數、事故紀錄、組織圖、供應商名單等全部 VEP DENY。</td>
+                <td><code style="color:var(--accent-teal)">REVEAL: compliant_status | HIDDEN: audit_details, worker_count</code></td>
+            </tr>
+            <tr>
+                <td><b>3. Tool / Action (工具邊界)</b></td>
+                <td>採購 AI 能呼叫哪些 API？直接讀稽核原始報告是否可能？</td>
+                <td><b>VEP C-ABI Tool Interceptor</b>：`verify_rba_cert()` PERMIT；`read_full_audit_report()` 在 26.1μs 被 VEP 硬性攔截 HTTP 403，與工廠 ERP 完全隔離。</td>
+                <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] read_full_audit_report() → 403 DENIED 26.1μs</code></td>
+            </tr>
+            <tr>
+                <td><b>4. Policy Gate (選擇性揭露閘門)</b></td>
+                <td>如何在不揭露原始資料的前提下，讓買方相信「工廠合規」？</td>
+                <td><b>ZKP-Lite 選擇性揭露</b>：VEP 產生 Groth16 零知識證明 π，數學上可驗證「合規分數 ≥ 門檻」，買方無需看到分數本身，技術上等同論文級 ZKP。</td>
+                <td><code style="color:var(--accent-yellow)">[SD_GATE] ZKP-Lite proof generated: π=Groth16:0x3f9a...c721</code></td>
+            </tr>
+            <tr>
+                <td><b>5. Audit Log (追溯稽核)</b></td>
+                <td>每次合規查驗如何留存可跨機構驗證的稽核紀錄？</td>
+                <td><b>W3C VC 2.0 + SHA-256 Merkle Chain</b>：每筆查驗產生標準格式可驗證憑證，Merkle 鏈結前後記錄，任何篡改可被數學驗證；銀行、保險、客戶均可獨立核實。</td>
+                <td><code style="color:var(--accent-green)">SHA256: 0xc8f3a2b1... VC:2.0 (跨機構通用格式)</code></td>
+            </tr>
+            <tr>
+                <td><b>6. Revocation (撤銷)</b></td>
+                <td>RBA 稽核失效或工廠被取消認證後，如何即時阻止後續查驗？</td>
+                <td><b>O(1) RCU 原子換指針</b>：RBA Registry 發出撤銷訊號，VEP 記憶體原子切換，所有後續 `verify_rba_cert()` 請求立即收 `HTTP 403 RBA_CERT_REVOKED`，無過期視窗。</td>
+                <td><code style="color:var(--accent-red)">[REVOKE] RBA-2026-TW-88821 REVOKED → All verify calls: 403</code></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+    <!-- Workflow Bar -->
 <div class="workflow-bar">
     <div class="step-card active" id="st-1" onclick="runStep(1)">
         <div class="step-num">STEP 01</div>
@@ -548,58 +601,7 @@
     </div>
 </div>
 
-<!-- 6 Elements Compliance Table -->
-<div class="explainer-section">
-    <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) — RBA 供應鏈合規可驗證憑證解讀</div>
-    <table class="elements-table">
-        <thead>
-            <tr>
-                <th>信任要素 (Pillar)</th>
-                <th>大會題目問的重點</th>
-                <th>DROS SupplyProof VEP 的精確解答</th>
-                <th>日誌 (Audit Log) 具體細節</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><b>1. Principal (身份)</b></td>
-                <td>誰在申請查驗合規？供應商如何確認採購方身份？</td>
-                <td><b>雙向 DIT 綁定</b>：供應商 DIT (did:dros:fab-tw-01) + 採購方 BuyBot-AI DIT，雙向身份不可偽冒，避免偽造採購商套取合規資料。</td>
-                <td><code style="color:var(--accent-teal)">Supplier: fab-tw-01 | Buyer: BuyBot-AI v2.3 | RBA: RBA-2026-TW-88821</code></td>
-            </tr>
-            <tr>
-                <td><b>2. Authorization (授權邊界)</b></td>
-                <td>採購 AI 被授權查驗什麼？不能讀哪些工廠內部資料？</td>
-                <td><b>選擇性揭露矩陣</b>：BuyBot-AI 只能取得「各項合規 = TRUE/FALSE」與雜湊值；勞工人數、事故紀錄、組織圖、供應商名單等全部 VEP DENY。</td>
-                <td><code style="color:var(--accent-teal)">REVEAL: compliant_status | HIDDEN: audit_details, worker_count</code></td>
-            </tr>
-            <tr>
-                <td><b>3. Tool / Action (工具邊界)</b></td>
-                <td>採購 AI 能呼叫哪些 API？直接讀稽核原始報告是否可能？</td>
-                <td><b>VEP C-ABI Tool Interceptor</b>：`verify_rba_cert()` PERMIT；`read_full_audit_report()` 在 26.1μs 被 VEP 硬性攔截 HTTP 403，與工廠 ERP 完全隔離。</td>
-                <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] read_full_audit_report() → 403 DENIED 26.1μs</code></td>
-            </tr>
-            <tr>
-                <td><b>4. Policy Gate (選擇性揭露閘門)</b></td>
-                <td>如何在不揭露原始資料的前提下，讓買方相信「工廠合規」？</td>
-                <td><b>ZKP-Lite 選擇性揭露</b>：VEP 產生 Groth16 零知識證明 π，數學上可驗證「合規分數 ≥ 門檻」，買方無需看到分數本身，技術上等同論文級 ZKP。</td>
-                <td><code style="color:var(--accent-yellow)">[SD_GATE] ZKP-Lite proof generated: π=Groth16:0x3f9a...c721</code></td>
-            </tr>
-            <tr>
-                <td><b>5. Audit Log (追溯稽核)</b></td>
-                <td>每次合規查驗如何留存可跨機構驗證的稽核紀錄？</td>
-                <td><b>W3C VC 2.0 + SHA-256 Merkle Chain</b>：每筆查驗產生標準格式可驗證憑證，Merkle 鏈結前後記錄，任何篡改可被數學驗證；銀行、保險、客戶均可獨立核實。</td>
-                <td><code style="color:var(--accent-green)">SHA256: 0xc8f3a2b1... VC:2.0 (跨機構通用格式)</code></td>
-            </tr>
-            <tr>
-                <td><b>6. Revocation (撤銷)</b></td>
-                <td>RBA 稽核失效或工廠被取消認證後，如何即時阻止後續查驗？</td>
-                <td><b>O(1) RCU 原子換指針</b>：RBA Registry 發出撤銷訊號，VEP 記憶體原子切換，所有後續 `verify_rba_cert()` 請求立即收 `HTTP 403 RBA_CERT_REVOKED`，無過期視窗。</td>
-                <td><code style="color:var(--accent-red)">[REVOKE] RBA-2026-TW-88821 REVOKED → All verify calls: 403</code></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+
 
 <!-- Red Team (置底呈現) -->
 <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">

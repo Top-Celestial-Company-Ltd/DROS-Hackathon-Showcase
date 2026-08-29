@@ -581,6 +581,59 @@
         </div>
     </div>
 
+    <!-- 6 Elements Compliance Table -->
+    <div class="explainer-section">
+        <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) — 政府服務跨機關代理授權解讀</div>
+        <table class="elements-table">
+            <thead>
+                <tr>
+                    <th>信任要素 (Pillar)</th>
+                    <th>大會題目問的重點</th>
+                    <th>DROS GovProxy VEP 的精確解答</th>
+                    <th>日誌 (Audit Log) 顯示的具體細節</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>1. Principal (代理人)</b></td>
+                    <td>Agent 代表哪一位公民？是本人還是受委任代理？</td>
+                    <td><b>DIT 代理憑證</b>綁定公民身份（TW-ID）與代理 AI 身份（GovAssist-AI），雙重標籤不可偽冒。</td>
+                    <td><code style="color:var(--accent-cyan)">Principal: 陳小明 (TW-ID: A123456789)</code></td>
+                </tr>
+                <tr>
+                    <td><b>2. Authorization (授權邊界)</b></td>
+                    <td>Agent 被授權「代查」、「代送件」還是「本人簽署」？差別為何？</td>
+                    <td><b>三層 Scope 矩陣</b>：代查(PERMIT)/ 代送件(HITL 必須本人二次確認)/ 簽署(DENY 硬性禁止)，界線鋼性化。</td>
+                    <td><code style="color:var(--accent-cyan)">Scope: QUERY_ONLY | HITL: submit</code></td>
+                </tr>
+                <tr>
+                    <td><b>3. Tool / Action (工具邊界)</b></td>
+                    <td>Agent 能呼叫哪些政府 API？跨機關橫移是否受控？</td>
+                    <td><b>VEP C-ABI Tool Interceptor</b> 帶內代理，嘗試呼叫 cross_agency_push() 在 26.1μs 硬性退回 403。</td>
+                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] cross_agency_push() → 26.1μs DENIED</code></td>
+                </tr>
+                <tr>
+                    <td><b>4. Policy Gate (過濾門閥)</b></td>
+                    <td>高風險動作（送件、簽署）如何強制本人二次確認？</td>
+                    <td><b>HITL 人工確認閘門</b>：「代送件」動作硬性觸發公民 App 推播確認，未確認前交易懸停，不依賴 Agent 自律。</td>
+                    <td><code style="color:var(--accent-yellow)">[POLICY_GATE] HITL Push Sent → Awaiting Citizen Approval</code></td>
+                </tr>
+                <tr>
+                    <td><b>5. Audit Log (追溯稽核)</b></td>
+                    <td>如何追溯 Agent 代辦行動的每一步？</td>
+                    <td><b>SHA-256 Merkle Hash Chain</b> 不可篡改稽核鏈，每筆代理 API 呼叫均留存密碼學憑證，可供政府合規查核。</td>
+                    <td><code style="color:var(--accent-green)">SHA256: 0x8a21f3c1... (可獨立驗證)</code></td>
+                </tr>
+                <tr>
+                    <td><b>6. Revocation (撤銷)</b></td>
+                    <td>公民如何即時撤銷 AI 代理授權？撤銷後 Agent 還能繼續嗎？</td>
+                    <td><b>O(1) RCU 原子換指針</b>，公民從手機 App 點擊撤銷，次一 API 請求即傳回 403，Agent 硬性停止所有代理動作。</td>
+                    <td><code style="color:var(--accent-red)">[REVOKE_SIGNAL] Proxy Token REVOKED → 403 All APIs</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <!-- 5-Step Workflow Bar -->
     <div class="workflow-bar">
         <div class="step-card active" id="st-1" onclick="runStep(1)">
@@ -740,58 +793,7 @@
 
     </div>
 
-    <!-- 6 Elements Compliance Table -->
-    <div class="explainer-section">
-        <div class="explainer-title">🔍 大會 6 大信任要點 (Governance Gap Memo) — 政府服務跨機關代理授權解讀</div>
-        <table class="elements-table">
-            <thead>
-                <tr>
-                    <th>信任要素 (Pillar)</th>
-                    <th>大會題目問的重點</th>
-                    <th>DROS GovProxy VEP 的精確解答</th>
-                    <th>日誌 (Audit Log) 顯示的具體細節</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><b>1. Principal (代理人)</b></td>
-                    <td>Agent 代表哪一位公民？是本人還是受委任代理？</td>
-                    <td><b>DIT 代理憑證</b>綁定公民身份（TW-ID）與代理 AI 身份（GovAssist-AI），雙重標籤不可偽冒。</td>
-                    <td><code style="color:var(--accent-cyan)">Principal: 陳小明 (TW-ID: A123456789)</code></td>
-                </tr>
-                <tr>
-                    <td><b>2. Authorization (授權邊界)</b></td>
-                    <td>Agent 被授權「代查」、「代送件」還是「本人簽署」？差別為何？</td>
-                    <td><b>三層 Scope 矩陣</b>：代查(PERMIT)/ 代送件(HITL 必須本人二次確認)/ 簽署(DENY 硬性禁止)，界線鋼性化。</td>
-                    <td><code style="color:var(--accent-cyan)">Scope: QUERY_ONLY | HITL: submit</code></td>
-                </tr>
-                <tr>
-                    <td><b>3. Tool / Action (工具邊界)</b></td>
-                    <td>Agent 能呼叫哪些政府 API？跨機關橫移是否受控？</td>
-                    <td><b>VEP C-ABI Tool Interceptor</b> 帶內代理，嘗試呼叫 cross_agency_push() 在 26.1μs 硬性退回 403。</td>
-                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] cross_agency_push() → 26.1μs DENIED</code></td>
-                </tr>
-                <tr>
-                    <td><b>4. Policy Gate (過濾門閥)</b></td>
-                    <td>高風險動作（送件、簽署）如何強制本人二次確認？</td>
-                    <td><b>HITL 人工確認閘門</b>：「代送件」動作硬性觸發公民 App 推播確認，未確認前交易懸停，不依賴 Agent 自律。</td>
-                    <td><code style="color:var(--accent-yellow)">[POLICY_GATE] HITL Push Sent → Awaiting Citizen Approval</code></td>
-                </tr>
-                <tr>
-                    <td><b>5. Audit Log (追溯稽核)</b></td>
-                    <td>如何追溯 Agent 代辦行動的每一步？</td>
-                    <td><b>SHA-256 Merkle Hash Chain</b> 不可篡改稽核鏈，每筆代理 API 呼叫均留存密碼學憑證，可供政府合規查核。</td>
-                    <td><code style="color:var(--accent-green)">SHA256: 0x8a21f3c1... (可獨立驗證)</code></td>
-                </tr>
-                <tr>
-                    <td><b>6. Revocation (撤銷)</b></td>
-                    <td>公民如何即時撤銷 AI 代理授權？撤銷後 Agent 還能繼續嗎？</td>
-                    <td><b>O(1) RCU 原子換指針</b>，公民從手機 App 點擊撤銷，次一 API 請求即傳回 403，Agent 硬性停止所有代理動作。</td>
-                    <td><code style="color:var(--accent-red)">[REVOKE_SIGNAL] Proxy Token REVOKED → 403 All APIs</code></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    
 
     <!-- Red Team Fuzzer (置底呈現) -->
     <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">
