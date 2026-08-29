@@ -685,6 +685,9 @@
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">📜 防篡改 Audit Trail 日誌流 (點擊看憑證)</div>
+                <button onclick="openCertModal('[MANUAL] 評審手動出示 Cryptographic Certificate', 'PaloAlto-WAF:Pass | eBPF:Hooked | SHA256:Active')" style="background:rgba(74,222,128,0.15); border:1px solid var(--accent-green); color:var(--accent-green); padding:4px 8px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;">
+                    🔍 檢視簽章憑證
+                </button>
             </div>
 
             <div class="audit-stream" id="auditStream">
