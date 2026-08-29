@@ -605,34 +605,6 @@
         </div>
     </div>
 
-    <!-- Red Team Fuzzer -->
-    <div class="redteam-card">
-        <div class="redteam-header">
-            <div class="redteam-title-group">
-                <span class="chip-icon">💀</span>
-                <span class="redteam-title">RedTeam Fuzzer — 政府代理身份偽冒 / 憑證竄改 / 越機關橫移攻擊</span>
-                <span class="auto-fuzzer-badge">GOVT ATTACK AUTO-FUZZER</span>
-            </div>
-            <button class="btn-fuzz" onclick="startGovFuzzing()">🔥 發起攻擊</button>
-        </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-            <select class="select-brain" id="brainSelect">
-                <option value="GPT-4o">Attacker Brain: GPT-4o (OpenAI)</option>
-                <option value="Claude-3.5">Attacker Brain: Claude-3.5-Sonnet</option>
-                <option value="Gemini-Pro">Attacker Brain: Gemini-1.5-Pro</option>
-            </select>
-            <select class="select-brain" id="attackSelect" style="width:auto; white-space:nowrap;">
-                <option value="spoof">身份偽冒 (Agent 冒充本人)</option>
-                <option value="escalate">跨機關橫移越權</option>
-                <option value="inject">公文號注入攻擊</option>
-                <option value="replay">逾期憑證重放</option>
-            </select>
-        </div>
-        <div class="fuzz-stream-box" id="fuzzStream">
-            <div style="color:var(--text-muted);">[FUZZER READY] 選擇攻擊類型後點擊「發起攻擊」，觀察 VEP 帶內即時攔截...</div>
-        </div>
-    </div>
-
     <!-- Main 3-Column Grid -->
     <div class="main-grid">
 
@@ -819,6 +791,34 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- Red Team Fuzzer (置底呈現) -->
+    <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">
+        <div class="redteam-header">
+            <div class="redteam-title-group">
+                <span class="chip-icon">💀</span>
+                <span class="redteam-title">RedTeam Fuzzer — 政府代理身份偽冒 / 憑證竄改 / 越機關橫移攻擊</span>
+                <span class="auto-fuzzer-badge">GOVT ATTACK AUTO-FUZZER</span>
+            </div>
+            <button class="btn-fuzz" onclick="startGovFuzzing()">🔥 發起攻擊</button>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <select class="select-brain" id="brainSelect">
+                <option value="GPT-4o">Attacker Brain: GPT-4o (OpenAI)</option>
+                <option value="Claude-3.5">Attacker Brain: Claude-3.5-Sonnet</option>
+                <option value="Gemini-Pro">Attacker Brain: Gemini-1.5-Pro</option>
+            </select>
+            <select class="select-brain" id="attackSelect" style="width:auto; white-space:nowrap;">
+                <option value="spoof">身份偽冒 (Agent 冒充本人)</option>
+                <option value="escalate">跨機關橫移越權</option>
+                <option value="inject">公文號注入攻擊</option>
+                <option value="replay">逾期憑證重放</option>
+            </select>
+        </div>
+        <div class="fuzz-stream-box" id="fuzzStream">
+            <div style="color:var(--text-muted);">[FUZZER READY] 選擇攻擊類型後點擊「發起攻擊」，觀察 VEP 帶內即時攔截...</div>
+        </div>
     </div>
 
     <!-- Cryptographic Audit Certificate Modal -->

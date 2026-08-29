@@ -453,34 +453,6 @@
         </div>
     </div>
 
-    <!-- Red Team Fuzzer -->
-    <div class="redteam-card">
-        <div class="redteam-header">
-            <div class="redteam-title-group">
-                <span class="chip-icon">💀</span>
-                <span class="redteam-title">RedTeam Fuzzer — 移工冒名攻擊 / 詐騙匯款 / SIM Swap / 勞動許可偽造</span>
-                <span class="auto-fuzzer-badge">MIGRA ATTACK FUZZER</span>
-            </div>
-            <button class="btn-fuzz" onclick="startMigraFuzzing()">🔥 發起攻擊</button>
-        </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-            <select class="select-brain" id="brainSelect">
-                <option value="GPT-4o">Attacker Brain: GPT-4o (OpenAI)</option>
-                <option value="Claude-3.5">Attacker Brain: Claude-3.5-Sonnet</option>
-                <option value="Gemini-Pro">Attacker Brain: Gemini-1.5-Pro</option>
-            </select>
-            <select class="select-brain" id="attackSelect" style="width:auto; white-space:nowrap;">
-                <option value="spoof">冒名開戶 (盜用移工身份)</option>
-                <option value="simswap">SIM Swap 攔截 OTP</option>
-                <option value="fakepermit">勞動許可偽造 (L2 越級)</option>
-                <option value="mule">人頭帳戶洗錢轉帳</option>
-            </select>
-        </div>
-        <div class="fuzz-stream-box" id="fuzzStream">
-            <div style="color:var(--text-muted);">[FUZZER READY] 選擇攻擊類型後點擊「發起攻擊」，觀察 MigraTrust VEP 帶內攔截...</div>
-        </div>
-    </div>
-
     <!-- Workflow Bar -->
     <div class="workflow-bar">
         <div class="step-card active" id="st-1" onclick="runStep(1)">
@@ -676,6 +648,34 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- Red Team Fuzzer (置底呈現) -->
+    <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">
+        <div class="redteam-header">
+            <div class="redteam-title-group">
+                <span class="chip-icon">💀</span>
+                <span class="redteam-title">RedTeam Fuzzer — 移工冒名攻擊 / 詐騙匯款 / SIM Swap / 勞動許可偽造</span>
+                <span class="auto-fuzzer-badge">MIGRA ATTACK FUZZER</span>
+            </div>
+            <button class="btn-fuzz" onclick="startMigraFuzzing()">🔥 發起攻擊</button>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <select class="select-brain" id="brainSelect">
+                <option value="GPT-4o">Attacker Brain: GPT-4o (OpenAI)</option>
+                <option value="Claude-3.5">Attacker Brain: Claude-3.5-Sonnet</option>
+                <option value="Gemini-Pro">Attacker Brain: Gemini-1.5-Pro</option>
+            </select>
+            <select class="select-brain" id="attackSelect" style="width:auto; white-space:nowrap;">
+                <option value="spoof">冒名開戶 (盜用移工身份)</option>
+                <option value="simswap">SIM Swap 攔截 OTP</option>
+                <option value="fakepermit">勞動許可偽造 (L2 越級)</option>
+                <option value="mule">人頭帳戶洗錢轉帳</option>
+            </select>
+        </div>
+        <div class="fuzz-stream-box" id="fuzzStream">
+            <div style="color:var(--text-muted);">[FUZZER READY] 選擇攻擊類型後點擊「發起攻擊」，觀察 MigraTrust VEP 帶內攔截...</div>
+        </div>
     </div>
 
     <!-- Cert Modal -->

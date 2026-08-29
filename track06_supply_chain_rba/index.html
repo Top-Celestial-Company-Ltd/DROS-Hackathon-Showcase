@@ -163,6 +163,30 @@
         .fuzz-line.attack { color: #fca5a5; }
         .fuzz-line.blocked { color: var(--accent-green); font-weight: 700; }
 
+        /* 5-Step Workflow Bar */
+        .workflow-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .step-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .step-card.active {
+            border-color: var(--accent-amber);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.1);
+        }
+        .step-num { font-size: 0.75rem; color: var(--accent-amber); font-weight: 700; }
+        .step-title { font-size: 0.85rem; font-weight: 600; margin-top: 2px; color: #fff; }
+
         /* Main Grid */
         .main-grid {
             display: grid; grid-template-columns: 1.1fr 1.2fr 1fr;
@@ -393,34 +417,6 @@
     </div>
 </div>
 
-<!-- Red Team -->
-<div class="redteam-card">
-    <div class="redteam-header">
-        <div class="redteam-title-group">
-            <span class="chip-icon">💀</span>
-            <span class="redteam-title">RedTeam Fuzzer — 採購 AI 嘗試讀完整稽核報告 / 憑證偽造 / 過期 RBA 重放</span>
-            <span class="auto-fuzzer-badge">SUPPLY CHAIN ATTACK FUZZER</span>
-        </div>
-        <button class="btn-fuzz" onclick="startSupplyFuzzing()">🔥 發起攻擊</button>
-    </div>
-    <div style="display:flex; gap:10px; align-items:center;">
-        <select class="select-brain" id="brainSelect">
-            <option value="GPT-4o">Attacker Brain: GPT-4o (OpenAI)</option>
-            <option value="Claude-3.5">Attacker Brain: Claude-3.5-Sonnet</option>
-            <option value="Gemini-Pro">Attacker Brain: Gemini-1.5-Pro</option>
-        </select>
-        <select class="select-brain" id="attackSelect" style="width:auto; white-space:nowrap;">
-            <option value="fullread">讀完整稽核報告 (越權存取原始資料)</option>
-            <option value="fakecert">偽造 RBA 合規憑證</option>
-            <option value="replay">過期 RBA 憑證重放攻擊</option>
-            <option value="inject">稽核分數注入竄改</option>
-        </select>
-    </div>
-    <div class="fuzz-stream-box" id="fuzzStream">
-        <div style="color:var(--text-muted);">[FUZZER READY] 選擇攻擊類型後點擊「發起攻擊」，觀察 SupplyProof VEP 選擇性揭露閘門攔截...</div>
-    </div>
-</div>
-
 <!-- Workflow Bar -->
 <div class="workflow-bar">
     <div class="step-card active" id="st-1" onclick="runStep(1)">
@@ -603,6 +599,34 @@
             </tr>
         </tbody>
     </table>
+</div>
+
+<!-- Red Team (置底呈現) -->
+<div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">
+    <div class="redteam-header">
+        <div class="redteam-title-group">
+            <span class="chip-icon">💀</span>
+            <span class="redteam-title">RedTeam Fuzzer — 採購 AI 嘗試讀完整稽核報告 / 憑證偽造 / 過期 RBA 重放</span>
+            <span class="auto-fuzzer-badge">SUPPLY CHAIN ATTACK FUZZER</span>
+        </div>
+        <button class="btn-fuzz" onclick="startSupplyFuzzing()">🔥 發起攻擊</button>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+        <select class="select-brain" id="brainSelect">
+            <option value="GPT-4o">Attacker Brain: GPT-4o (OpenAI)</option>
+            <option value="Claude-3.5">Attacker Brain: Claude-3.5-Sonnet</option>
+            <option value="Gemini-Pro">Attacker Brain: Gemini-1.5-Pro</option>
+        </select>
+        <select class="select-brain" id="attackSelect" style="width:auto; white-space:nowrap;">
+            <option value="fullread">讀完整稽核報告 (越權存取原始資料)</option>
+            <option value="fakecert">偽造 RBA 合規憑證</option>
+            <option value="replay">過期 RBA 憑證重放攻擊</option>
+            <option value="inject">稽核分數注入竄改</option>
+        </select>
+    </div>
+    <div class="fuzz-stream-box" id="fuzzStream">
+        <div style="color:var(--text-muted);">[FUZZER READY] 選擇攻擊類型後點擊「發起攻擊」，觀察 SupplyProof VEP 選擇性揭露閘門攔截...</div>
+    </div>
 </div>
 
 <!-- Cert Modal -->

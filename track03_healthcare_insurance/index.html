@@ -430,33 +430,6 @@
         </div>
     </div>
 
-    <!-- 🔴 紅隊對抗攻擊大腦 (Attacker LLM Engine / Fuzzer) Panel -->
-    <div class="redteam-card">
-        <div class="redteam-header">
-            <div class="redteam-title-group">
-                <span class="chip-icon">☠️</span>
-                <div>
-                    <div class="redteam-title">紅隊攻擊大腦 (Attacker LLM Engine / Fuzzer)</div>
-                    <div style="font-size:0.75rem; color:var(--text-muted);">選擇對抗 Prompt Injection / 越權病歷調閱策略，測試 26.1μs 帶內防禦硬性熔斷：</div>
-                </div>
-            </div>
-            <span class="auto-fuzzer-badge">LIVE FUZZER READY</span>
-        </div>
-        
-        <div style="display:flex; gap:10px;">
-            <select class="select-brain" id="fuzz-select">
-                <option value="attack1">🔥 攻擊法 1: Prompt Injection 誘騙 Agent 導出完整病歷 PHI</option>
-                <option value="attack2">⚡ 攻擊法 2: 嘗試繞過同款 Tool 呼叫 export_full_ehr_history()</option>
-                <option value="attack3">🎯 攻擊法 3: 使用已過期之病患 Consent Token 發起高頻調閱</option>
-            </select>
-            <button class="btn-fuzz" onclick="executeRedTeamAttack()">🚀 發射紅隊攻擊</button>
-        </div>
-
-        <div class="fuzz-stream-box" id="fuzz-stream">
-            <div class="fuzz-line" style="color:var(--text-muted);">[System] Fuzzer Engine Ready. Select an attack scenario and launch.</div>
-        </div>
-    </div>
-
     <!-- 5 步驟工作流程導覽列 -->
     <div class="workflow-bar">
         <div class="step-card active" id="st-1" onclick="runStep(1)">
@@ -636,6 +609,33 @@ phi_redaction_rules:
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- 🔴 紅隊對抗攻擊大腦 (Attacker LLM Engine / Fuzzer) Panel (置底呈現) -->
+    <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">
+        <div class="redteam-header">
+            <div class="redteam-title-group">
+                <span class="chip-icon">☠️</span>
+                <div>
+                    <div class="redteam-title">紅隊攻擊大腦 (Attacker LLM Engine / Fuzzer)</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">選擇對抗 Prompt Injection / 越權病歷調閱策略，測試 26.1μs 帶內防禦硬性熔斷：</div>
+                </div>
+            </div>
+            <span class="auto-fuzzer-badge">LIVE FUZZER READY</span>
+        </div>
+        
+        <div style="display:flex; gap:10px;">
+            <select class="select-brain" id="fuzz-select">
+                <option value="attack1">🔥 攻擊法 1: Prompt Injection 誘騙 Agent 導出完整病歷 PHI</option>
+                <option value="attack2">⚡ 攻擊法 2: 嘗試繞過同款 Tool 呼叫 export_full_ehr_history()</option>
+                <option value="attack3">🎯 攻擊法 3: 使用已過期之病患 Consent Token 發起高頻調閱</option>
+            </select>
+            <button class="btn-fuzz" onclick="executeRedTeamAttack()">🚀 發射紅隊攻擊</button>
+        </div>
+
+        <div class="fuzz-stream-box" id="fuzz-stream">
+            <div class="fuzz-line" style="color:var(--text-muted);">[System] Fuzzer Engine Ready. Select an attack scenario and launch.</div>
+        </div>
     </div>
     <div class="modal-overlay" id="cert-modal">
         <div class="modal-card">

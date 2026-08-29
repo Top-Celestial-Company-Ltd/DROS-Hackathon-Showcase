@@ -524,37 +524,6 @@
         </div>
     </div>
 
-    <!-- 🎛️ 本主題專屬：紅隊攻擊大腦 (Attacker LLM Engine) 對抗測試面板 -->
-    <div class="redteam-card">
-        <div class="redteam-header">
-            <div class="redteam-title-group">
-                <span class="chip-icon">🎛️</span>
-                <div>
-                    <div class="redteam-title">Alpha VEP 紅隊攻擊大腦 (DPP 碳足跡與貿易機密對抗測試)</div>
-                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">選擇由最頂級紅隊大腦對 Alpha 製造企業發起對抗攻擊</div>
-                </div>
-            </div>
-            <div class="auto-fuzzer-badge">DPP Fuzzer Active</div>
-        </div>
-
-        <div style="display:flex; gap:16px; align-items:center;">
-            <div style="flex:1;">
-                <select class="select-brain" id="brainSelect">
-                    <option value="gpt56">🔥 GPT-5.6 Cyber (Adversarial Auto-Fuzzer - 供應鏈竊密)</option>
-                    <option value="fable5">⚡ Fable 5 CyberThreat Engine (BOM 燒結溫度機密導出)</option>
-                    <option value="claude4">💀 Claude-4 CyberSec RedTeam (歐盟稽核員身份冒用)</option>
-                </select>
-            </div>
-            <button class="btn-fuzz" onclick="startTrackFuzzing()">
-                <span>🚀 發起 DPP 專屬連環攻擊測試</span>
-            </button>
-        </div>
-
-        <div class="fuzz-stream-box" id="fuzzStream">
-            <div style="color:var(--text-muted);">[READY] 點擊發起攻擊測試，紅隊大腦將針對 DPP 碳足跡與 BOM 機密生成對抗 Payload...</div>
-        </div>
-    </div>
-
     <!-- 5-Step Live Trade & Procurement Workflow -->
     <div class="workflow-bar">
         <div class="step-card active" id="step1" onclick="runStep(1)">
@@ -731,6 +700,37 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- 🎛️ 本主題專屬：紅隊攻擊大腦 (Attacker LLM Engine) 對抗測試面板 (置底呈現) -->
+    <div class="redteam-card" style="margin-top:20px; margin-bottom:20px;">
+        <div class="redteam-header">
+            <div class="redteam-title-group">
+                <span class="chip-icon">🎛️</span>
+                <div>
+                    <div class="redteam-title">Alpha VEP 紅隊攻擊大腦 (DPP 碳足跡與貿易機密對抗測試)</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">選擇由最頂級紅隊大腦對 Alpha 製造企業發起對抗攻擊</div>
+                </div>
+            </div>
+            <div class="auto-fuzzer-badge">DPP Fuzzer Active</div>
+        </div>
+
+        <div style="display:flex; gap:16px; align-items:center;">
+            <div style="flex:1;">
+                <select class="select-brain" id="brainSelect">
+                    <option value="gpt56">🔥 GPT-5.6 Cyber (Adversarial Auto-Fuzzer - 供應鏈竊密)</option>
+                    <option value="fable5">⚡ Fable 5 CyberThreat Engine (BOM 燒結溫度機密導出)</option>
+                    <option value="claude4">💀 Claude-4 CyberSec RedTeam (歐盟稽核員身份冒用)</option>
+                </select>
+            </div>
+            <button class="btn-fuzz" onclick="startTrackFuzzing()">
+                <span>🚀 發起 DPP 專屬連環攻擊測試</span>
+            </button>
+        </div>
+
+        <div class="fuzz-stream-box" id="fuzzStream">
+            <div style="color:var(--text-muted);">[READY] 點擊發起攻擊測試，紅隊大腦將針對 DPP 碳足跡與 BOM 機密生成對抗 Payload...</div>
+        </div>
     </div>
 
     <!-- Cryptographic Audit Certificate Modal -->
