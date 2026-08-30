@@ -15,7 +15,7 @@
 ## 🎬 競賽正式成果與簡報文件
 * 🎥 **官方競賽展演影片**：[`B1-12-DROS.mp4`](B1-12-DROS.mp4) *(高畫質 1080p 影片由 Git LFS 託管，點擊 "View raw" 或 "Download" 即可下載播放)*
 * 📊 **官方投影片簡報**：[`B1_12_DROS(DeterministicRuntimeOS).pptx`](B1_12_DROS(DeterministicRuntimeOS).pptx)
-* 📄 **團隊企劃書與治理差距備忘錄**：[`黑客松-DROS-Team.pdf`](黑客松-DROS-Team.pdf) | [`黑客松-DROS-Team.docx`](黑客松-DROS-Team.docx)
+* 📄 **團隊企劃書與治理差距備忘錄**：[`黑客松-DROS-Team.pdf`](黑客松-DROS-Team.pdf)
 
 ---
 

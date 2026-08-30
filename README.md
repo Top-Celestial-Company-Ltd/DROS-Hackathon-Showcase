@@ -15,7 +15,7 @@ This repository contains the official competition submission materials, reproduc
 ## 🎬 Competition Submission Deliverables
 * 🎥 **Official Competition Presentation Video**: [`B1-12-DROS.mp4`](B1-12-DROS.mp4) *(Full 1080p walkthrough hosted via Git LFS — click "View raw" or "Download" to play)*
 * 📊 **Official Slide Deck**: [`B1_12_DROS(DeterministicRuntimeOS).pptx`](B1_12_DROS(DeterministicRuntimeOS).pptx)
-* 📄 **Complete Team Plan & Governance Memo**: [`黑客松-DROS-Team.pdf`](黑客松-DROS-Team.pdf) | [`黑客松-DROS-Team.docx`](黑客松-DROS-Team.docx)
+* 📄 **Complete Team Plan & Governance Memo**: [`黑客松-DROS-Team.pdf`](黑客松-DROS-Team.pdf)
 
 ---
 
