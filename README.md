@@ -65,7 +65,7 @@ DROS-VEP Lite is architected to natively interface with official international s
 
 ---
 
-## 📜 Academic Publications & DOI Citations
+## 📜 Technical Foundations & Benchmark Publications
 If you reference DROS zero-trust execution governance or the multi-track evaluation showcase in your research, please cite the DROS Academic Trilogy on Zenodo:
 
 * 📖 **[DROS Trilogy Reading Guide (Technical Note)](https://doi.org/10.5281/zenodo.22114036)**: *An Agent Runtime Operation Substrate* (Zenodo: [10.5281/zenodo.22114036](https://zenodo.org/records/22114036))

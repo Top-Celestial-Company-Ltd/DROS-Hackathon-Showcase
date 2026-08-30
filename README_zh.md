@@ -65,7 +65,7 @@ DROS-VEP Lite 原生架構設計為可直接對接國際官方標準與台灣國
 
 ---
 
-## 📜 國際學術論文、三部曲與 DOI 引用註記
+## 📜 相關技術核心論文與實測驗證 (Technical Foundations & Benchmarks)
 若您在學術研究、技術白皮書或多軌展演評測中引用 DROS 執行期治理架構，歡迎引用我們已公開於 Zenodo 的三部曲權威論文：
 
 * 📖 **[DROS 學術三部曲導讀 (Reading Guide Technical Note)](https://doi.org/10.5281/zenodo.22114036)**：*面向自主 AI 工作負載的確定性執行期作業基板*（Zenodo: [10.5281/zenodo.22114036](https://zenodo.org/records/22114036)）
