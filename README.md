@@ -1,32 +1,54 @@
 # 🏆 DROS-Hackathon-Showcase
-
-> **DROS-VEP Lite Hackathon Showcase 2026: Deterministic Agentic Runtime Governance & Multi-Track Demos**
+### DROS-VEP Lite Hackathon Showcase 2026: Deterministic Agentic Runtime Governance & Multi-Track Demos
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Evaluation Engine: DROS-Guard](https://img.shields.io/badge/Evaluation--Engine-DROS--Guard-cyan.svg)](https://github.com/Top-Celestial-Company-Ltd/DROS-VEP-lite)
 [![Reproducibility: 100%](https://img.shields.io/badge/Reproducibility-100%25%20Verifiable-emerald.svg)](REPRODUCIBILITY.md)
+[![Self-Contained Demo](https://img.shields.io/badge/Demo-Zero_Install_Double_Click-purple.svg)](#)
 
-[English](README.md) | [繁體中文](README_zh.md)
+[English](README.md) | [繁體中文說明](README_zh.md) | [🌐 Official Website](https://dr-os.io)
 
-This repository contains the interactive multi-track showcase demonstrations, REST telemetry APIs, and reproducible test suites for the **DROS-VEP Lite (Deterministic Runtime Operating System - Verification & Enforcement Platform)**.
+This repository contains the official competition submission materials, reproducible test suites, interactive multi-track showcase demonstrations, and live REST telemetry APIs for **DROS-VEP Lite (Deterministic Runtime Operating System - Verification & Enforcement Platform)**.
 
 ---
 
-## 🚀 1-Minute Quick Start
+## 🎬 Competition Submission Deliverables
+* 🎥 **Official Competition Presentation Video**: [`B1-12-DROS.mp4`](B1-12-DROS.mp4) *(Full 1080p walkthrough hosted via Git LFS — click "View raw" or "Download" to play)*
+* 📊 **Official Slide Deck**: [`B1_12_DROS(DeterministicRuntimeOS).pptx`](B1_12_DROS(DeterministicRuntimeOS).pptx)
+* 📄 **Complete Team Plan & Governance Memo**: [`黑客松-DROS-Team.pdf`](黑客松-DROS-Team.pdf) | [`黑客松-DROS-Team.docx`](黑客松-DROS-Team.docx)
 
-### 1. Run Automated Governance Verification Suite (0.01s)
-```bash
-python test_verification_suite.py
-```
+---
 
-### 2. Launch Interactive Showcase Server
-```bash
-python server.py
-```
-Open your browser and navigate to:
-- **Central Showcase Launchpad**: [http://localhost:8000/index.html](http://localhost:8000/index.html)
-- **Track 01 (Manufacturing & Carbon Passport VEP)**: [http://localhost:8000/track01_carbon_dpp/index.html](http://localhost:8000/track01_carbon_dpp/index.html)
-- **Track 02 (Fintech & Privacy Shield VEP)**: [http://localhost:8000/track02_fintech_privacy/index.html](http://localhost:8000/track02_fintech_privacy/index.html)
+## 🚀 30-Second Quick Start (Two Ways to Experience the Demo)
+
+### 🌟 Option A: Instant Zero-Install (Directly Double-Click `index.html`)
+**No Python, Node.js, or backend installation required!**
+1. Clone or download this repository as a ZIP.
+2. **Directly double-click [`index.html`](index.html)** in your file explorer to open it in any modern browser (Chrome, Edge, Safari, Firefox).
+3. Experience all **6 interactive VEP industry consoles** (Track 01 to Track 06) with pre-packaged simulation data, guided live scenarios, and cryptographic audit proofs:
+   * 🏭 **Track 01 (Manufacturing & Carbon Passport DPP VEP)**: [`track01_carbon_dpp/index.html`](track01_carbon_dpp/index.html)
+   * 💳 **Track 02 (Fintech & Privacy Shield VEP)**: [`track02_fintech_privacy/index.html`](track02_fintech_privacy/index.html)
+   * 🏥 **Track 03 (Healthcare & HIPAA Insurance VEP)**: [`track03_healthcare_insurance/index.html`](track03_healthcare_insurance/index.html)
+   * 🏗️ **Track 04 (GovTech Services Proxy VEP)**: [`track04_gov_services/index.html`](track04_gov_services/index.html)
+   * 🌏 **Track 05 (MigraTrust Inclusive Finance VEP)**: [`track05_inclusive_finance/index.html`](track05_inclusive_finance/index.html)
+   * 📦 **Track 06 (SupplyChain RBA Compliance VEP)**: [`track06_supply_chain_rba/index.html`](track06_supply_chain_rba/index.html)
+
+---
+
+### 💻 Option B: Live REST API & Telemetry Server (For Technical Judges & Testers)
+
+If you want to test live backend HTTP response headers, RedTeam containment APIs, and sub-microsecond latency meters:
+
+1. **Run Automated Governance Verification Suite (0.01s)**:
+   ```bash
+   python test_verification_suite.py
+   ```
+2. **Launch Interactive Showcase Server**:
+   ```bash
+   python server.py
+   ```
+3. Open your browser and navigate to:
+   - **Central Launchpad Portal**: [http://localhost:8000/index.html](http://localhost:8000/index.html)
 
 ---
 
@@ -34,7 +56,7 @@ Open your browser and navigate to:
 
 Inspect the live response headers and in-band policy enforcement:
 ```bash
-# 1. Telemetry & Microservices health
+# 1. Telemetry & Microservices Health API
 curl -i -X POST http://localhost:8000/api/v1/system/telemetry
 
 # 2. RedTeam Prompt Injection Containment (Returns HTTP 403)
@@ -61,7 +83,8 @@ DROS-VEP Lite is architected to natively interface with official international s
 
 ## 📖 Detailed Guides & Documentation
 - 📘 **[100% Reproducibility Guide](REPRODUCIBILITY.md)**: Step-by-step verification and benchmark metrics.
-- 🏛️ **[DROS Whitepaper Summary](DROS_Paper_07_Unified_6Pillars.md)**: The 6-Pillars Enterprise AI Trust Model.
+- 🏛️ **[DROS Whitepaper Summary](DROS_SOLUTION_MAPPING_MASTER.md)**: The 6-Pillars Enterprise AI Trust Model.
+- 📋 **[Governance Gap Memo Template](Governance_Gap_Memo_Template.md)**: Standardized gap analysis framework.
 
 ---
 

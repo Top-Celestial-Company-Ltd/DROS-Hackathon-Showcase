@@ -1,32 +1,54 @@
 # 🏆 DROS-Hackathon-Showcase
-
-> **DROS-VEP Lite 2026 黑客松多軌展演系統：自主 AI Agent 確定性運行期治理與實時對抗靶場**
+### DROS-VEP Lite 2026 黑客松多軌展演系統：自主 AI Agent 確定性運行期治理與實時對抗靶場
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Evaluation Engine: DROS-Guard](https://img.shields.io/badge/Evaluation--Engine-DROS--Guard-cyan.svg)](https://github.com/Top-Celestial-Company-Ltd/DROS-VEP-lite)
 [![Reproducibility: 100%](https://img.shields.io/badge/Reproducibility-100%25%20Verifiable-emerald.svg)](REPRODUCIBILITY.md)
+[![Zero-Install Demo](https://img.shields.io/badge/Demo-免安裝雙擊即開-purple.svg)](#)
 
-[English](README.md) | [繁體中文](README_zh.md)
+[English](README.md) | [繁體中文說明](README_zh.md) | [🌐 官方網站](https://dr-os.io)
 
-本倉庫包含 **DROS-VEP Lite (確定性運行期作業系統 - 驗證與強制執行平台)** 的多軌互動展演系統、REST 遙測 API 與 100% 可獨立驗證之自動化測試套件。
+本倉庫包含 **DROS-VEP Lite (確定性運行期作業系統 - 驗證與強制執行平台)** 的官方競賽繳件成果、100% 可獨立驗證之自動化測試套件、六大多軌互動展演系統與 REST 實時遙測 API。
 
 ---
 
-## 🚀 1 分鐘極速快速開始 (Quick Start)
+## 🎬 競賽正式成果與簡報文件
+* 🎥 **官方競賽展演影片**：[`B1-12-DROS.mp4`](B1-12-DROS.mp4) *(高畫質 1080p 影片由 Git LFS 託管，點擊 "View raw" 或 "Download" 即可下載播放)*
+* 📊 **官方投影片簡報**：[`B1_12_DROS(DeterministicRuntimeOS).pptx`](B1_12_DROS(DeterministicRuntimeOS).pptx)
+* 📄 **團隊企劃書與治理差距備忘錄**：[`黑客松-DROS-Team.pdf`](黑客松-DROS-Team.pdf) | [`黑客松-DROS-Team.docx`](黑客松-DROS-Team.docx)
 
-### 1. 執行自動化治理驗證測試套件 (0.01 秒完成)
-```bash
-python test_verification_suite.py
-```
+---
 
-### 2. 啟動互動式展演伺服器
-```bash
-python server.py
-```
-啟動後打開瀏覽器訪問：
-- **總控雲端發射台**：[http://localhost:8000/index.html](http://localhost:8000/index.html)
-- **Track 01 (製造貿易與碳護照 VEP)**：[http://localhost:8000/track01_carbon_dpp/index.html](http://localhost:8000/track01_carbon_dpp/index.html)
-- **Track 02 (電支金流與隱私風控 VEP)**：[http://localhost:8000/track02_fintech_privacy/index.html](http://localhost:8000/track02_fintech_privacy/index.html)
+## 🚀 30 秒極速快速開始 (兩種體驗方式)
+
+### 🌟 方式 A：免安裝直接體驗 (雙擊 `index.html` 即可運行！)
+**完全不需要安裝 Python、Node.js 或任何後端服務！**
+1. 克隆或直接下載本倉庫 ZIP 壓縮包並解壓縮。
+2. 在檔案總管中**直接雙擊 [`index.html`](index.html)**，即可在任何現代瀏覽器（Chrome、Edge、Safari、Firefox）中開啟！
+3. 即可完整體驗 **6 大 VEP 產業獨立控制台**（Track 01 至 Track 06），包含內建完整模擬數據、情境演繹與密碼學審計憑證：
+   * 🏭 **Track 01 (製造貿易與碳護照 DPP VEP)**：[`track01_carbon_dpp/index.html`](track01_carbon_dpp/index.html)
+   * 💳 **Track 02 (電支金流與隱私風控 VEP)**：[`track02_fintech_privacy/index.html`](track02_fintech_privacy/index.html)
+   * 🏥 **Track 03 (醫療保險與 HIPAA 合規 VEP)**：[`track03_healthcare_insurance/index.html`](track03_healthcare_insurance/index.html)
+   * 🏗️ **Track 04 (政府服務與代理授權 VEP)**：[`track04_gov_services/index.html`](track04_gov_services/index.html)
+   * 🌏 **Track 05 (移工數位信任與普惠金融 VEP)**：[`track05_inclusive_finance/index.html`](track05_inclusive_finance/index.html)
+   * 📦 **Track 06 (供應鏈 RBA 合規與選擇性揭露 VEP)**：[`track06_supply_chain_rba/index.html`](track06_supply_chain_rba/index.html)
+
+---
+
+### 💻 方式 B：啟動 REST API 與實時遙測伺服器 (適合評審進行技術驗證)
+
+若評審或技術人員希望驗證真實後端 HTTP Response Header、紅隊防禦 API 與亞微秒級延遲計時器：
+
+1. **執行自動化治理驗證測試套件 (0.01 秒完成)**：
+   ```bash
+   python test_verification_suite.py
+   ```
+2. **啟動互動式展演伺服器**：
+   ```bash
+   python server.py
+   ```
+3. 打開瀏覽器訪問：
+   - **總控雲端發射台**：[http://localhost:8000/index.html](http://localhost:8000/index.html)
 
 ---
 
@@ -62,6 +84,7 @@ DROS-VEP Lite 原生架構設計為可直接對接國際官方標準與台灣國
 ## 📖 詳細技術指引與文檔
 - 📘 **[100% 極速可重現性指南](REPRODUCIBILITY.md)**：包含逐步驗證指引與基準指標矩陣。
 - 🏛️ **[DROS 六大信任基石架構解析](DROS_SOLUTION_MAPPING_MASTER.md)**：企業級 AI 信任模型落地實踐。
+- 📋 **[治理差距備忘錄範本](Governance_Gap_Memo_Template.md)**：標準化企業治理差距分析框架。
 
 ---
 
