@@ -24,7 +24,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
 | **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
 | **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
-| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **26.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **<1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
 | **5. 存取稽核 (Auditing)** | `auditd` / Linux Journal 日誌 | **SHA-256 Merkle Hash 密碼學證據鏈** | 解決「事後偽造與串供，產出法院採信收據」 |
 | **6. 資源回收 (Revocation)** | `kill -9` / Process Terminate | **$O(1)$ RCU 原子指針秒級動態撤銷** | 解決「授權過期或被撤銷後，背景 Agent 偷跑」 |
 
@@ -74,7 +74,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
                  ▼                                         ▼
      ┌────────────────────────┐              ┌──────────────────────────┐
      │ 產業 AI Detection /    │              │ 💥 C-ABI 帶內硬性阻斷    │
-     │ 移工身分核驗與開戶 Agent│              │ (HTTP 403 26.1 μs 熔斷)  │
+     │ 移工身分核驗與開戶 Agent│              │ (HTTP 403 <1 μs 熔斷)  │
      └───────────┬────────────┘              └──────────────────────────┘
                  │
                  ▼ (Account Upgrade Request / FIDO Match)
@@ -127,7 +127,7 @@ DROS 實現 **「移工端 App (自然人) ◄► 台灣銀行開戶端 Agent + 
 │   ➔ 產出不可轉讓、防範仲介代辦之 DROS DIT 憑證！                                 │
 │                                                                                  │
 │  【台灣銀行開戶端 Agent + DROS 帶內對接 (Pillar 3 & 4)】                         │
-│   • 移工 Agent 發起開戶升級請求 ──► 銀行端 DROS 在 26.1 μs 內帶內驗證 FIDO 簽章  │
+│   • 移工 Agent 發起開戶升級請求 ──► 銀行端 DROS 在 <1 μs 內帶內驗證 FIDO 簽章  │
 │   • 滿足金管會第二類帳戶合規要求 ──► 自動核發第二類帳戶（可轉帳與合法跨境匯款）  │
 │   • 異常頻率比對 ──► 若偵測到自動化撞庫腳本，瞬間執行 HTTP 403 硬熔斷            │
 │                                                                                  │

@@ -30,7 +30,7 @@
 │  【組件 B】VEP Policy Gate（帶內執行期策略閘門層）                 │
 │   ↓ Agent 每次呼叫 API / Tool 時，必須先過這道閘門                │
 │   ↓ 閘門比對 DIT Token 的 Scope 與本次動作是否吻合                │
-│   ↓ 不吻合 → 26.1 微秒內在二進位層硬性熔斷，AI 完全無法繞過       │
+│   ↓ 不吻合 → <1 微秒內在二進位層硬性熔斷，AI 完全無法繞過       │
 │   ↓ 高風險動作 → 掛起交易，觸發人工雙重簽署（Human-in-the-Loop）  │
 │                                                                  │
 │  【組件 C】Merkle Audit Chain（不可竄改稽核追蹤層）               │
@@ -57,7 +57,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
 | **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
 | **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
-| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **26.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **<1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
 | **5. 存取稽核 (Auditing)** | `auditd` / Linux Journal 日誌 | **SHA-256 Merkle Hash 密碼學證據鏈** | 解決「事後偽造與串供，產出法院採信收據」 |
 | **6. 資源回收 (Revocation)** | `kill -9` / Process Terminate | **$O(1)$ RCU 原子指針秒級動態撤銷** | 解決「授權過期或被撤銷後，背景 Agent 偷跑」 |
 
@@ -108,7 +108,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
                  ▼                                         ▼
      ┌────────────────────────┐              ┌──────────────────────────┐
      │ 產業 AI Detection /    │              │ 💥 C-ABI 帶內硬性阻斷    │
-     │ Domain Agent 決策引擎  │              │ (HTTP 403 26.1 μs 熔斷)  │
+     │ Domain Agent 決策引擎  │              │ (HTTP 403 <1 μs 熔斷)  │
      └───────────┬────────────┘              └──────────────────────────┘
                  │
                  ▼ (Risk Score / Analysis / Draft Action)
@@ -210,7 +210,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 
   Agent 呼叫 Tool: export_raw_bom(product_id="CHIP-A1")
                     ↓
-  【VEP Policy Gate 26.1μs 決策】
+  【VEP Policy Gate <1μs 決策】
     - 比對 Scope：EU-Auditor-Agent#992 的 Scope 中不含 "bom:read_raw"
     - 判定：PROHIBITED_SCOPE_VIOLATION
                     ↓
@@ -246,7 +246,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 > Agent A（歐盟稽核代理）查詢供應商晶片 DPP 碳足跡。DIT Token 驗證通過，Scope 符合。系統在帶內過濾 BOM 配方，安全放行傳回 `42.5 kg CO2e` 摘要與 CBAM 合規證明。
 
 **場景 2 ── 越權試探：Agent 嘗試導出原始配方，Policy Gate 熔斷**
-> Agent A 受到 Prompt Injection 誘導，嘗試呼叫 `export_raw_bom()` 工具。VEP 在 26.1μs 內比對 Scope 不合，硬性熔斷請求，同步觸發廠長控制台 HITL 雙重確認視窗。
+> Agent A 受到 Prompt Injection 誘導，嘗試呼叫 `export_raw_bom()` 工具。VEP 在 <1μs 內比對 Scope 不合，硬性熔斷請求，同步觸發廠長控制台 HITL 雙重確認視窗。
 
 **場景 3 ── 緊急撤銷：廠長一鍵撤銷 Agent 授權**
 > 廠長在控制台點擊「撤銷授權」，RCU Token 在 < 1 秒內廢止。Agent A 隨後的所有 API 呼叫一律收到 `403 FORBIDDEN`，授權即時終止。
@@ -264,7 +264,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | :--- | :---: | :---: | :---: | :---: |
 | **防禦層次** | 基礎設施層（防雲端廠商） | 資料協作層（批次聚合） | 網路閘道層（流量控制） | **AI Agent 執行期層（應用行為治理）** |
 | 防止雲端廠商 / Hypervisor 窺視 | ✅ 強（TEE 記憶體加密） | ✅ 中 | ❌ | ❌（非設計目標） |
-| **欄位級動態 Policy 遮蔽（即時 API 回應）** | ❌ 無欄位層概念 | ⚠️ 部分（批次聚合，非即時） | ⚠️ 部分（靜態規則，無 AI 語意感知） | ✅ **帶內 26.1μs 決策** |
+| **欄位級動態 Policy 遮蔽（即時 API 回應）** | ❌ 無欄位層概念 | ⚠️ 部分（批次聚合，非即時） | ⚠️ 部分（靜態規則，無 AI 語意感知） | ✅ **帶內 <1μs 決策** |
 | **AI Agent Tool Call 越權行為治理** | ❌ | ❌ | ❌ | ✅ **C-ABI 物理熔斷** |
 | **即時輸出密碼學簽章合規憑證（DPP）** | ❌ | ❌ | ❌ | ✅ **SHA-256 Merkle 簽章** |
 | 不可竄改稽核鏈（可獨立驗證） | ⚠️ 部分（TEE Attestation） | ❌ | ❌ | ✅ **完整 Merkle Chain** |

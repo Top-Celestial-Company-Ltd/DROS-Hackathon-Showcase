@@ -507,7 +507,7 @@
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🛡️</div>
                 <div class="vep-mini-h">資安防禦網關</div>
-                <div class="vep-mini-sub">Palo Alto WAF (26.1μs)</div>
+                <div class="vep-mini-sub">Palo Alto WAF (<1μs)</div>
             </div>
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🔌</div>
@@ -793,7 +793,7 @@
                 </div>
                 <div class="cert-field">
                     <div class="cert-label">⚡ Policy Latency & Execution Metric:</div>
-                    <div class="cert-val" style="color:var(--accent-green)">Decision Latency: 26.1 μs | In-Band Intercept: PASS | PII Masking: ZERO-EXFIL</div>
+                    <div class="cert-val" style="color:var(--accent-green)">Decision Latency: <1 μs | In-Band Intercept: PASS | PII Masking: ZERO-EXFIL</div>
                 </div>
             </div>
 
@@ -932,7 +932,7 @@
                 await new Promise(r => setTimeout(r, 300));
                 const p2 = document.createElement('div');
                 p2.className = 'fuzz-line blocked';
-                p2.innerText = `🛡️ [VEP-lite Intercepted] 26.1μs Decision | Status: 403 PAYMENT_BLOCKED | Audit Hash: 0x${Math.random().toString(16).substring(2,10)}`;
+                p2.innerText = `🛡️ [VEP-lite Intercepted] <1μs Decision | Status: 403 PAYMENT_BLOCKED | Audit Hash: 0x${Math.random().toString(16).substring(2,10)}`;
                 streamBox.appendChild(p2);
 
                 logAudit(`[VEP_INTERCEPT] Blocked ${payload} (Status: 403 Payment Forbidden)`, 'eBPF:DROPPED | Banking-DB:SHIELDED');

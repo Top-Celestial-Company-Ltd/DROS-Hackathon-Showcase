@@ -467,7 +467,7 @@
         <div class="logo-area">
             <div class="logo-badge">VEP COMPANY #01</div>
             <h1>Alpha Global Manufacturing VEP | 獨立虛擬企業控制台 (Track 01)</h1>
-            <p>可信 DPP 碳足跡與歐盟 CBAM 跨境貿易零知識過濾 (26.1μs 延遲)</p>
+            <p>可信 DPP 碳足跡與歐盟 CBAM 跨境貿易零知識過濾 (<1μs 延遲)</p>
         </div>
         <div style="display:flex; align-items:center; gap:12px;">
             <a href="../index.html" style="text-decoration:none; background:rgba(0,242,254,0.1); border:1px solid var(--accent-cyan); color:var(--accent-cyan); padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.8rem; transition:all 0.2s;">🏠 回總主控台</a>
@@ -509,7 +509,7 @@
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🛡️</div>
                 <div class="vep-mini-h">資安防禦網關</div>
-                <div class="vep-mini-sub">Palo Alto WAF (26.1μs)</div>
+                <div class="vep-mini-sub">Palo Alto WAF (<1μs)</div>
             </div>
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🔌</div>
@@ -796,7 +796,7 @@
                 </div>
                 <div class="cert-field">
                     <div class="cert-label">⚡ Policy Latency & Execution Metric:</div>
-                    <div class="cert-val" style="color:var(--accent-green)">Decision Latency: 26.1 μs | In-Band Intercept: PASS | BOM Cost Redacted: PASS</div>
+                    <div class="cert-val" style="color:var(--accent-green)">Decision Latency: <1 μs | In-Band Intercept: PASS | BOM Cost Redacted: PASS</div>
                 </div>
             </div>
 
@@ -935,7 +935,7 @@
                 await new Promise(r => setTimeout(r, 300));
                 const p2 = document.createElement('div');
                 p2.className = 'fuzz-line blocked';
-                p2.innerText = `🛡️ [VEP-lite Intercepted] 26.1μs Policy Gate | Status: 403 REDACTED | Audit Hash: 0x${Math.random().toString(16).substring(2,10)}`;
+                p2.innerText = `🛡️ [VEP-lite Intercepted] <1μs Policy Gate | Status: 403 REDACTED | Audit Hash: 0x${Math.random().toString(16).substring(2,10)}`;
                 streamBox.appendChild(p2);
 
                 logAudit(`[VEP_INTERCEPT] Blocked ${payload} (Status: 403 Forbidden)`, 'eBPF:DROPPED | SAP-HANA:SHIELDED');

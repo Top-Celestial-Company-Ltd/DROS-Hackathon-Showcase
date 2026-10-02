@@ -415,7 +415,7 @@
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🛡️</div>
                 <div class="vep-mini-h">Palo Alto WAF (In-Band)</div>
-                <div class="vep-mini-sub">PANOS 26.1μs Active</div>
+                <div class="vep-mini-sub">PANOS <1μs Active</div>
             </div>
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">⚡</div>
@@ -461,8 +461,8 @@
                 <tr>
                     <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>3. Tool / Action (工具邊界)</b></td>
                     <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);">Agent 呼叫非法醫療資料庫工具時如何攔截？</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>VEP C-ABI 帶內代理</b>：呼叫 `export_full_ehr_history()` 在 26.1μs 物理熔斷退回 403。</td>
-                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-yellow)">[TOOL_BLOCK] export_full_ehr_history() → 26.1μs DENIED 403</code></td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>VEP C-ABI 帶內代理</b>：呼叫 `export_full_ehr_history()` 在 <1μs 物理熔斷退回 403。</td>
+                    <td style="padding:10px 12px; border:1px solid var(--border-color);"><code style="color:var(--accent-yellow)">[TOOL_BLOCK] export_full_ehr_history() → <1μs DENIED 403</code></td>
                 </tr>
                 <tr>
                     <td style="padding:10px 12px; border:1px solid var(--border-color); color:var(--text-main);"><b>4. Policy Gate (過濾門閥)</b></td>
@@ -516,7 +516,7 @@
         <div class="panel">
             <div class="panel-title">
                 <span>🤖 保險理賠 Agent & VEP 網關</span>
-                <span class="status-badge badge-permit" id="gate-badge">26.1μs ACTIVE</span>
+                <span class="status-badge badge-permit" id="gate-badge"><1μs ACTIVE</span>
             </div>
 
             <div>
@@ -629,7 +629,7 @@ phi_redaction_rules:
                 <span class="chip-icon">☠️</span>
                 <div>
                     <div class="redteam-title">紅隊攻擊大腦 (Attacker LLM Engine / Fuzzer)</div>
-                    <div style="font-size:0.75rem; color:var(--text-muted);">選擇對抗 Prompt Injection / 越權病歷調閱策略，測試 26.1μs 帶內防禦硬性熔斷：</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">選擇對抗 Prompt Injection / 越權病歷調閱策略，測試 <1μs 帶內防禦硬性熔斷：</div>
                 </div>
             </div>
             <span class="auto-fuzzer-badge">LIVE FUZZER READY</span>
@@ -725,7 +725,7 @@ phi_redaction_rules:
                 </div>
                 <div>
                     <div style="color:var(--text-muted); margin-bottom:4px;">⚡ 政策延遲與安全防護指標 (Policy Metrics):</div>
-                    <div style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--accent-green);">Decision Latency: 26.1 μs | In-Band Intercept: PASS | HIPAA Safe Harbor 18 PHI: ZERO-EXFIL</div>
+                    <div style="background:#03060d; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--accent-green);">Decision Latency: <1 μs | In-Band Intercept: PASS | HIPAA Safe Harbor 18 PHI: ZERO-EXFIL</div>
                 </div>
             </div>
 
@@ -848,7 +848,7 @@ phi_redaction_rules:
 
             if (step === 1) {
                 badge.className = 'status-badge badge-permit';
-                badge.innerText = '26.1μs PASSED';
+                badge.innerText = '<1μs PASSED';
                 logConsole('[STEP 1: DIT TOKEN & CONSENT VALIDATION]');
                 logConsole('--> Request: InsurTech Claim Agent GET /api/v1/claims/verify');
                 logConsole('--> Header X-DIT-Token: Patient-Consent#991 (Valid)');
@@ -856,7 +856,7 @@ phi_redaction_rules:
                 logAudit('[STEP 1] Patient-Consent#991 DIT validated. Scope: claims:read_summary. PERMIT.', 'PaloAlto-PANOS:Pass');
             } else if (step === 2) {
                 badge.className = 'status-badge badge-deny';
-                badge.innerText = '26.1μs CIRCUIT-BREAK';
+                badge.innerText = '<1μs CIRCUIT-BREAK';
                 logConsole('[STEP 2: UNAUTHORIZED EHR EXFILTRATION ATTEMPT]');
                 logConsole('--> Agent attempted to call tool export_full_ehr_history()');
                 logConsole('--> Scope Check: PROHIBITED [ehr:read_full_phi] ❌');
@@ -865,7 +865,7 @@ phi_redaction_rules:
                 logAudit('[TOOL_DENIED] export_full_ehr_history() -> C-ABI Circuit-Break -> HTTP 403 FORBIDDEN.', 'PaloAlto-PANOS:Blocked | eBPF:DROPPED_403');
             } else if (step === 3) {
                 badge.className = 'status-badge badge-permit';
-                badge.innerText = '26.1μs REDACTED';
+                badge.innerText = '<1μs REDACTED';
                 logConsole('[STEP 3: IN-BAND 18 PHI ZERO-KNOWLEDGE REDACTION]');
                 logConsole('--> Reading raw patient record from EHR DB...');
                 logConsole('--> Applying vajra_policy.yaml field redaction rules...');

@@ -402,7 +402,7 @@
         <div class="vep-mini-box">
             <div class="vep-mini-icon">🛡️</div>
             <div class="vep-mini-h">VEP C-ABI Gate</div>
-            <div class="vep-mini-sub">Latency: 26.1μs InBand</div>
+            <div class="vep-mini-sub">Latency: <1μs InBand</div>
         </div>
         <div class="vep-mini-box">
             <div class="vep-mini-icon">📜</div>
@@ -445,8 +445,8 @@
             <tr>
                 <td><b>3. Tool / Action (工具邊界)</b></td>
                 <td>採購 AI 能呼叫哪些 API？直接讀稽核原始報告是否可能？</td>
-                <td><b>VEP C-ABI Tool Interceptor</b>：`verify_rba_cert()` PERMIT；`read_full_audit_report()` 在 26.1μs 被 VEP 硬性攔截 HTTP 403，與工廠 ERP 完全隔離。</td>
-                <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] read_full_audit_report() → 403 DENIED 26.1μs</code></td>
+                <td><b>VEP C-ABI Tool Interceptor</b>：`verify_rba_cert()` PERMIT；`read_full_audit_report()` 在 <1μs 被 VEP 硬性攔截 HTTP 403，與工廠 ERP 完全隔離。</td>
+                <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] read_full_audit_report() → 403 DENIED <1μs</code></td>
             </tr>
             <tr>
                 <td><b>4. Policy Gate (選擇性揭露閘門)</b></td>
@@ -547,7 +547,7 @@
 
         <div class="gate-status" id="gateStatusBar">
             <span>🟢 SupplyProof VEP 選擇性揭露閘門 ACTIVE</span>
-            <span style="font-family:'Fira Code',monospace; font-size:0.82rem;">SD / 26.1μs</span>
+            <span style="font-family:'Fira Code',monospace; font-size:0.82rem;">SD / <1μs</span>
         </div>
 
         <button class="btn danger" onclick="revokeRBA()" id="revokeBtn">
@@ -871,25 +871,25 @@
 
         } else if (step === 3) {
             badge.className = 'status-badge badge-deny';
-            badge.innerText = '關卡3: 越權阻斷 (26.1μs)';
+            badge.innerText = '關卡3: 越權阻斷 (<1μs)';
             logConsole('--> [關卡 3：大廠 RBA 稽核抽查] 上市櫃大廠採購 Agent 試圖呼叫 read_factory_full_payroll_and_yield()');
             logConsole('--> 企圖偷看美家人力內部利潤結構、所有員工薪資與工廠良率...');
-            logConsole('--> 💥 [DROS C-ABI HARD INTERCEPT] 帶內硬性熔斷！HTTP 403 TOOL_PROHIBITED in 26.1μs');
+            logConsole('--> 💥 [DROS C-ABI HARD INTERCEPT] 帶內硬性熔斷！HTTP 403 TOOL_PROHIBITED in <1μs');
             resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PROHIBITED: read_factory_full_payroll_and_yield",\n  "sd_policy": "commercial_secrets_protection_active",\n  "decision_latency": "26.1us",\n  "note": "Enterprise Buyer Agent cannot read full factory confidential payroll or yield rates!"\n}';
             appendChat('user', '大廠採購 Agent 試圖呼叫 read_factory_full_payroll_and_yield() 偷看工廠良率與美家內部利潤結構...');
-            appendChat('vep-alert', '🛡️ [HARD INTERCEPTED 26.1μs] 違反商業機密隔離政策！DROS C-ABI 帶內硬性熔斷 HTTP 403，大廠 Agent 碰不到任何內部機密！');
-            logAudit('[TOOL_BLOCK] Enterprise Buyer Agent attempted full payroll/yield dump → 403 BLOCKED in 26.1μs. Commercial secrets protected.', 'C-ABI:DROP | SD-Gate:DENY');
+            appendChat('vep-alert', '🛡️ [HARD INTERCEPTED <1μs] 違反商業機密隔離政策！DROS C-ABI 帶內硬性熔斷 HTTP 403，大廠 Agent 碰不到任何內部機密！');
+            logAudit('[TOOL_BLOCK] Enterprise Buyer Agent attempted full payroll/yield dump → 403 BLOCKED in <1μs. Commercial secrets protected.', 'C-ABI:DROP | SD-Gate:DENY');
 
         } else if (step === 4) {
             badge.className = 'status-badge badge-disclosed';
             badge.innerText = '關卡3: ZKP 零扣款放行';
             logConsole('--> [關卡 3：ZKP-Lite 零知識證明] DROS 帶內生成 Groth16 ZKP 證明 π...');
             logConsole('--> π = Proof{實領薪資 == 應發全額 ∧ 仲介費用扣款 == 0}');
-            logConsole('--> 上市櫃大廠與 KPMG 稽核員在 26.1μs 內驗證通過，商業機密與移工隱私 100% HIDDEN！');
+            logConsole('--> 上市櫃大廠與 KPMG 稽核員在 <1μs 內驗證通過，商業機密與移工隱私 100% HIDDEN！');
             resp.innerHTML = '{\n  "zkp_proof": "π = Groth16:0x3f9a91b2c48821...",\n  "rba_compliance": {\n    "labor_fee_deduction": 0,\n    "take_home_pay_verified": true,\n    "passport_withholding": false\n  },\n  "confidential_payroll_data": "[HIDDEN_BY_ZKP]",\n  "kpmg_audit_verdict": "100% PASS_CERTIFIED"\n}';
             appendChat('user', 'KPMG / 大廠稽核員：請求驗證移工「實領薪資是否零非法扣款」？');
             appendChat('agent', 'DROS 選擇性揭露閘門：<b>[ZKP-Lite 零扣款證明放行]</b> 出示密碼學證明 π，證明實領全額薪資、零扣除仲介費！<b>美家財務機密 100% 隱蔽，KPMG 稽核 100% 通過！</b>');
-            logAudit('[ZKP_ZERO_DEDUCTION] Groth16 π verified: Zero illegal deduction. KPMG audit certified in 26.1μs.', 'ZKP:Groth16 | Audit:CERTIFIED');
+            logAudit('[ZKP_ZERO_DEDUCTION] Groth16 π verified: Zero illegal deduction. KPMG audit certified in <1μs.', 'ZKP:Groth16 | Audit:CERTIFIED');
 
         } else if (step === 5) {
             openCertModal('[STEP 5] Merkle Compliance Audit Chain Inspection | May-God Human Resources RBA-2026 | All disclosures SD-signed',
@@ -931,7 +931,7 @@
             revokeVal.innerText = 'RBA-2026: VALID';
             revokeVal.style.color = 'var(--text-muted)';
             gateBar.className = 'gate-status';
-            gateBar.innerHTML = '<span>🟢 SupplyProof VEP 選擇性揭露閘門 ACTIVE</span><span style="font-family:\'Fira Code\',monospace; font-size:0.82rem;">SD / 26.1μs</span>';
+            gateBar.innerHTML = '<span>🟢 SupplyProof VEP 選擇性揭露閘門 ACTIVE</span><span style="font-family:\'Fira Code\',monospace; font-size:0.82rem;">SD / <1μs</span>';
             document.getElementById('vcCard').innerHTML = `
                 <div class="vc-field"><span class="vc-key">@context:</span><span class="vc-val">W3C-VC-2.0 + DROS-SD</span></div>
                 <div class="vc-field"><span class="vc-key">supplier_did:</span><span class="vc-val">did:dros:fab-tw-01</span></div>
@@ -975,9 +975,9 @@
         await new Promise(r => setTimeout(r, 400));
         const p2 = document.createElement('div');
         p2.className = 'fuzz-line blocked';
-        p2.innerText = `🛡️ [SupplyProof VEP SD-Gate 26.1μs] ${atk.label} → SD-Policy VIOLATED / CERT_INVALID | 403 BLOCKED | Audit Hash: 0x${Math.random().toString(16).substring(2, 10)}`;
+        p2.innerText = `🛡️ [SupplyProof VEP SD-Gate <1μs] ${atk.label} → SD-Policy VIOLATED / CERT_INVALID | 403 BLOCKED | Audit Hash: 0x${Math.random().toString(16).substring(2, 10)}`;
         streamBox.appendChild(p2);
-        logAudit(`[VEP_INTERCEPT] ${atk.label} blocked in 26.1μs (403). Supply chain attack neutralized by SD-Gate.`, 'eBPF:DROPPED | PaloAlto-PANOS:BLOCKED');
+        logAudit(`[VEP_INTERCEPT] ${atk.label} blocked in <1μs (403). Supply chain attack neutralized by SD-Gate.`, 'eBPF:DROPPED | PaloAlto-PANOS:BLOCKED');
 
         const pDone = document.createElement('div');
         pDone.style.color = 'var(--accent-green)';

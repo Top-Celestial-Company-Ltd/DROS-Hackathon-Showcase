@@ -16,7 +16,7 @@
 
 1. **頂尖 AI Agent 執行期治理架構研發**：
    - 創立 **DROS (Deterministic Runtime Operating System)**，專注於解決自主 AI Agent 進入企業時的「執行期失控與資安漏洞」問題。
-   - 研發 **DROS-VajraClaw** 確定性邊界防線網關，實現帶內 26.1 微秒（$\mu\text{s}$）確定性物理層硬熔斷。
+   - 研發 **DROS-VajraClaw** 確定性邊界防線網關，實現帶內 <1 微秒（$\mu\text{s}$）確定性物理層硬熔斷。
 2. **堅實的專利與學術成果**：
    - 已申請美國臨時發明專利：**U.S. Provisional Patent Application No. 64/111,973**（*Patent Pending*）。
    - 在國際學術預印本庫（Zenodo）發表 7 篇核心技術論文，涵蓋 C-ABI 帶內攔截、Merkle 稽核鏈、$O(1)$ RCU 動態撤銷、RedTeam 測試大腦與 **DROS-6P 大一統六大信任要點治理架構**。
@@ -35,7 +35,7 @@
 
 ### 3.2 DROS 6 大信任要點閉環 (The 6 Pillars Universal Closure)
 
-DROS 能夠在單一物理層 Runtime 內，以 **26.1 微秒（$\mu\text{s}$）決策延遲** 100% 閉環解答六大信任要點：
+DROS 能夠在單一物理層 Runtime 內，以 **<1 微秒（$\mu\text{s}$）決策延遲** 100% 閉環解答六大信任要點：
 
 ```
                               [ DROS 雙向 Multi-VEP 對接聯防架構 ]
@@ -46,7 +46,7 @@ DROS 能夠在單一物理層 Runtime 內，以 **26.1 微秒（$\mu\text{s}$）
 ┌───────────────────────────┐      ┌───────────────────────────┐      ┌───────────────────────────┐
 │ 1️⃣ Principal (代表誰)       │      │ 2️⃣ Authorization (授權)   │      │ 3️⃣ Tool/Action (工具邊界) │
 │ DIT Token (PKI 3-Tier)    │      │ Capability Bitmap 向量    │      │ C-ABI FFI 帶內攔截器      │
-│ • 強綁定法人/團隊/公民    │      │ • 精確角色與 API 映射     │      │ • 26.1 μs 物理層熔斷      │
+│ • 強綁定法人/團隊/公民    │      │ • 精確角色與 API 映射     │      │ • <1 μs 物理層熔斷      │
 └─────────────┬─────────────┘      └─────────────┬─────────────┘      └─────────────┬─────────────┘
               │                                  │                                  │
  ─────────────┼──────────────────────────────────┼──────────────────────────────────┼─────────────
@@ -70,7 +70,7 @@ DROS 能夠在單一物理層 Runtime 內，以 **26.1 微秒（$\mu\text{s}$）
 
 3. **3️⃣ Tool / Action Bound (工具邊界) ── 帶內執行期攔截網關 (In-Band Runtime Interceptor)**
    - **帶內介面插樁**：攔截點部署於 Agent 呼叫外部 API 的帶內介面邊界，而非帶外網路代理。
-   - **確定性硬熔斷**：當 Agent 嘗試觸發未授權之工具呼叫時，網關在 **26.1 微秒（$\mu\text{s}$）內** 執行物理熔斷，直接傳回硬錯誤。
+   - **確定性硬熔斷**：當 Agent 嘗試觸發未授權之工具呼叫時，網關在 **<1 微秒（$\mu\text{s}$）內** 執行物理熔斷，直接傳回硬錯誤。
    - **邊界隔離與串鏈阻斷**：熔斷發生於網路 Socket 傳送與記憶體處置之前，硬性截斷多步工具串鏈越權。
 
 4. **4️⃣ Policy Gate (過濾門閥) ── 資料動態遮蔽、HITL 與 ZKP-Lite 選擇性揭露**
@@ -99,7 +99,7 @@ DROS 支援 **Multi-VEP Peer-to-Peer 雙向對接**：
 ┌────────────────────────────────┐         跨機構安全邊界 (Zero-Trust Link)         ┌────────────────────────────────┐
 │   甲機構 / 買方 / 醫院端 VEP    │ ───────────────────────────────────────────────► │   乙機構 / 賣方 / 保險端 VEP    │
 │  (VEP-1: did:dros:requester)   │ ◄─────────────────────────────────────────────── │ (VEP-2: did:dros:responder)   │
-└────────────────────────────────┘      帶內 Cryptographic Handshake (26.1μs)       └────────────────────────────────┘
+└────────────────────────────────┘      帶內 Cryptographic Handshake (<1μs)       └────────────────────────────────┘
 ```
 - **雙端聯防**：攔截不是在單一節點發生，而是由請求端 VEP-1 與回應端 VEP-2 共同執行獨立的政策檢查（Policy Check）。
 - **零信任穿透**：甲機構的 Agent 只能存取乙機構允許的去識別化數據或 ZKP 證明，完全無法穿透乙機構 VEP-2 的物理防線讀取原始資料庫。
@@ -114,7 +114,7 @@ DROS 不是既有資安工具的替代品，而是 **AI Agent 執行期治理 (A
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **防禦層次** | 基礎設施層（防雲端廠商） | 資料協作層（批次） | 網路閘道層（流量） | 文字 Prompt 層 | **Agent 執行期層 (物理邊界)** |
 | **防雲端廠商/Hypervisor** | ✅ 強 (TEE 記憶體加密) | ✅ 中 | ❌ | ❌ | ❌ (非設計目標，可互補) |
-| **欄位級動態 Policy 遮蔽** | ❌ 無欄位概念 | ⚠️ 批次非即時 | ⚠️ 靜態無語意感知 | ⚠️ 僅文字替換 | **✅ 帶內 26.1μs 決策** |
+| **欄位級動態 Policy 遮蔽** | ❌ 無欄位概念 | ⚠️ 批次非即時 | ⚠️ 靜態無語意感知 | ⚠️ 僅文字替換 | **✅ 帶內 <1μs 決策** |
 | **Tool Call 越權硬熔斷** | ❌ | ❌ | ❌ | ❌ (Prompt 可繞過) | **✅ C-ABI 物理硬熔斷** |
 | **ZKP 選擇性揭露** | ❌ | ❌ | ❌ | ❌ | **✅ ZKP-Lite (Groth16)** |
 | **不可竄改稽核鏈** | ⚠️ 部分 (TEE Attestation) | ❌ | ❌ | ❌ | **✅ SHA-256 Merkle Chain** |
@@ -133,9 +133,9 @@ DROS 不是既有資安工具的替代品，而是 **AI Agent 執行期治理 (A
 | 題目 Track | 題目情境與痛點 | Multi-VEP 雙向對接解法 (P2P Inter-Gate Protocol) | 專屬獨立 VEP 控制台與解法文件 |
 | :--- | :--- | :--- | :--- |
 | **Track 01** | **製造貿易**：碳足跡與 DPP 數位產品護照資料流控制。採購 Agent 想查碳足跡，但台灣工廠怕 BOM 配方外洩。 | **歐盟買方 VEP-1 ◄► 台灣製造廠 VEP-2**<br>BOM 成本欄位帶內 REDACTED；採購下單觸發 HITL 人工簽署；產出 W3C 可驗證碳護照憑證。 | 🌐 [Alpha 製造 VEP](http://localhost:8000/track01_carbon_dpp/index.html)<br>📄 [Track 01 DROS 解法對應說明書](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track01_carbon_dpp/DROS_SOLUTION_MAPPING.md) |
-| **Track 02** | **電商與第三方支付**：隱私保護下的可疑行為偵測。第三方支付想聯防洗錢，但電商怕用戶銀行隱私外洩。 | **電商平台 VEP-1 ◄► 核心銀行 VEP-2**<br>銀行帳戶餘額帶內 REDACTED；洗錢風險分數 $>0.85$ 觸發帶內 26.1μs 硬性 BLOCK。 | 🌐 [PayFlow 金融 VEP](http://localhost:8000/track02_fintech_privacy/index.html)<br>📄 [Track 02 DROS 解法對應說明書](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track02_fintech_privacy/DROS_SOLUTION_MAPPING.md) |
+| **Track 02** | **電商與第三方支付**：隱私保護下的可疑行為偵測。第三方支付想聯防洗錢，但電商怕用戶銀行隱私外洩。 | **電商平台 VEP-1 ◄► 核心銀行 VEP-2**<br>銀行帳戶餘額帶內 REDACTED；洗錢風險分數 $>0.85$ 觸發帶內 <1μs 硬性 BLOCK。 | 🌐 [PayFlow 金融 VEP](http://localhost:8000/track02_fintech_privacy/index.html)<br>📄 [Track 02 DROS 解法對應說明書](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track02_fintech_privacy/DROS_SOLUTION_MAPPING.md) |
 | **Track 03** | **醫療保險**：跨產業資料合作的誘因與邊界。保險理賠 Agent 想自動核賠，但醫院病歷含高度敏感 PHI。 | **保險理賠 VEP-1 ◄► 醫院 EHR VEP-2**<br>HIPAA 18 項 PHI 欄位帶內動態遮蔽；DIT 驗證病患電子同意書；違規讀病歷 403 阻斷。 | 🌐 [MediGuard 醫療 VEP](http://localhost:8000/track03_healthcare_insurance/index.html)<br>📄 [Track 03 DROS 解法對應說明書](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track03_healthcare_insurance/DROS_SOLUTION_MAPPING.md) |
-| **Track 04** | **政府服務**：解決憑證碎片化背後的資料孤島。Agent 代辦跨機關申請，如何劃分代查、代送件與本人確認。 | **戶政 VEP-1 ◄► 健保/稅務 VEP-2**<br>三層漸進授權：代查 API (PERMIT 26.1μs)、代送件 (HITL 推播確認)、簽署與跨機關橫移 (DENY)。 | 🌐 [GovProxy VEP](http://localhost:8000/track04_gov_services/index.html)<br>📄 [Track 04 DROS 解法對應說明書](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track04_gov_services/DROS_SOLUTION_MAPPING.md) |
+| **Track 04** | **政府服務**：解決憑證碎片化背後的資料孤島。Agent 代辦跨機關申請，如何劃分代查、代送件與本人確認。 | **戶政 VEP-1 ◄► 健保/稅務 VEP-2**<br>三層漸進授權：代查 API (PERMIT <1μs)、代送件 (HITL 推播確認)、簽署與跨機關橫移 (DENY)。 | 🌐 [GovProxy VEP](http://localhost:8000/track04_gov_services/index.html)<br>📄 [Track 04 DROS 解法對應說明書](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track04_gov_services/DROS_SOLUTION_MAPPING.md) |
 | **Track 05** | **普惠金融**：移工數位信任與防詐憑證機制。87 萬移工面臨開戶障礙，亦容易遭冒名與 SIM Swap 盜用。 | **移工 App VEP-1 ◄► 台灣銀行 VEP-2**<br>護照+ARC+勞動許可多文件複合 DIT；三層漸進信任矩陣；SIM Swap 行為異常引發 $O(1)$ 緊急凍結。 | 🌐 [MigraTrust VEP](http://localhost:8000/track05_inclusive_finance/index.html)<br>📄 [Track 05 DROS 解法對應說明書](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track05_inclusive_finance/DROS_SOLUTION_MAPPING.md) |
 | **Track 06** | **供應鏈貿易金融 (加分題)**：RBA 供應鏈合規可驗證憑證。採購 Agent 需驗證工廠合規，但工廠不能洩露完整稽核報告。 | **買方採購 VEP-1 ◄► 供應商工廠 VEP-2**<br>選擇性揭露閘門 (Selective Disclosure Matrix)；ZKP-Lite (Groth16) 數學驗證分數；W3C VC 2.0 憑證。 | 🌐 [SupplyProof VEP](http://localhost:8000/track06_supply_chain_rba/index.html)<br>📄 [Track 06 DROS 解法對應說明書](https://github.com/Top-Celestial-Company-Ltd/DROS-Hackathon-Showcase/blob/main/track06_supply_chain_rba/DROS_SOLUTION_MAPPING.md) |
 

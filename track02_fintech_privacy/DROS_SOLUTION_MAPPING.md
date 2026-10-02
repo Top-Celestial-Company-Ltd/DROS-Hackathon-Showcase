@@ -30,7 +30,7 @@
 │  【組件 B】VEP Policy Gate（帶內執行期策略閘門層）                 │
 │   ↓ Agent 每次呼叫 API / Tool 時，必須先過這道閘門                │
 │   ↓ 閘門比對 DIT Token 的 Scope 與本次動作是否吻合                │
-│   ↓ 不吻合 → 26.1 微秒內在二進位層硬性熔斷，AI 完全無法繞過       │
+│   ↓ 不吻合 → <1 微秒內在二進位層硬性熔斷，AI 完全無法繞過       │
 │   ↓ 高風險動作 → 掛起交易，觸發人工雙重簽署（Human-in-the-Loop）  │
 │                                                                  │
 │  【組件 C】Merkle Audit Chain（不可竄改稽核追蹤層）               │
@@ -57,7 +57,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
 | **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
 | **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
-| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **26.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **<1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
 | **5. 存取稽核 (Auditing)** | `auditd` / Linux Journal 日誌 | **SHA-256 Merkle Hash 密碼學證據鏈** | 解決「事後偽造與串供，產出法院採信收據」 |
 | **6. 資源回收 (Revocation)** | `kill -9` / Process Terminate | **$O(1)$ RCU 原子指針秒級動態撤銷** | 解決「授權過期或被撤銷後，背景 Agent 偷跑」 |
 
@@ -107,7 +107,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
                  ▼                                         ▼
      ┌────────────────────────┐              ┌──────────────────────────┐
      │ 產業 AI Detection /    │              │ 💥 C-ABI 帶內硬性阻斷    │
-     │ AML 圖演算法分析引擎   │              │ (HTTP 403 26.1 μs 熔斷)  │
+     │ AML 圖演算法分析引擎   │              │ (HTTP 403 <1 μs 熔斷)  │
      └───────────┬────────────┘              └──────────────────────────┘
                  │
                  ▼ (Risk Score / Investigation Prioritization)
@@ -245,7 +245,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
                                    "TOK-9982-HASHED" = FROZEN
 
 效果：所有正在執行的 Agent API 請求，
-      在下一次 VEP 閘門檢查時（26.1μs 內）
+      在下一次 VEP 閘門檢查時（<1μs 內）
       立即收到 403 FORBIDDEN
 ```
 
@@ -257,7 +257,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | :--- | :--- | :--- |
 | **1. Principal (身份：代表誰)** | **DIT Token 帶內身份注入** | 風控 Agent 啟動時自動注入加密身份憑證。憑證內含 `Fintech-Risk-Agent#402` 與 KYC 帳戶關聯 Hash，確保風控主體可合規追溯且不可偽造。 |
 | **2. Authorization (授權範圍)** | **Scope 宣告式隱私特徵授權矩陣** | `vajra_policy.yaml` 明確宣告 `PERMIT: risk:analyze_vector`（行為向量分析）、`PROHIBITED: account:read_pii`（原始個資）、`PROHIBITED: payment:execute`（直接觸發支付）。Scope 矩陣在二進位層查表，無法被語意繞過。 |
-| **3. Tool/Action Bound (行動邊界)** | **VEP Interceptor 二進位帶內攔截** | 風控 Agent 在呼叫棧層面被限制只能執行 `analyze_behavior_vector()`。任何嘗試呼叫 `get_customer_profile()`、`execute_transfer()` 等工具的請求，在 FFI 二進位邊界 26.1μs 內被硬性熔斷。AI 的語意推理完全無法繞過此物理層。 |
+| **3. Tool/Action Bound (行動邊界)** | **VEP Interceptor 二進位帶內攔截** | 風控 Agent 在呼叫棧層面被限制只能執行 `analyze_behavior_vector()`。任何嘗試呼叫 `get_customer_profile()`、`execute_transfer()` 等工具的請求，在 FFI 二進位邊界 <1μs 內被硬性熔斷。AI 的語意推理完全無法繞過此物理層。 |
 | **4. Policy Gate (資料過濾閘門)** | **行為向量帶內去識別化轉換** | 原始帳務記錄在伺服器記憶體中被讀取，帶內計算行為統計特徵（頻率、方差、分散度），個資欄位在記憶體中被覆寫後才允許向外傳輸。風控 AI 的輸入資料中從不存在個資。 |
 | **5. Audit Log (不可竄改稽核)** | **SHA-256 Merkle 雜湊鏈** | 每次風控掃描、HITL 掛起、Token 凍結決策均寫入 Merkle 鏈。各筆記錄包含前筆 Hash，任何篡改使後續所有 Hash 失效。監管機構可獨立計算雜湊值驗證稽核完整性。 |
 | **6. Revocation (動態撤銷)** | **$O(1)$ RCU 常數時間 Token 凍結** | 風控中心點擊「凍結」後，透過 RCU 原子指針交換完成 Token 廢止，整體延遲 < 1 秒。後續所有支付 API 請求一律回傳 `403 FORBIDDEN`，無論 Agent 正在執行哪個步驟。 |
@@ -290,7 +290,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | :--- | :---: | :---: | :---: | :---: |
 | **防禦層次** | 基礎設施層（防雲端廠商） | 資料協作層（批次聚合） | 網路閘道層（流量控制） | **AI Agent 執行期層（應用行為治理）** |
 | 防止雲端廠商 / Hypervisor 窺視 | ✅ 強（TEE 記憶體加密） | ✅ 中 | ❌ | ❌（非設計目標） |
-| **欄位級動態 Policy 遮蔽 – 即時去識別化轉換** | ❌ 無欄位層概念 | ⚠️ 部分（批次聚合，非即時） | ⚠️ 部分（靜態規則，無 AI 語意感知） | ✅ **帶內 26.1μs 動態轉換** |
+| **欄位級動態 Policy 遮蔽 – 即時去識別化轉換** | ❌ 無欄位層概念 | ⚠️ 部分（批次聚合，非即時） | ⚠️ 部分（靜態規則，無 AI 語意感知） | ✅ **帶內 <1μs 動態轉換** |
 | **AI Agent 骏入 / 越權 Tool Call 治理** | ❌ | ❌ | ❌ | ✅ **C-ABI 物理熔斷** |
 | **不可竄改風控稽核鏈（監管機構可獨立驗證）** | ⚠️ 部分（TEE Attestation） | ❌ | ❌ | ✅ **SHA-256 Merkle Chain** |
 | Human-in-the-Loop 高風險轉帳懸停 | ❌ | ❌ | ❌ | ✅ **HITL 雙重簽署** |

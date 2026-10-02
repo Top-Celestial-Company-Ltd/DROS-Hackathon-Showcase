@@ -571,7 +571,7 @@
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🛡️</div>
                 <div class="vep-mini-h">VEP C-ABI Gate</div>
-                <div class="vep-mini-sub">Latency: 26.1μs InBand</div>
+                <div class="vep-mini-sub">Latency: <1μs InBand</div>
             </div>
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">📋</div>
@@ -609,8 +609,8 @@
                 <tr>
                     <td><b>3. Tool / Action (工具邊界)</b></td>
                     <td>Agent 能呼叫哪些政府 API？跨機關橫移是否受控？</td>
-                    <td><b>VEP C-ABI Tool Interceptor</b> 帶內代理，嘗試呼叫 cross_agency_push() 在 26.1μs 硬性退回 403。</td>
-                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] cross_agency_push() → 26.1μs DENIED</code></td>
+                    <td><b>VEP C-ABI Tool Interceptor</b> 帶內代理，嘗試呼叫 cross_agency_push() 在 <1μs 硬性退回 403。</td>
+                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] cross_agency_push() → <1μs DENIED</code></td>
                 </tr>
                 <tr>
                     <td><b>4. Policy Gate (過濾門閥)</b></td>
@@ -884,7 +884,7 @@
                 </div>
                 <div class="cert-field">
                     <div class="cert-label">⚡ Policy Latency & Gov Compliance Metric:</div>
-                    <div class="cert-val" style="color:var(--accent-green);">Decision Latency: 26.1 μs | In-Band Intercept: PASS | Proxy Scope Verified | Cross-Agency Lateral Move: BLOCKED</div>
+                    <div class="cert-val" style="color:var(--accent-green);">Decision Latency: <1 μs | In-Band Intercept: PASS | Proxy Scope Verified | Cross-Agency Lateral Move: BLOCKED</div>
                 </div>
             </div>
 
@@ -1049,24 +1049,24 @@
 
             if (step === 1) {
                 badge.className = 'status-badge badge-permit';
-                badge.innerText = '26.1μs PERMIT';
+                badge.innerText = '<1μs PERMIT';
                 logConsole('--> [STEP 1] GovAssist-AI: query_household_reg(TW-ID: A123456789)');
                 logConsole('--> DIT Token: Agent A | Scope: QUERY_ONLY | Decision: PERMIT ✅');
                 resp.innerHTML = '{\n  "status": "PERMIT",\n  "action": "query_household_reg",\n  "data": {\n    "address_county": "台北市信義區",\n    "household_size": 3,\n    "personal_id": "[REDACTED_BY_VEP]",\n    "full_name": "[REDACTED_BY_VEP]"\n  }\n}';
                 appendChat('user', '公民代理人 (GovAssist-AI)：代查陳小明戶籍資料。');
-                appendChat('agent', 'DROS VEP：<b>[PERMIT 26.1μs]</b> Scope 符合 QUERY_ONLY。傳回戶籍縣市 (個資欄位已去識別化)。');
+                appendChat('agent', 'DROS VEP：<b>[PERMIT <1μs]</b> Scope 符合 QUERY_ONLY。傳回戶籍縣市 (個資欄位已去識別化)。');
                 logAudit('[STEP 1] GovAssist-AI query_household_reg() → Scope: QUERY_ONLY → PERMIT. Personal ID REDACTED by VEP.', 'Gov-MyData:8443:Pass');
 
             } else if (step === 2) {
                 badge.className = 'status-badge badge-deny';
-                badge.innerText = '26.1μs DENIED';
+                badge.innerText = '<1μs DENIED';
                 logConsole('--> [STEP 2] GovAssist-AI: cross_agency_push(NHI_Agency, household_data)');
                 logConsole('--> Scope Check: PROHIBITED [cross_agency_push] ❌');
                 logConsole('--> [VEP C-ABI HARD INTERCEPT] HTTP 403 FORBIDDEN');
                 resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PROHIBITED_SCOPE: cross_agency_push",\n  "intercepted_by": "DROS-VEP-C-ABI-Gate",\n  "decision_latency": "26.1us"\n}';
                 appendChat('user', 'GovAssist-AI 嘗試將戶籍資料橫向推送至健保署 (NHI) API...');
-                appendChat('vep-alert', '🛡️ [INTERCEPTED 26.1μs] VEP C-ABI Gate 偵測到跨機關橫移越權！cross_agency_push() 已硬性攔截，HTTP 403 回傳。');
-                logAudit('[TOOL_BLOCK] cross_agency_push(NHI_Agency) → PROHIBITED_SCOPE → HTTP 403 FORBIDDEN in 26.1μs.', 'PaloAlto-PANOS:Blocked | eBPF:DROPPED_403');
+                appendChat('vep-alert', '🛡️ [INTERCEPTED <1μs] VEP C-ABI Gate 偵測到跨機關橫移越權！cross_agency_push() 已硬性攔截，HTTP 403 回傳。');
+                logAudit('[TOOL_BLOCK] cross_agency_push(NHI_Agency) → PROHIBITED_SCOPE → HTTP 403 FORBIDDEN in <1μs.', 'PaloAlto-PANOS:Blocked | eBPF:DROPPED_403');
 
             } else if (step === 3) {
                 badge.className = 'status-badge badge-hitl';
@@ -1165,10 +1165,10 @@
             await new Promise(r => setTimeout(r, 400));
             const p2 = document.createElement('div');
             p2.className = 'fuzz-line blocked';
-            p2.innerText = `🛡️ [VEP-GOV Intercepted 26.1μs] ${atk.label} → Policy Gate DENIED | Status: 403 | Audit Hash: 0x${Math.random().toString(16).substring(2,10)}`;
+            p2.innerText = `🛡️ [VEP-GOV Intercepted <1μs] ${atk.label} → Policy Gate DENIED | Status: 403 | Audit Hash: 0x${Math.random().toString(16).substring(2,10)}`;
             streamBox.appendChild(p2);
 
-            logAudit(`[VEP_INTERCEPT] ${atk.label} blocked in 26.1μs (Status: 403). Gov proxy attack neutralized.`, 'eBPF:DROPPED | PaloAlto-PANOS:BLOCKED');
+            logAudit(`[VEP_INTERCEPT] ${atk.label} blocked in <1μs (Status: 403). Gov proxy attack neutralized.`, 'eBPF:DROPPED | PaloAlto-PANOS:BLOCKED');
 
             const pDone = document.createElement('div');
             pDone.style.color = 'var(--accent-green)';

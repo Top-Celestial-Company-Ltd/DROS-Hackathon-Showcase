@@ -24,7 +24,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
 | **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
 | **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
-| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **26.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **<1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
 | **5. 存取稽核 (Auditing)** | `auditd` / Linux Journal 日誌 | **SHA-256 Merkle Hash 密碼學證據鏈** | 解決「事後偽造與串供，產出法院採信收據」 |
 | **6. 資源回收 (Revocation)** | `kill -9` / Process Terminate | **$O(1)$ RCU 原子指針秒級動態撤銷** | 解決「授權過期或被撤銷後，背景 Agent 偷跑」 |
 
@@ -74,7 +74,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
                  ▼                                         ▼
      ┌────────────────────────┐              ┌──────────────────────────┐
      │ 產業 AI Detection /    │              │ 💥 C-ABI 帶內硬性阻斷    │
-     │ 採購合規審查 Agent     │              │ (HTTP 403 26.1 μs 熔斷)  │
+     │ 採購合規審查 Agent     │              │ (HTTP 403 <1 μs 熔斷)  │
      └───────────┬────────────┘              └──────────────────────────┘
                  │
                  ▼ (Compliance Verdict / Selective Disclosure)
@@ -142,7 +142,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 │  【3. ZKP-Lite 實領薪資零扣款選擇性揭露 (Pillar 4 Policy Gate)】                 │
 │   • 上市櫃/政府稽核員發起抽查 ──► DROS 帶內生成 Groth16 ZKP 證明 $\pi$：          │
 │     $\pi = \text{Proof}\{\text{實領薪資} == \text{應發全額} \land \text{仲介費用扣款} == 0\}$ │
-│   • 稽核端在 26.1 μs 內驗證 $\pi$ 通過，【內部財務機密與移工隱私完全 HIDDEN】!   │
+│   • 稽核端在 <1 μs 內驗證 $\pi$ 通過，【內部財務機密與移工隱私完全 HIDDEN】!   │
 │                                                                                  │
 │  【4. 移工母國現金匿名時間鎖定舉證與事後追討 (Pillar 6 Revocation)】             │
 │   • 若移工在母國被迫付現金，可在 App 匿名提交【Timelocked ZKP 舉證單】           │

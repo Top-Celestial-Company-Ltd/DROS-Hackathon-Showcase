@@ -30,7 +30,7 @@
 │  【組件 B】VEP Policy Gate（帶內執行期策略閘門層）                 │
 │   ↓ Agent 每次呼叫 API / Tool 時，必須先過這道閘門                │
 │   ↓ 閘門比對 DIT Token 的 Scope 與本次動作是否吻合                │
-│   ↓ 不吻合 → 26.1 微秒內在二進位層硬性熔斷，AI 完全無法繞過       │
+│   ↓ 不吻合 → <1 微秒內在二進位層硬性熔斷，AI 完全無法繞過       │
 │   ↓ 高風險動作 → 掛起交易，觸發人工雙重簽署（Human-in-the-Loop）  │
 │                                                                  │
 │  【組件 C】Merkle Audit Chain（不可竄改稽核追蹤層）               │
@@ -50,7 +50,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
 | **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
 | **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
-| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **26.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **<1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
 | **5. 存取稽核 (Auditing)** | `auditd` / Linux Journal 日誌 | **SHA-256 Merkle Hash 密碼學證據鏈** | 解決「事後偽造與串供，產出法院採信收據」 |
 | **6. 資源回收 (Revocation)** | `kill -9` / Process Terminate | **$O(1)$ RCU 原子指針秒級動態撤銷** | 解決「授權過期或被撤銷後，背景 Agent 偷跑」 |
 
@@ -100,7 +100,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
                  ▼                                         ▼
      ┌────────────────────────┐              ┌──────────────────────────┐
      │ 產業 AI Detection /    │              │ 💥 C-ABI 帶內硬性阻斷    │
-     │ 保險自動理賠審查 Agent  │              │ (HTTP 403 26.1 μs 熔斷)  │
+     │ 保險自動理賠審查 Agent  │              │ (HTTP 403 <1 μs 熔斷)  │
      └───────────┬────────────┘              └──────────────────────────┘
                  │
                  ▼ (Claim Verdict / Policy Match)
@@ -182,7 +182,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | :--- | :--- | :--- |
 | **1. Principal (身份：代表誰)** | **Patient E-Consent DIT Token** | 保險 Agent 攜帶病患動態簽署之電子同意書憑證，強綁定保險公司 Agent ID 與病患授權識別，無法偽造身份。 |
 | **2. Authorization (授權範圍)** | **Scope 最小必要授權矩陣** | `vajra_policy.yaml` 宣告 `PERMIT: claims:read_summary`、`PROHIBITED: ehr:read_full_phi`。Scope 在二進位層查表，硬性限制只能取理賠所需資訊。 |
-| **3. Tool/Action Bound (行動邊界)** | **VEP Interceptor C-ABI 帶內攔截** | 理賠 Agent 僅能呼叫 `get_claims_summary()`。嘗試呼叫 `get_full_medical_history()` 等工具，在 FFI 邊界 26.1μs 內被硬性熔斷。 |
+| **3. Tool/Action Bound (行動邊界)** | **VEP Interceptor C-ABI 帶內攔截** | 理賠 Agent 僅能呼叫 `get_claims_summary()`。嘗試呼叫 `get_full_medical_history()` 等工具，在 FFI 邊界 <1μs 內被硬性熔斷。 |
 | **4. Policy Gate (資料過濾閘門)** | **HIPAA Safe Harbor 18 項 PHI 自動遮蔽** | 完整病歷在醫院記憶體讀取後，18 項 PHI 在封包傳出前被物理覆寫遮蔽，僅放行診斷碼與理賠金額，符合 HIPAA 最小必要原則。 |
 | **5. Audit Log (不可竄改稽核)** | **SHA-256 Merkle 雜湊鏈** | 每次調閱與遮蔽決策寫入 Merkle 鏈，醫院與保險公司雙方均可獨立驗證理賠憑證完整性，杜絕詐領理賠與資料篡改。 |
 | **6. Revocation (動態撤銷)** | **$O(1)$ RCU 病患同意書秒級撤銷** | 病患若於 App 點擊「撤銷授權」，透過 RCU 原子交換在 < 1 秒內廢止 Consent Token，後續保險 API 請求立即收到 `403 FORBIDDEN`。 |
@@ -195,7 +195,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | :--- | :---: | :---: | :---: | :---: |
 | **防禦層次** | 基礎設施層（防雲端廠商） | 資料協作層（批次聚合） | 網路閘道層（流量控制） | **AI Agent 執行期層（應用行為治理）** |
 | 防止雲端廠商 / Hypervisor 窺視 | ✅ 強（TEE 記憶體加密） | ✅ 中 | ❌ | ❌（非設計目標） |
-| **欄位級動態 PHI 遮蔽（最小必要原則）** | ❌ 無欄位層概念 | ⚠️ 部分（批次離線，非即時） | ⚠️ 部分（靜態規則，無 AI 語意感知） | ✅ **帶內 26.1μs 決策** |
+| **欄位級動態 PHI 遮蔽（最小必要原則）** | ❌ 無欄位層概念 | ⚠️ 部分（批次離線，非即時） | ⚠️ 部分（靜態規則，無 AI 語意感知） | ✅ **帶內 <1μs 決策** |
 | **AI Agent Tool Call 越權行為治理** | ❌ | ❌ | ❌ | ✅ **C-ABI 物理熔斷** |
 | **病患同意書 (E-Consent) 動態 Token 驗證** | ❌ | ❌ | ❌ | ✅ **即時 Token 驗證** |
 | **O(1) 病患同意書秒級撤銷** | ❌ | ❌ | ⚠️ 部分（需重新部署） | ✅ **RCU 原子交換** |

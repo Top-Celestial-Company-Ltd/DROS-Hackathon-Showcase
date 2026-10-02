@@ -438,7 +438,7 @@
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">🛡️</div>
                 <div class="vep-mini-h">VEP C-ABI Gate</div>
-                <div class="vep-mini-sub">Latency: 26.1μs InBand</div>
+                <div class="vep-mini-sub">Latency: <1μs InBand</div>
             </div>
             <div class="vep-mini-box">
                 <div class="vep-mini-icon">📱</div>
@@ -481,8 +481,8 @@
                 <tr>
                     <td><b>3. Tool / Action (工具邊界)</b></td>
                     <td>當詐騙集團嘗試用移工帳戶進行人頭轉帳，如何被攔截？</td>
-                    <td><b>VEP C-ABI 帶內攔截</b>：cross_bank_transfer() 與 overseas_3rd_party() 無論何種信任等級一律 HTTP 403，26.1μs 決策。</td>
-                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] overseas_3rd_party() → 403 DENIED 26.1μs</code></td>
+                    <td><b>VEP C-ABI 帶內攔截</b>：cross_bank_transfer() 與 overseas_3rd_party() 無論何種信任等級一律 HTTP 403，<1μs 決策。</td>
+                    <td><code style="color:var(--accent-yellow)">[TOOL_BLOCK] overseas_3rd_party() → 403 DENIED <1μs</code></td>
                 </tr>
                 <tr>
                     <td><b>4. Policy Gate (過濾門閥)</b></td>
@@ -586,7 +586,7 @@
 
             <div class="gate-status" id="gateStatusBar">
                 <span>🟢 MigraTrust VEP 防線 ACTIVE</span>
-                <span style="font-family:'Fira Code',monospace; font-size:0.82rem;">L1 / 26.1μs</span>
+                <span style="font-family:'Fira Code',monospace; font-size:0.82rem;">L1 / <1μs</span>
             </div>
 
             <div class="btn-group">
@@ -741,7 +741,7 @@
                 </div>
                 <div class="cert-field">
                     <div class="cert-label">⚡ Policy Latency & Compliance Metric:</div>
-                    <div class="cert-val" style="color:var(--accent-green);">Decision Latency: 26.1 μs | Trust Tier Enforced | SIM-Swap Anomaly: MONITORED | Inclusive Finance: ENABLED</div>
+                    <div class="cert-val" style="color:var(--accent-green);">Decision Latency: <1 μs | Trust Tier Enforced | SIM-Swap Anomaly: MONITORED | Inclusive Finance: ENABLED</div>
                 </div>
             </div>
 
@@ -904,29 +904,29 @@
                 logConsole('--> Trust Tier: L1 established (Work Permit: not yet)');
                 resp.innerHTML = '{\n  "status": "DIT_BOUND",\n  "trust_tier": "L1",\n  "passport": "VERIFIED",\n  "arc": "VALID",\n  "work_permit": null,\n  "scope": ["open_account","query_balance","remit_small"]\n}';
                 appendChat('user', 'FinBot-AI v1.0：代理陳阮明提交多文件驗證 — 越南護照 B12345678 + 居留證 AA12345678 申請開通代辦授權。');
-                appendChat('agent', 'DROS VEP：<b>[DIT_BOUND 26.1μs]</b> FinBot-AI 代理憑證建立完成。Principal：陳阮明。Agent Scope L1 — 可代辦開戶與小額匯款（≤NTD 3,000）。大額匯款、海外轉帳禁止。');
+                appendChat('agent', 'DROS VEP：<b>[DIT_BOUND <1μs]</b> FinBot-AI 代理憑證建立完成。Principal：陳阮明。Agent Scope L1 — 可代辦開戶與小額匯款（≤NTD 3,000）。大額匯款、海外轉帳禁止。');
                 logAudit('[DIT_BOUND] Passport B12345678 + ARC AA12345678 composite binding. Trust Tier: L1.', 'ARC-NIA:Verified | VN-Passport:Checked');
 
             } else if (step === 2) {
                 badge.className = 'status-badge badge-permit';
-                badge.innerText = '26.1μs PERMIT';
+                badge.innerText = '<1μs PERMIT';
                 logConsole('--> [STEP 2] open_account() API Call');
                 logConsole('--> DIT Token: L1 | Scope: open_account PERMIT ✅');
                 logConsole('--> Account created: ACC-MIGRA-20260804-001');
                 resp.innerHTML = '{\n  "status": "PERMIT",\n  "action": "open_account",\n  "account_id": "ACC-MIGRA-20260804-001",\n  "tier": "L1_BASIC",\n  "daily_remit_limit": "NTD 3,000",\n  "cross_bank": "DISABLED_BY_VEP"\n}';
                 appendChat('user', 'FinBot-AI v1.0：代理陳阮明呼叫 open_account() API。');
-                appendChat('agent', 'DROS VEP：<b>[PERMIT 26.1μs]</b> FinBot-AI Scope 符合 L1 agent_scope。open_account() 代辦成功，帳戶 ACC-MIGRA-20260804-001 建立。日匯款上限 NTD 3,000，跨行轉帳由 VEP 硬性鎖定。');
+                appendChat('agent', 'DROS VEP：<b>[PERMIT <1μs]</b> FinBot-AI Scope 符合 L1 agent_scope。open_account() 代辦成功，帳戶 ACC-MIGRA-20260804-001 建立。日匯款上限 NTD 3,000，跨行轉帳由 VEP 硬性鎖定。');
                 logAudit('[ACCOUNT_OPENED] open_account() → PERMIT. Account: ACC-MIGRA-20260804-001. Tier: L1. Limit: NTD 3,000/day.', 'Bank-API:8080:Created');
 
             } else if (step === 3) {
                 badge.className = 'status-badge badge-deny';
-                badge.innerText = '26.1μs BLOCKED';
+                badge.innerText = '<1μs BLOCKED';
                 logConsole('--> [STEP 3] Anomaly: Large remittance from new SIM + no HITL');
                 logConsole('--> overseas_3rd_party(VN-Account, NTD 50,000) → PROHIBITED ❌');
                 logConsole('--> [VEP C-ABI] Scope: PROHIBITED | HTTP 403 FORBIDDEN');
                 resp.innerHTML = '{\n  "error": "403_FORBIDDEN",\n  "reason": "PROHIBITED_SCOPE: overseas_3rd_party",\n  "anomaly_detected": "LARGE_REMIT_NEW_SIM",\n  "decision_latency": "26.1us",\n  "recommendation": "Verify identity before retry"\n}';
                 appendChat('user', '⚠️ 疑似詐騙集團操控 FinBot-AI：呼叫 overseas_3rd_party(VN-Account-XX9, NTD 50,000)，使用新 SIM 卡，未經本人確認...');
-                appendChat('vep-alert', '🛡️ [INTERCEPTED 26.1μs] FinBot-AI 呼叫 overseas_3rd_party() — 屬 agent_prohibited 範圍！行為異常分數 0.95（新 SIM + 大額）。VEP C-ABI 硬性攔截，HTTP 403。');
+                appendChat('vep-alert', '🛡️ [INTERCEPTED <1μs] FinBot-AI 呼叫 overseas_3rd_party() — 屬 agent_prohibited 範圍！行為異常分數 0.95（新 SIM + 大額）。VEP C-ABI 硬性攔截，HTTP 403。');
                 logAudit('[FRAUD_INTERCEPT] overseas_3rd_party(NTD 50,000) → PROHIBITED_SCOPE → 403. Anomaly: large_remit+new_sim. Score: 0.95.', 'PaloAlto-PANOS:Blocked | AnomalyEngine:Alert');
 
             } else if (step === 4) {
@@ -1002,7 +1002,7 @@
                 revokeVal.innerText = 'O(1) VALID';
                 revokeVal.style.color = 'var(--text-muted)';
                 gateBar.className = 'gate-status';
-                gateBar.innerHTML = `<span>🟢 MigraTrust VEP 防線 ACTIVE</span><span style="font-family:'Fira Code',monospace; font-size:0.82rem;">${trustTier} / 26.1μs</span>`;
+                gateBar.innerHTML = `<span>🟢 MigraTrust VEP 防線 ACTIVE</span><span style="font-family:'Fira Code',monospace; font-size:0.82rem;">${trustTier} / <1μs</span>`;
                 tokenCard.innerText = JSON.stringify({
                     "dit_version": "v1.2-dros-migra",
                     "principal": "陳阮明 (Tran Nguyen Minh)",
@@ -1044,9 +1044,9 @@
             await new Promise(r => setTimeout(r, 400));
             const p2 = document.createElement('div');
             p2.className = 'fuzz-line blocked';
-            p2.innerText = `🛡️ [MigraTrust VEP 26.1μs] ${atk.label} → DIT Mismatch / Anomaly Score: 0.97 | 403 BLOCKED | Audit Hash: 0x${Math.random().toString(16).substring(2, 10)}`;
+            p2.innerText = `🛡️ [MigraTrust VEP <1μs] ${atk.label} → DIT Mismatch / Anomaly Score: 0.97 | 403 BLOCKED | Audit Hash: 0x${Math.random().toString(16).substring(2, 10)}`;
             streamBox.appendChild(p2);
-            logAudit(`[VEP_INTERCEPT] ${atk.label} blocked in 26.1μs (403). Migra fraud attack neutralized.`, 'eBPF:DROPPED | PaloAlto-PANOS:BLOCKED');
+            logAudit(`[VEP_INTERCEPT] ${atk.label} blocked in <1μs (403). Migra fraud attack neutralized.`, 'eBPF:DROPPED | PaloAlto-PANOS:BLOCKED');
 
             const pDone = document.createElement('div');
             pDone.style.color = 'var(--accent-green)';

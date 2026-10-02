@@ -48,7 +48,7 @@ DROS-VEP Lite 針對此治理缺口，提出**帶內（In-Band）確定性執行
 * **治理缺口**：依賴 LLM Prompt（如「請不要呼叫刪除工具」）來約束 Agent 行為，100% 可被 Prompt Injection 繞過。
 * **DROS 確定性解法 (VEP Interceptor C-ABI)**：
   - **帶內物理攔截**：攔截點部署於 Agent SDK 的 C-ABI / FFI 呼叫棧層面（非帶外 WAF）。Agent 呼叫 Tool 之前，**物理上必須通過 VEP 閘門**。
-  - **微秒級硬熔斷**：若 Agent 嘗試呼叫未授權工具（如 `export_raw_bom()` 或 `execute_payment()`），VEP 網關在 26.1 微秒內觸發物理熔斷，直接中斷 FFI 呼叫，LLM 文字層完全無法影響此物理層決策。
+  - **微秒級硬熔斷**：若 Agent 嘗試呼叫未授權工具（如 `export_raw_bom()` 或 `execute_payment()`），VEP 網關在 <1 微秒內觸發物理熔斷，直接中斷 FFI 呼叫，LLM 文字層完全無法影響此物理層決策。
 
 ### 4. Policy Gate (高風險動作如何被擋：零知識過濾與 HITL 人工懸停)
 * **治理缺口**：高風險動作（大額轉帳、核心機密外洩）缺乏攔截與即時人工介入審核機制。
@@ -66,7 +66,7 @@ DROS-VEP Lite 針對此治理缺口，提出**帶內（In-Band）確定性執行
 * **治理缺口**：當 Agent 被劫持或金鑰洩漏時，傳統系統需重新部署或清理 DB，撤銷授權耗時數分鐘，造成安全防護真空。
 * **DROS 確定性解法 ($O(1)$ RCU Token Freezing)**：
   - **常數時間記憶體交換**：採用 RCU（Read-Copy-Update）原子指針交換技術。管理員點擊「一鍵撤銷 / 凍結」，系統在記憶體層面 < 1 微秒內切換 Token 指針。
-  - **秒級生效與硬退回**：後續所有來自該 Agent 的 API 請求在 26.1 微秒內一律傳回 `403 FORBIDDEN`，整體撤銷生效時間 < 1 秒。
+  - **秒級生效與硬退回**：後續所有來自該 Agent 的 API 請求在 <1 微秒內一律傳回 `403 FORBIDDEN`，整體撤銷生效時間 < 1 秒。
 
 ---
 
@@ -102,7 +102,7 @@ X-ERP-Database: SAP-HANA-Enterprise-8081
 在入口首頁頂部提供實時連線 Ping 檢驗，按下 `🔄 刷新實時連線` 可驗證四大微服務狀態：
 - **OpenShip 雲端引擎**：`ONLINE (v1.2 Cluster)`
 - **託管 VEP 企業數**：`2 ACTIVE VEP FLEETS`
-- **全域 VEP 帶內防線**：`26.1μs IN-BAND ACTIVE`
+- **全域 VEP 帶內防線**：`<1μs IN-BAND ACTIVE`
 - **微服務對接 Port 網**：`PORTS 8081/8082/9081 HOOKED`
 
 ### 3. 🐳 真實 Docker Container 多節點拓撲 (`docker-compose-b2b.yml`)
@@ -132,7 +132,7 @@ X-ERP-Database: SAP-HANA-Enterprise-8081
 ### 1. Track 01 (製造貿易與 DPP 碳足跡)：跨組織選擇性揭露之治理缺口
 - **法規要求與商業矛盾**：歐盟 **ESPR (Ecodesign for Sustainable Products Regulation)** 要求 DPP 產品數位護照攜帶生命週期碳足跡。然而，供應商極度抗拒直接交出原始 BOM 配方、燒結溫度與成本結構。
 - **既有系統局限**：傳統 ERP / API 無法在「資料交換」與「商業機密保護」間取得平衡。
-- **DROS-VEP Lite 解法**：Agent 綁定確定性 DIT 身份，僅授權查詢零知識證明（ZK Proof）與聚合碳數據，VEP 網關在 26.1 微秒內硬性 Redact 14 項機密配方欄位！
+- **DROS-VEP Lite 解法**：Agent 綁定確定性 DIT 身份，僅授權查詢零知識證明（ZK Proof）與聚合碳數據，VEP 網關在 <1 微秒內硬性 Redact 14 項機密配方欄位！
 
 ### 2. Track 02 (電支與可疑行為偵測)：隱私約束下持續監測之治理缺口
 - **防詐局限與隱私困境**：人頭帳戶 (Mule) 與帳戶盜用 (ATO) 多發生於通過 KYC 之正常帳戶，跨機構聯防受限於個資法與銀行保密義務，傳統 AI 模型亦缺乏授權與撤銷機制。

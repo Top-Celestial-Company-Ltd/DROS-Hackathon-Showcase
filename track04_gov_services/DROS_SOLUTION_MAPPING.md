@@ -24,7 +24,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
 | **1. 執行主體 (Subject)** | Process PID / User UID | **DIT Token (綁定法人 vLEI / 自然人 MyData)** | 解決「AI 到底是代表誰？出了事誰負責？」 |
 | **2. 權限邊界 (Permission)** | File Permissions / POSIX ACL (rwx) | **Zero-Heap Capability Bitmaps (暫存器級位元圖)** | 解決「權限範圍多大？精確鎖定 Tool 與 API 呼叫」 |
 | **3. 系統呼叫保護 (Syscall)** | Ring 0 / Kernel Mode 記憶體隔離 | **C-ABI 帶內攔截閘門 (In-Band VEP Gate)** | 解決「AI 意圖不可控，物理阻斷危險呼叫」 |
-| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **26.1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
+| **4. 異常處理 (Fault Handling)** | `SIGSEGV` / `SIGKILL` 核心崩潰保護 | **<1 μs 帶內硬熔斷 (Hard Circuit-Breaker)** | 解決「Prompt Injection 越獄與惡意行為」 |
 | **5. 存取稽核 (Auditing)** | `auditd` / Linux Journal 日誌 | **SHA-256 Merkle Hash 密碼學證據鏈** | 解決「事後偽造與串供，產出法院採信收據」 |
 | **6. 資源回收 (Revocation)** | `kill -9` / Process Terminate | **$O(1)$ RCU 原子指針秒級動態撤銷** | 解決「授權過期或被撤銷後，背景 Agent 偷跑」 |
 
@@ -74,7 +74,7 @@ DROS 之於 AI Agent，正如 Linux / POSIX 之於傳統電腦行程（Process�
                  ▼                                         ▼
      ┌────────────────────────┐              ┌──────────────────────────┐
      │ 產業 AI Detection /    │              │ 💥 C-ABI 帶內硬性阻斷    │
-     │ 公民跨機關代辦 Agent   │              │ (HTTP 403 26.1 μs 熔斷)  │
+     │ 公民跨機關代辦 Agent   │              │ (HTTP 403 <1 μs 熔斷)  │
      └───────────┬────────────┘              └──────────────────────────┘
                  │
                  ▼ (Application Draft / Pre-check)
@@ -132,7 +132,7 @@ DROS 在政府端部署 C-ABI 帶內治理微內核，原生支援**「自然人
 │   • 注入：DROS DIT Token (綁定公司 LEI 碼、ISO 5009 官方角色、經辦權限)          │
 │                                                                                  │
 │  【三層代理授權邊界 (Three-Tier Capability Boundary)】                           │
-│   1. LEVEL 1: 代查資格 (Query)   ──► 【PERMIT (26.1 μs 放行)】                   │
+│   1. LEVEL 1: 代查資格 (Query)   ──► 【PERMIT (<1 μs 放行)】                   │
 │      • 自動比對跨部會條件（如戶政出生證明 + 綜所稅率），民眾免重填               │
 │   2. LEVEL 2: 代送件 (Submit)    ──► 【SUSPENDED (HITL 懸停)】                   │
 │      • 備妥申辦草稿，推送手機 2FA 請民眾確認，300 秒逾時保護                     │
