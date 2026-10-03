@@ -39,7 +39,7 @@
 
 若評審或技術人員希望驗證真實後端 HTTP Response Header、紅隊防禦 API 與亞微秒級延遲計時器：
 
-1. **執行自動化治理驗證測試套件 (0.01 秒完成)**：
+1. **執行自動化治理驗證測試套件 (0.02 秒完成)**：
    ```bash
    python test_verification_suite.py
    ```

@@ -287,3 +287,11 @@ python server.py
 *專利聲明：DROS 執行治理與安全技術已申請美國臨時專利保護（U.S. Provisional Patent Application No. 64/111,973）。*  
 
 *© 2026 OpenShip Ecosystem. All Rights Reserved.*
+
+---
+
+## Package Reference
+This showcase corresponds to **3 commercial DROS Add-On Packages** under DROS商品專案暫存/:
+- Track 01: DROS-ESPR-DPP-Package (espr_redactor_hook.py)
+- Track 02: DROS-FinRisk-Privacy-Package (finrisk_monitor_hook.py + sanctions_checker.py)
+- Track 03: DROS-Health-HIPAA-Package (hipaa_phi_shield_hook.py)

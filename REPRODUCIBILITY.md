@@ -18,14 +18,14 @@ python test_verification_suite.py
 ======================================================================
 🛡️ DROS-VEP-lite Trustworthy AI Governance Verification Suite
 ======================================================================
-[TEST 1] Principal & Scope Authorization Matrix... [PASS]
-[TEST 2] Data Redaction & Privacy Shield (BOM Recipe)... [PASS]
-[TEST 3] Threat Containment (Prompt Injection Intercept)... [PASS]
-[TEST 4] O(1) Constant-Time Revocation & Token Invalidation... [PASS]
-[TEST 5] Tamper-Evident SHA-256 Merkle Audit Chain... [PASS]
+test_01_espr (real ESPR hook) .............. ok
+test_02_finrisk (real FinRisk hook) ........ ok
+test_03_sanctions (real SanctionsChecker) .. ok
+test_04_hipaa (real HIPAA hook) ............ ok
+test_05_yaml (all from YAML, not fallback) . ok
 ======================================================================
-Ran 5 tests in 0.004s
-OK (All Governance & Security Claims Verifiable!)
+Ran 5 tests in 0.02s
+ALL 5 PILLARS PASSED
 ```
 
 ---

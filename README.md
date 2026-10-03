@@ -39,7 +39,7 @@ This repository contains the official competition submission materials, reproduc
 
 If you want to test live backend HTTP response headers, RedTeam containment APIs, and sub-microsecond latency meters:
 
-1. **Run Automated Governance Verification Suite (0.01s)**:
+1. **Run Automated Governance Verification Suite (0.02s)**:
    ```bash
    python test_verification_suite.py
    ```
@@ -175,4 +175,5 @@ The deterministic execution governance, microsecond fusing, and cryptographic au
 4. **Open Standards & Verification Sandbox**:
    * **RFC-010 Specification**: Adheres to open Agent Identity & Attestation standard (W3C DID did:key & Ed25519 signature chain).
    * **Verification Sandbox**: [DROS-VEP Lite (Reproducible Evaluation Sandbox)](https://github.com/Top-Celestial-Company-Ltd/DROS-VEP-lite)
+
 
