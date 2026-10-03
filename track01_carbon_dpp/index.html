@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DROS-VEP-lite | Alpha Global Manufacturing VEP - 可信 DPP 碳足跡與跨境貿易 Demo</title>
+    <title>ESPR-DPP Live Demo — Carbon Passport Redaction</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -466,7 +466,7 @@
     <header>
         <div class="logo-area">
             <div class="logo-badge">VEP COMPANY #01</div>
-            <h1>Alpha Global Manufacturing VEP | 獨立虛擬企業控制台 (Track 01)</h1>
+            <h1>ESPR-DPP — Real Hook Demo | 獨立虛擬企業控制台 (Track 01)</h1>
             <p>可信 DPP 碳足跡與歐盟 CBAM 跨境貿易零知識過濾 (<1μs 延遲)</p>
         </div>
         <div style="display:flex; align-items:center; gap:12px;">
@@ -1087,5 +1087,7 @@
             }
         }
     </script>
+<div class="panel" style="margin-top:24px;"><div class="panel-header"><div class="panel-title">🔌 Live INTEGRATION_HOOK Test</div></div><div class="panel-body" style="padding:16px;"><button onclick="testLive() started" style="background:linear-gradient(135deg,#0284c7,#0369a1);border:none;border-radius:8px;padding:10px;color:#fff;cursor:pointer;">🧪 Send BOM to Real ESPR Hook</button><pre id="lr" style="background:rgba(0,0,0,0.4);border:1px solid var(--border-color);border-radius:8px;padding:12px;font-family:'Fira Code',monospace;font-size:0.78rem;height:200px;overflow:auto;color:var(--accent-green);">Click to run...</pre></div></div><script>async function testLive(){const b=document.getElementById('lr');b.innerText='Calling...';try{const r=await fetch('/api/v1/espr/process',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:'DPP-EU-88901',bom:{component:'Si Wafer',wafer_baking_temp:'1250C',silicon_purity_level:'99.9999999%'},financial:{raw_material_cost_usd:450.0,supplier_margin:'18.5%'}})});const j=await r.json();b.innerText=JSON.stringify(j,null,2)}catch(e){b.innerText='Error: '+e.message}}</script>
 </body>
 </html>
+

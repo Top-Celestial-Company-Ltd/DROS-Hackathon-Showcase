@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DROS-VEP Unified Agent Governance Portal | OpenShip Multi-VEP Cloud Launchpad</title>
+    <title>DROS Add-On Demo — 3 Commercial Package Live Test</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -416,5 +416,45 @@
 
         window.onload = fetchCloudTelemetry;
     </script>
+<!-- ═══════════ Live API Test Section ═══════════ -->
+<div class="panel" style="margin-top: 24px;">
+    <div class="panel-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="panel-title" style="font-size:0.82rem;">🔌 Live API Test — Real INTEGRATION_HOOKs</div>
+        <span style="font-size:0.7rem;color:var(--accent-green);">Server: localhost:8000</span>
+    </div>
+    <div class="panel-body" style="display:flex;flex-direction:column;gap:12px;padding:16px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button onclick="testESPR()" style="background:linear-gradient(135deg,#164e63,#0e7490);border:none;border-radius:8px;padding:10px 18px;color:#fff;cursor:pointer;">🧪 Test ESPR Redaction</button>
+            <button onclick="testFinRisk()" style="background:linear-gradient(135deg,#701a75,#86198f);border:none;border-radius:8px;padding:10px 18px;color:#fff;cursor:pointer;">🧪 Test FinRisk PII</button>
+            <button onclick="testHIPAA()" style="background:linear-gradient(135deg,#15803d,#16a34a);border:none;border-radius:8px;padding:10px 18px;color:#fff;cursor:pointer;">🧪 Test HIPAA Shield</button>
+            <button onclick="testSanctions()" style="background:linear-gradient(135deg,#991b1b,#b91c1c);border:none;border-radius:8px;padding:10px 18px;color:#fff;cursor:pointer;">🧪 Test Sanctions</button>
+        </div>
+        <pre id="apiResult" style="background:rgba(0,0,0,0.4);border:1px solid var(--border-color);border-radius:8px;padding:12px;font-family:'Fira Code',monospace;font-size:0.78rem;max-height:300px;overflow:auto;color:var(--accent-green);">Click a button to test...</pre>
+    </div>
+</div>
+
+<script>
+async function apiCall(endpoint, data) {
+    const box = document.getElementById('apiResult');
+    box.innerText = '⏳ Calling ' + endpoint + '...';
+    try {
+        const r = await fetch(endpoint, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+        const j = await r.json();
+        box.innerText = '→ ' + endpoint + '\n' + JSON.stringify(j, null, 2);
+    } catch(e) {
+        box.innerText = '❌ Error: ' + e.message + '\n\nMake sure server.py is running on localhost:8000';
+    }
+}
+function testESPR() { apiCall('/api/v1/espr/process', {"product_id":"DPP-1","bom":{"wafer_baking_temp":"1250C"}}); }
+function testFinRisk() { apiCall('/api/v1/finrisk/process', {"tx_id":"T1","amount_usd":500,"user":{"real_name":"John","ssn":"123-45"}}); }
+async function testHIPAA() {
+    const h = btoa(JSON.stringify({"alg":"HS256"})).replace(/=+$/,'');
+    const exp = Math.floor(Date.now()/1000) + 3600;
+    const p = btoa(JSON.stringify({"sub":"pat-1","exp":exp})).replace(/=+$/,'');
+    apiCall('/api/v1/hipaa/process', {"resourceType":"Patient","patient":{"name":"Jane","ssn":"987-65"},"consent_token":h+'.'+p+'.dummy'});
+}
+function testSanctions() { apiCall('/api/v1/sanctions/check', {"name":"Hassan Al-Mutairi"}); }
+</script>
 </body>
 </html>
+

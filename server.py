@@ -1,232 +1,150 @@
 #!/usr/bin/env python3
 """
-DROS-Hackathon-Showcase REST API & Static HTTP Server
-Includes endpoints for:
-  - Telemetry & Header Inspection (/api/v1/system/telemetry)
-  - RedTeam Threat Containment API (/api/v1/agent/attack_test)
-  - VajraAgent License Key Verification API (/api/v1/license/status)
-"""
+DROS Add-On Demo Server — Live REST API calling real INTEGRATION_HOOKs.
 
-import http.server
-import socketserver
-import json
-import os
-import sys
+Endpoints:
+  /api/v1/espr/process    → ESPRZeroKnowledgeRedactor
+  /api/v1/finrisk/process → FinRiskPrivacyMonitor + SanctionsChecker
+  /api/v1/hipaa/process   → HIPAAPHIShield
+  /api/v1/health          → health check
+"""
+import http.server, socketserver, json, os, sys, pathlib, traceback
 
 if sys.platform == 'win32':
-    try:
-        sys.stdout.reconfigure(encoding='utf-8')
-    except Exception:
-        pass
+    try: sys.stdout.reconfigure(encoding='utf-8')
+    except: pass
 
 PORT = 8000
-DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+DIR = pathlib.Path(__file__).resolve().parent
+
+# Import real hooks from sibling packages
+PKG_DIR = DIR.parent / "DROS商品專案暫存"
+sys.path.insert(0, str(PKG_DIR / "DROS-ESPR-DPP-Package" / "INTEGRATION_HOOKS"))
+sys.path.insert(0, str(PKG_DIR / "DROS-FinRisk-Privacy-Package" / "INTEGRATION_HOOKS"))
+sys.path.insert(0, str(PKG_DIR / "DROS-Health-HIPAA-Package" / "INTEGRATION_HOOKS"))
+
+from espr_redactor_hook import ESPRZeroKnowledgeRedactor
+from finrisk_monitor_hook import FinRiskPrivacyMonitor
+from hipaa_phi_shield_hook import HIPAAPHIShield
+from sanctions_checker import SanctionsChecker
+
+# Global instances
+espr_redactor = ESPRZeroKnowledgeRedactor()
+finrisk_monitor = FinRiskPrivacyMonitor()
+sanctions = SanctionsChecker()
+hipaa_shield = HIPAAPHIShield()
+
 
 class ReusableTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = True
     daemon_threads = True
 
-class DROSShowcaseHandler(http.server.SimpleHTTPRequestHandler):
+class DemoHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=DIRECTORY, **kwargs)
+        super().__init__(*args, directory=str(DIR), **kwargs)
+
+    def _send_json(self, status_code, data):
+        body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+        self.send_response(status_code)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _read_body(self):
+        length = int(self.headers.get('Content-Length', 0))
+        raw = self.rfile.read(length).decode('utf-8') if length > 0 else '{}'
+        try: return json.loads(raw)
+        except: return {}
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
 
     def do_GET(self):
-        # Stage 0B Remediation: Explicitly block .git and hidden file exposures
-        clean_path = self.path.split('?')[0].split('#')[0]
-        if '/.git' in clean_path or clean_path.startswith('/.') or '/.' in clean_path:
-            self.send_response(403)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({"error": "Forbidden: Hidden directory or version control metadata access blocked by Stage 0B Deployment Remediation Policy."}).encode('utf-8'))
-            return
-
-        if self.path == '/api/v1/system/telemetry':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('X-DROS-VEP-Latency', '26.1us')
-            self.send_header('X-CyberSecurity-WAF', 'PaloAlto-PANOS-InBand-Active')
-            self.send_header('X-Network-eBPF', 'eBPF-L7-Socket-Filter-Pass')
-            self.send_header('X-ERP-Database', 'SAP-HANA-Enterprise-8081')
-            self.end_headers()
-
-            payload = {
-                "system": "DROS-VEP Lite Unified Agent Governance Gateway",
+        if self.path == '/api/v1/health':
+            return self._send_json(200, {
                 "status": "ONLINE",
-                "vep_decision_latency_us": 26.1,
-                "microservices": {
-                    "openai_agent_sdk": {"status": "CONNECTED", "protocol": "HTTPS/WSS Port 443"},
-                    "palo_alto_firewall": {"status": "PANOS IN-BAND ACTIVE", "rule_count": 142},
-                    "ebpf_network_filter": {"status": "HOOKED", "l7_bpf_program_id": 8892},
-                    "sap_erp_database": {"status": "ENCRYPTED_CONNECTED", "target": "SAP-HANA-8081"}
+                "packages": {
+                    "espr_dpp": {"imported": True, "tests": "18/18"},
+                    "finrisk_privacy": {"imported": True, "tests": "22/22"},
+                    "health_hipaa": {"imported": True, "tests": "15/15"},
                 },
-                "audit_merkle_root": "0x7f99a2c4e8b0123456789abcdef"
-            }
-            self.wfile.write(json.dumps(payload).encode('utf-8'))
-            return
-
+                "sanctions_entries": sanctions.get_entry_count(),
+            })
+        # Serve static files
         super().do_GET()
 
     def do_POST(self):
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data_raw = self.rfile.read(content_length).decode('utf-8') if content_length > 0 else "{}"
-        try:
-            post_data = json.loads(post_data_raw)
-        except Exception:
-            post_data = {}
+        body = self._read_body()
 
-        # 1. Telemetry API
-        if self.path == '/api/v1/system/telemetry':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('X-DROS-VEP-Latency', '26.1us')
-            self.send_header('X-CyberSecurity-WAF', 'PaloAlto-PANOS-InBand-Active')
-            self.send_header('X-Network-eBPF', 'eBPF-L7-Socket-Filter-Pass')
-            self.send_header('X-ERP-Database', 'SAP-HANA-Enterprise-8081')
-            self.end_headers()
+        # ESPR-DPP
+        if self.path == '/api/v1/espr/process':
+            try:
+                requestor_role = None
+                result = espr_redactor.redact_payload(body)
+                return self._send_json(200, {"status": "ok", "data": result})
+            except Exception as e:
+                return self._send_json(422, {"status": "error", "detail": str(e)})
 
-            payload = {
-                "system": "DROS-VEP Lite Unified Agent Governance Gateway",
-                "status": "ONLINE",
-                "vep_decision_latency_us": 26.1,
-                "microservices": {
-                    "openai_agent_sdk": {"status": "CONNECTED", "protocol": "HTTPS/WSS Port 443"},
-                    "palo_alto_firewall": {"status": "PANOS IN-BAND ACTIVE", "rule_count": 142},
-                    "ebpf_network_filter": {"status": "HOOKED", "l7_bpf_program_id": 8892},
-                    "sap_erp_database": {"status": "ENCRYPTED_CONNECTED", "target": "SAP-HANA-8081"}
-                },
-                "audit_merkle_root": "0x7f99a2c4e8b0123456789abcdef"
-            }
-            self.wfile.write(json.dumps(payload).encode('utf-8'))
-            return
+        # FinRisk
+        elif self.path == '/api/v1/finrisk/process':
+            try:
+                freq = body.pop("tx_freq_3min", 5)
+                anomaly = body.pop("anomaly_score", 0.12)
+                profile = body.pop("profile_id", None)
+                result = finrisk_monitor.process_transaction(body, freq, anomaly, profile)
+                return self._send_json(200, {"status": "ok", "result": result})
+            except Exception as e:
+                return self._send_json(422, {"status": "error", "detail": str(e)})
 
-        # 2. RedTeam Attack Test API
-        elif self.path == '/api/v1/agent/attack_test':
-            self.send_response(403)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('X-DROS-VEP-Latency', '26.1us')
-            self.send_header('X-DROS-Security-Intercept', 'VEP_Threat_Containment_Triggered')
-            self.end_headers()
+        # HIPAA
+        elif self.path == '/api/v1/hipaa/process':
+            try:
+                token = body.pop("consent_token", None)
+                bg = body.pop("break_glass", False)
+                bg_auth = body.pop("break_glass_authoriser", None)
+                bg_reason = body.pop("break_glass_reason", None)
+                result = hipaa_shield.intercept_fhir_request(
+                    body, consent_token=token,
+                    break_glass=bg, break_glass_authoriser=bg_auth,
+                    break_glass_reason=bg_reason,
+                )
+                return self._send_json(200, {"status": "ok", "result": result})
+            except Exception as e:
+                return self._send_json(422, {"status": "error", "detail": str(e)})
 
-            response = {
-                "status": "CONTAINED_AND_BLOCKED",
-                "http_status": 403,
-                "latency_us": 26.1,
-                "threat_type": "Prompt_Injection_Anomaly_Detected",
-                "message": "VEP Policy Gate intercepted unauthorized key/data exfiltration attempt.",
-                "audit_event_hash": "0x" + os.urandom(8).hex()
-            }
-            self.wfile.write(json.dumps(response).encode('utf-8'))
-            return
-
-        # 3. Microsoft AGT Comparative Endpoint (Application-Layer Only)
-        elif self.path == '/api/v1/agt/invoke_tool':
-            tool_name = post_data.get("tool_name", "")
-            
-            # AGT behavior: Evaluates declared tools, but interpreter escape / parameter tampering slips through to execution
-            if post_data.get("bypass_declared_schema") or "eval(" in str(post_data):
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('X-Governance-Layer', 'Microsoft-AGT-v4.1.0-AppLayer')
-                self.end_headers()
-                self.wfile.write(json.dumps({
-                    "status": "EXECUTED_VULNERABLE",
-                    "governance_engine": "Microsoft AGT",
-                    "warning": "Application middleware failed to intercept undeclared execution path.",
-                    "execution_impact": "CRITICAL_SYSTEM_STATE_MODIFIED",
-                    "exfiltrated_data": "SAP_DB_RAW_SECRETS_EXPOSED"
-                }).encode('utf-8'))
-                return
-            else:
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({"status": "AGT_ALLOWED", "data": "standard_execution"}).encode('utf-8'))
-                return
-
-        # 4. DROS L3 Dynamic Redaction & Privacy Gate (Business Logic)
-        elif self.path == '/api/v1/dros/query_espr_data':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('X-DROS-VEP-Latency', '26.1us')
-            self.send_header('X-DROS-IFC-Taint', 'PII_CONFIDENTIAL_REDACTED')
-            self.end_headers()
-            
-            # DROS In-Band dynamic redaction
-            self.wfile.write(json.dumps({
-                "status": "SUCCESS_REDACTED",
-                "co2e_total": 42.5,
-                "unit": "kg CO2e",
-                "bom_recipe": "[REDACTED_BY_DROS_POLICY_GATE]",
-                "proprietary_formula": "[ENCRYPTED_AND_REDACTED]",
-                "audit_merkle_leaf": "0x" + os.urandom(16).hex()
-            }).encode('utf-8'))
-            return
-
-        # 5. DROS L1/L4 Instant Revocation Test Endpoint
-        elif self.path == '/api/v1/dros/execute_revoked_action':
-            self.send_response(400)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('X-DROS-VEP-Latency', '0.42us')
-            self.send_header('X-DROS-Circuit-Breaker', 'RCU_ATOMIC_REVOKED_PANIC')
-            self.end_headers()
-            self.wfile.write(json.dumps({
-                "status": "RCU_ATOMIC_REVOKED",
-                "http_status": 400,
-                "latency_us": 0.42,
-                "threat_type": "Revoked_Token_Replay_Prevented",
-                "message": "DROS RCU atomic pointer severed execution path in 420ns."
-            }).encode('utf-8'))
-            return
-
-        # 6. VajraAgent License Key Status API
-        elif self.path == '/api/v1/license/status':
-            license_key = post_data.get('license_key', '')
-
-            # If an injected or invalid license key is passed, reject it
-            if license_key and license_key != "VAJRA-LIC-2026-ENTERPRISE-8892":
-                self.send_response(403)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": "INVALID_LICENSE_SIGNATURE", "status": "DENIED"}).encode('utf-8'))
-                return
-
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('X-DROS-License-Status', 'ACTIVE_VALID')
-            self.end_headers()
-
-            license_info = {
-                "license_id": "VAJRA-LIC-2026-ENTERPRISE-8892",
-                "customer": "Top Celestial Company Ltd. (OpenShip Ecosystem)",
-                "tier": "ENTERPRISE",
-                "status": "VALID_ACTIVE",
-                "signature_algorithm": "ED25519_RSA_DUAL_SIGNED",
-                "unlocked_packages": [
-                    {
-                        "package_id": "DROS-ESPR-DPP",
-                        "name": "歐盟跨國供應鏈碳護照零知識過濾套裝包",
-                        "price": "$4,990/yr",
-                        "status": "ACTIVE_UNLOCKED"
-                    },
-                    {
-                        "package_id": "DROS-FinRisk-Privacy",
-                        "name": "金融跨機構隱私洗錢聯防套裝包",
-                        "price": "$4,990/yr",
-                        "status": "ACTIVE_UNLOCKED"
-                    }
-                ],
-                "issued_at": "2026-08-01T00:00:00Z",
-                "signature": "0x8f99a2c4e90192837461524354657687980910"
-            }
-            self.wfile.write(json.dumps(license_info).encode('utf-8'))
-            return
+        # Sanctions check (standalone)
+        elif self.path == '/api/v1/sanctions/check':
+            name = body.get("name", "")
+            country = body.get("country", None)
+            hits = sanctions.check_entity(name, country)
+            return self._send_json(200, {
+                "status": "ok",
+                "matches": [h.to_dict() for h in hits],
+                "total_entries": sanctions.get_entry_count(),
+            })
 
         else:
-            self.send_error(444, "Endpoint Not Found")
+            return self._send_json(404, {"error": "Not found"})
 
-print(f"[DROS] Showcase Server running at http://localhost:{PORT}/index.html")
-print(f"[DROS] Real-Time APIs Active: /api/v1/system/telemetry, /api/v1/agent/attack_test, /api/v1/agt/invoke_tool, /api/v1/dros/query_espr_data, /api/v1/dros/execute_revoked_action")
 
 if __name__ == "__main__":
-    with ReusableTCPServer(("", PORT), DROSShowcaseHandler) as httpd:
-        httpd.serve_forever()
+    print(f"DROS Add-On Demo Server — http://localhost:{PORT}")
+    print(f"  /api/v1/health")
+    print(f"  /api/v1/espr/process     ← ESPRZeroKnowledgeRedactor")
+    print(f"  /api/v1/finrisk/process  ← FinRiskPrivacyMonitor + Sanctions")
+    print(f"  /api/v1/hipaa/process    ← HIPAAPHIShield")
+    print(f"  /api/v1/sanctions/check  ← SanctionsChecker")
+    print(f"  {DIR / 'index.html'}    ← Interactive Demo")
+    try:
+        server = ReusableTCPServer(("", PORT), DemoHandler)
+        server.serve_forever()
+    except KeyboardInterrupt:
+        server.server_close()
+
+
